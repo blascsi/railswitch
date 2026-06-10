@@ -50,6 +50,7 @@ defmodule ConveyorBackend.MixProject do
       {:ash_json_api, "~> 1.0"},
       {:ash_postgres, "~> 2.0"},
       {:ash, "~> 3.0"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:igniter, "~> 0.6", only: [:dev, :test]},
       {:phoenix, "~> 1.8.7"},
       {:phoenix_ecto, "~> 4.5"},
