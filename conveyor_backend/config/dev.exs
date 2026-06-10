@@ -54,7 +54,9 @@ config :conveyor_backend, ConveyorBackendWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :conveyor_backend,
   dev_routes: true,
-  token_signing_secret: "v17prVWPMNnEvFid4uFmDGbkpOnf6EBq"
+  token_signing_secret: "v17prVWPMNnEvFid4uFmDGbkpOnf6EBq",
+  secure_cookies: false,
+  cors_origins: ["http://localhost:3000"]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"

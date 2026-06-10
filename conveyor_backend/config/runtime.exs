@@ -70,7 +70,9 @@ if config_env() == :prod do
   config :conveyor_backend,
     token_signing_secret:
       System.get_env("TOKEN_SIGNING_SECRET") ||
-        raise("Missing environment variable `TOKEN_SIGNING_SECRET`!")
+        raise("Missing environment variable `TOKEN_SIGNING_SECRET`!"),
+    secure_cookies: true,
+    cors_origins: String.split(System.get_env("CORS_ORIGINS", ""), ",", trim: true)
 
   # ## SSL Support
   #

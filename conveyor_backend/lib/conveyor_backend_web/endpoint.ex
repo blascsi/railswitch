@@ -45,5 +45,11 @@ defmodule ConveyorBackendWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+
+  plug Corsica,
+    origins: {ConveyorBackendWeb.Cors, :allowed_origin?, []},
+    allow_credentials: true,
+    allow_headers: ["content-type", "x-organization-id"]
+
   plug ConveyorBackendWeb.Router
 end
