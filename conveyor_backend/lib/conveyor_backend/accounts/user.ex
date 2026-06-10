@@ -10,6 +10,7 @@ defmodule ConveyorBackend.Accounts.User do
 
   alias AshAuthentication.Strategy.Password.HashPasswordChange
   alias AshAuthentication.Strategy.Password.PasswordConfirmationValidation
+  alias AshAuthentication.Strategy.RememberMe.MaybeGenerateTokenPreparation
 
   authentication do
     add_ons do
@@ -41,6 +42,7 @@ defmodule ConveyorBackend.Accounts.User do
       password :password do
         identity_field :email
         hash_provider AshAuthentication.BcryptProvider
+        sign_in_tokens_enabled? false
 
         resettable do
           sender ConveyorBackend.Accounts.User.Senders.SendPasswordResetEmail
@@ -64,6 +66,11 @@ defmodule ConveyorBackend.Accounts.User do
 
   actions do
     defaults [:read]
+
+    read :current_user do
+      description "The currently signed-in user."
+      get? true
+    end
 
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
@@ -93,6 +100,13 @@ defmodule ConveyorBackend.Accounts.User do
                 strategy_name: :password, password_argument: :current_password}
 
       change {HashPasswordChange, strategy_name: :password}
+
+      # It seems that since this action is not atomic, HashPasswordChange changes the
+      # password hash after `log_out_everywhere`'s check to see if the password hash changed
+      # already ran. This means that the fact that the hashed_password changed is never
+      # recognized by the add-on, so no tokens are revoked.
+      # Adding this change explicitly forces a token revocation for the user.
+      change AshAuthentication.AddOn.LogOutEverywhere.OnPasswordChange
     end
 
     read :sign_in_with_password do
@@ -110,39 +124,24 @@ defmodule ConveyorBackend.Accounts.User do
         sensitive? true
       end
 
+      argument :remember_me, :boolean do
+        description "Wether to generate a remember me token."
+        allow_nil? true
+      end
+
       # validates the provided email and password and generates a token
       prepare AshAuthentication.Strategy.Password.SignInPreparation
 
-      metadata :token, :string do
-        description "A JWT that can be used to authenticate the user."
-        allow_nil? false
-      end
-    end
-
-    read :sign_in_with_token do
-      # In the generated sign in components, we validate the
-      # email and password directly in the LiveView
-      # and generate a short-lived token that can be used to sign in over
-      # a standard controller action, exchanging it for a standard token.
-      # This action performs that exchange. If you do not use the generated
-      # liveviews, you may remove this action, and set
-      # `sign_in_tokens_enabled? false` in the password strategy.
-
-      description "Attempt to sign in using a short-lived sign in token."
-      get? true
-
-      argument :token, :string do
-        description "The short-lived sign in token."
-        allow_nil? false
-        sensitive? true
-      end
-
-      # validates the provided sign in token and generates a token
-      prepare AshAuthentication.Strategy.Password.SignInWithTokenPreparation
+      prepare {MaybeGenerateTokenPreparation, strategy_name: :remember_me}
 
       metadata :token, :string do
         description "A JWT that can be used to authenticate the user."
         allow_nil? false
+      end
+
+      metadata :remember_me, :map do
+        description "Remember-me cookie name, token, and max-age on successful sign in."
+        allow_nil? true
       end
     end
 
@@ -166,6 +165,11 @@ defmodule ConveyorBackend.Accounts.User do
         sensitive? true
       end
 
+      argument :remember_me, :boolean do
+        description "Whether to generate a remember me token."
+        allow_nil? true
+      end
+
       # Sets the email from the argument
       change set_attribute(:email, arg(:email))
 
@@ -175,12 +179,51 @@ defmodule ConveyorBackend.Accounts.User do
       # Generates an authentication token for the user
       change AshAuthentication.GenerateTokenChange
 
+      # Generates remember me token, if required
+      change {AshAuthentication.Strategy.RememberMe.MaybeGenerateTokenChange, strategy: :remember_me}
+
       # validates that the password matches the confirmation
       validate PasswordConfirmationValidation
 
       metadata :token, :string do
         description "A JWT that can be used to authenticate the user."
         allow_nil? false
+      end
+
+      metadata :remember_me, :map do
+        description "Remember-me cookie name, token, and max-age on successful sign in."
+        allow_nil? true
+      end
+    end
+
+    read :sign_in_with_remember_me do
+      description "Attempt to sign in using a remember me token."
+      get? true
+
+      argument :token, :string do
+        description "The remember me token"
+        allow_nil? false
+        sensitive? true
+      end
+
+      argument :rotate_token, :boolean do
+        description "Whether to also issue a fresh remember-me token."
+        allow_nil? true
+      end
+
+      # validates the provided the remember me token and generates a token for the session
+      prepare AshAuthentication.Strategy.RememberMe.SignInPreparation
+
+      prepare {MaybeGenerateTokenPreparation, strategy_name: :remember_me, argument: :rotate_token}
+
+      metadata :token, :string do
+        description "A JWT that can be used to authenticate the user."
+        allow_nil? false
+      end
+
+      metadata :remember_me, :map do
+        description "Remember-me cookie name, token, and max-age on successful sign in."
+        allow_nil? true
       end
     end
 
@@ -236,6 +279,31 @@ defmodule ConveyorBackend.Accounts.User do
   policies do
     bypass AshAuthentication.Checks.AshAuthenticationInteraction do
       authorize_if always()
+    end
+
+    policy action_type(:read) do
+      description "Users should be able to read their own data, and allowed to log in with password or remember me token"
+
+      authorize_if action(:sign_in_with_password)
+      authorize_if action(:sign_in_with_remember_me)
+
+      authorize_if accessing_from(ConveyorBackend.Orgs.Membership, :user)
+
+      authorize_if expr(id == ^actor(:id))
+    end
+
+    policy action(:register_with_password) do
+      authorize_if always()
+    end
+
+    policy action(:change_password) do
+      description "Users can change their own password"
+      authorize_if expr(id == ^actor(:id))
+    end
+
+    policy action_type(:destroy) do
+      description "Users can delete their own accounts"
+      authorize_if expr(id == ^actor(:id))
     end
   end
 
