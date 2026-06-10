@@ -23,9 +23,10 @@ defmodule ConveyorBackendWeb do
     quote do
       use Phoenix.Router, helpers: false
 
+      import Phoenix.Controller
+
       # Import common connection and controller functions to use in pipelines
       import Plug.Conn
-      import Phoenix.Controller
     end
   end
 
@@ -38,7 +39,6 @@ defmodule ConveyorBackendWeb do
   def controller do
     quote do
       use Phoenix.Controller, formats: [:html, :json]
-
       use Gettext, backend: ConveyorBackendWeb.Gettext
 
       import Plug.Conn

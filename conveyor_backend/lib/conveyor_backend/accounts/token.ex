@@ -1,4 +1,6 @@
 defmodule ConveyorBackend.Accounts.Token do
+  @moduledoc false
+
   use Ash.Resource,
     otp_app: :conveyor_backend,
     domain: ConveyorBackend.Accounts,

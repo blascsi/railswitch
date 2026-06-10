@@ -1,8 +1,11 @@
 import Config
-config :conveyor_backend, Oban, testing: :manual
-config :conveyor_backend, token_signing_secret: "Tnu+ESsqnCGW98aX7n4xXqEqe3w9O7oH"
-config :bcrypt_elixir, log_rounds: 1
+
 config :ash, policies: [show_policy_breakdowns?: true], disable_async?: true
+
+config :bcrypt_elixir, log_rounds: 1
+
+# In test we don't send emails
+config :conveyor_backend, ConveyorBackend.Mailer, adapter: Swoosh.Adapters.Test
 
 # Configure your database
 #
@@ -24,11 +27,8 @@ config :conveyor_backend, ConveyorBackendWeb.Endpoint,
   secret_key_base: "NSdjry96tzYyCSD6fQM9y7kbB6xOoyajeR89UbqCMcXq9ZDa+InbJLlxxS2upcCl",
   server: false
 
-# In test we don't send emails
-config :conveyor_backend, ConveyorBackend.Mailer, adapter: Swoosh.Adapters.Test
-
-# Disable swoosh api client as it is only required for production adapters
-config :swoosh, :api_client, false
+config :conveyor_backend, Oban, testing: :manual
+config :conveyor_backend, token_signing_secret: "Tnu+ESsqnCGW98aX7n4xXqEqe3w9O7oH"
 
 # Print only warnings and errors during test
 config :logger, level: :warning
@@ -39,3 +39,6 @@ config :phoenix, :plug_init_mode, :runtime
 # Sort query params output of verified routes for robust url comparisons
 config :phoenix,
   sort_verified_routes_query_params: true
+
+# Disable swoosh api client as it is only required for production adapters
+config :swoosh, :api_client, false

@@ -7,23 +7,6 @@
 # General application configuration
 import Config
 
-config :ash_oban, pro?: false
-
-config :conveyor_backend, Oban,
-  engine: Oban.Engines.Basic,
-  notifier: Oban.Notifiers.Postgres,
-  queues: [default: 10],
-  repo: ConveyorBackend.Repo,
-  plugins: [{Oban.Plugins.Cron, []}]
-
-config :mime,
-  extensions: %{"json" => "application/vnd.api+json"},
-  types: %{"application/vnd.api+json" => ["json"]}
-
-config :ash_json_api,
-  show_public_calculations_when_loaded?: false,
-  authorize_update_destroy_with_error?: true
-
 config :ash,
   allow_forbidden_field_for_relationships_by_default?: true,
   include_embedded_source_by_default?: false,
@@ -37,6 +20,56 @@ config :ash,
   transaction_rollback_on_error?: true,
   redact_sensitive_values_in_errors?: true,
   known_types: [AshPostgres.Timestamptz, AshPostgres.TimestamptzUsec]
+
+config :ash_json_api,
+  show_public_calculations_when_loaded?: false,
+  authorize_update_destroy_with_error?: true
+
+config :ash_oban, pro?: false
+
+# Configure the mailer
+#
+# By default it uses the "Local" adapter which stores the emails
+# locally. You can see the emails in your browser, at "/dev/mailbox".
+#
+# For production it's recommended to configure a different adapter
+# at the `config/runtime.exs`.
+config :conveyor_backend, ConveyorBackend.Mailer, adapter: Swoosh.Adapters.Local
+
+# Configure the endpoint
+config :conveyor_backend, ConveyorBackendWeb.Endpoint,
+  url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
+  render_errors: [
+    formats: [json: ConveyorBackendWeb.ErrorJSON],
+    layout: false
+  ],
+  pubsub_server: ConveyorBackend.PubSub,
+  live_view: [signing_salt: "mjTxN23e"]
+
+config :conveyor_backend, Oban,
+  engine: Oban.Engines.Basic,
+  notifier: Oban.Notifiers.Postgres,
+  queues: [default: 10],
+  repo: ConveyorBackend.Repo,
+  plugins: [{Oban.Plugins.Cron, []}]
+
+config :conveyor_backend,
+  ecto_repos: [ConveyorBackend.Repo],
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [ConveyorBackend.Accounts]
+
+# Configure Elixir's Logger
+config :logger, :default_formatter,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
+
+config :mime,
+  extensions: %{"json" => "application/vnd.api+json"},
+  types: %{"application/vnd.api+json" => ["json"]}
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
 
 config :spark,
   formatter: [
@@ -61,6 +94,8 @@ config :spark,
         :relationships,
         :calculations,
         :aggregates,
+        # Import environment specific config. This must remain at the bottom
+        # of this file so it overrides the configuration defined above.
         :identities
       ]
     ],
@@ -69,39 +104,4 @@ config :spark,
     ]
   ]
 
-config :conveyor_backend,
-  ecto_repos: [ConveyorBackend.Repo],
-  generators: [timestamp_type: :utc_datetime],
-  ash_domains: [ConveyorBackend.Accounts]
-
-# Configure the endpoint
-config :conveyor_backend, ConveyorBackendWeb.Endpoint,
-  url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
-  render_errors: [
-    formats: [json: ConveyorBackendWeb.ErrorJSON],
-    layout: false
-  ],
-  pubsub_server: ConveyorBackend.PubSub,
-  live_view: [signing_salt: "mjTxN23e"]
-
-# Configure the mailer
-#
-# By default it uses the "Local" adapter which stores the emails
-# locally. You can see the emails in your browser, at "/dev/mailbox".
-#
-# For production it's recommended to configure a different adapter
-# at the `config/runtime.exs`.
-config :conveyor_backend, ConveyorBackend.Mailer, adapter: Swoosh.Adapters.Local
-
-# Configure Elixir's Logger
-config :logger, :default_formatter,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
-
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
