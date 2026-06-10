@@ -1,8 +1,16 @@
 defmodule ConveyorBackendWeb.Router do
   use ConveyorBackendWeb, :router
 
+  import AshAuthentication.Plug.Helpers, only: [retrieve_from_bearer: 2, set_actor: 2]
+
   pipeline :api do
     plug :accepts, ["json"]
+    plug ConveyorBackendWeb.Plugs.AuthCookieToBearer
+    plug :bearer_to_user
+    plug ConveyorBackendWeb.Plugs.RememberMe
+    plug :user_to_actor
+    plug ConveyorBackendWeb.Plugs.SetTenant
+    plug ConveyorBackendWeb.Plugs.TokensToCookies
   end
 
   scope "/api/json" do
@@ -27,4 +35,7 @@ defmodule ConveyorBackendWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
+
+  defp bearer_to_user(conn, _opts), do: retrieve_from_bearer(conn, :conveyor_backend)
+  defp user_to_actor(conn, _opts), do: set_actor(conn, :user)
 end

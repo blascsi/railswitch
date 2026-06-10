@@ -6,7 +6,7 @@ defmodule ConveyorBackend.Accounts.User do
     domain: ConveyorBackend.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshAuthentication]
+    extensions: [AshJsonApi.Resource, AshAuthentication]
 
   alias AshAuthentication.Strategy.Password.HashPasswordChange
   alias AshAuthentication.Strategy.Password.PasswordConfirmationValidation
@@ -57,6 +57,10 @@ defmodule ConveyorBackend.Accounts.User do
         token_lifetime {30, :days}
       end
     end
+  end
+
+  json_api do
+    type "user"
   end
 
   postgres do
