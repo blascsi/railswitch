@@ -34,6 +34,7 @@ defmodule ConveyorBackend.Accounts.User do
       signing_secret ConveyorBackend.Secrets
       store_all_tokens? true
       require_token_presence_for_authentication? true
+      token_lifetime {12, :hours}
     end
 
     strategies do
@@ -49,7 +50,10 @@ defmodule ConveyorBackend.Accounts.User do
         end
       end
 
-      remember_me :remember_me
+      remember_me :remember_me do
+        cookie_name :conveyor_remember_me
+        token_lifetime {30, :days}
+      end
     end
   end
 
