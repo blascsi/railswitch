@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  warm-caches:
+    name: Warm caches
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mise + tools
+        uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - name: Cache conveyor backend deps & build
+        uses: actions/cache@v4
+        with:
+          path: |
+            conveyor_backend/deps
+            conveyor_backend/_build
+          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('conveyor_backend/mix.lock') }}
+          restore-keys: ${{ runner.os }}-conveyor-backend-mix-
+
+      - name: Install Hex & Rebar
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+
+      - name: Fetch & compile conveyor backend deps
+        working-directory: conveyor_backend
+        env:
+          MIX_ENV: test
+        run: |
+          mix deps.get
+          mix deps.compile
+
+  conveyor-backend-test-and-lint:
+    name: Conveyor backend tests and format check
+    runs-on: ubuntu-24.04
+    needs: warm-caches
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      MIX_ENV: test
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - name: Restore conveyor backend deps cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            conveyor_backend/deps
+            conveyor_backend/_build
+          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('conveyor_backend/mix.lock') }}
+          restore-keys: ${{ runner.os }}-conveyor-backend-mix-
+
+      - name: Install Hex & Rebar
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+
+      - name: Run tests
+        working-directory: conveyor_backend
+        run: mix test
+
+      - name: Check formatting
+        working-directory: conveyor_backend
+        run: mix format --check-formatted
+
+      - name: Run linter
+        working-directory: conveyor_backend
+        run: mix credo --strict
