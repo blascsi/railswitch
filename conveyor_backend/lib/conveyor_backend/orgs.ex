@@ -30,6 +30,7 @@ defmodule ConveyorBackend.Orgs do
       define :create_organization, action: :create, args: [:name]
       define :get_organization, action: :read, get_by: [:id]
       define :list_organizations, action: :read
+      define :update_organization, action: :update, args: [:name]
       define :delete_organization, action: :destroy
     end
 

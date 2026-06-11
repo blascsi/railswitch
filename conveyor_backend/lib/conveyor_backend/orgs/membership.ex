@@ -12,6 +12,8 @@ defmodule ConveyorBackend.Orgs.Membership do
 
   json_api do
     type "membership"
+
+    includes [:user]
   end
 
   postgres do
@@ -29,7 +31,13 @@ defmodule ConveyorBackend.Orgs.Membership do
 
     create :create do
       primary? true
-      accept [:role, :user_id, :organization_id]
+      accept [:role]
+
+      argument :user_id, :uuid, allow_nil?: false
+      argument :organization_id, :uuid, allow_nil?: false
+
+      change set_attribute(:user_id, arg(:user_id))
+      change set_attribute(:organization_id, arg(:organization_id))
     end
 
     update :change_role do
@@ -90,6 +98,7 @@ defmodule ConveyorBackend.Orgs.Membership do
 
   relationships do
     belongs_to :user, ConveyorBackend.Accounts.User do
+      public? true
       allow_nil? false
     end
 
