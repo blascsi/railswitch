@@ -8,6 +8,8 @@ defmodule ConveyorBackend.Orgs.Membership do
     extensions: [AshJsonApi.Resource],
     data_layer: AshPostgres.DataLayer
 
+  alias ConveyorBackend.Orgs.Membership.Changes.EnsureRemainingOwner
+
   json_api do
     type "membership"
   end
@@ -32,10 +34,16 @@ defmodule ConveyorBackend.Orgs.Membership do
 
     update :change_role do
       accept [:role]
+      require_atomic? false
+
+      change EnsureRemainingOwner
     end
 
     destroy :destroy do
       primary? true
+      require_atomic? false
+
+      change EnsureRemainingOwner
     end
   end
 

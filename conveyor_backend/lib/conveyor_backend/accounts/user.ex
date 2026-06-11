@@ -281,6 +281,13 @@ defmodule ConveyorBackend.Accounts.User do
       # Generates an authentication token for the user
       change AshAuthentication.GenerateTokenChange
     end
+
+    destroy :destroy do
+      primary? true
+      require_atomic? false
+
+      change ConveyorBackend.Accounts.User.Changes.EnsureNoSolelyOwnedOrganizations
+    end
   end
 
   policies do
@@ -300,6 +307,7 @@ defmodule ConveyorBackend.Accounts.User do
     end
 
     policy action(:register_with_password) do
+      description "Anybody can register"
       authorize_if always()
     end
 

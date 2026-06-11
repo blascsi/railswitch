@@ -13,11 +13,13 @@ defmodule ConveyorBackend.Orgs do
         get :read
         post :create
         patch :update
+        delete :destroy
       end
 
       base_route "/memberships", Membership do
         index :read
         post :create
+        patch :change_role
         delete :destroy
       end
     end
@@ -28,6 +30,7 @@ defmodule ConveyorBackend.Orgs do
       define :create_organization, action: :create, args: [:name]
       define :get_organization, action: :read, get_by: [:id]
       define :list_organizations, action: :read
+      define :delete_organization, action: :destroy
     end
 
     resource Membership do

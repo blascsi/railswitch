@@ -34,6 +34,10 @@ defmodule ConveyorBackend.Orgs.Organization do
       primary? true
       accept [:name]
     end
+
+    destroy :destroy do
+      primary? true
+    end
   end
 
   policies do

@@ -27,6 +27,7 @@ defmodule ConveyorBackend.Accounts do
         end
 
         get :current_user, route: "/me"
+        delete :destroy
       end
     end
   end
@@ -49,6 +50,8 @@ defmodule ConveyorBackend.Accounts do
       define :change_password,
         action: :change_password,
         args: [:current_password, :password, :password_confirmation]
+
+      define :delete_user, action: :destroy
     end
   end
 
