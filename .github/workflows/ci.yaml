@@ -83,9 +83,9 @@ jobs:
           mix local.hex --force
           mix local.rebar --force
 
-      - name: Run tests
+      - name: Check if project compiles
         working-directory: conveyor_backend
-        run: mix test
+        run: mix compile --warnings-as-errors
 
       - name: Check formatting
         working-directory: conveyor_backend
@@ -94,3 +94,11 @@ jobs:
       - name: Run linter
         working-directory: conveyor_backend
         run: mix credo --strict
+
+      - name: Check for un-generated migrations
+        working-directory: conveyor_backend
+        run: mix ash.codegen --check
+
+      - name: Run tests
+        working-directory: conveyor_backend
+        run: mix test

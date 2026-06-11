@@ -40,7 +40,8 @@ defmodule ConveyorBackend.Repo.Migrations.CreateOrganizationsAndMemberships do
             type: :uuid,
             prefix: "public",
             on_delete: :delete_all
-          ), null: false
+          ),
+          null: false
 
       add :organization_id,
           references(:organizations,
@@ -49,7 +50,8 @@ defmodule ConveyorBackend.Repo.Migrations.CreateOrganizationsAndMemberships do
             type: :uuid,
             prefix: "public",
             on_delete: :delete_all
-          ), null: false
+          ),
+          null: false
     end
 
     create unique_index(:memberships, [:organization_id, :user_id],
