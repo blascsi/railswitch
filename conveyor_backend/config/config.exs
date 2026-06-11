@@ -57,7 +57,7 @@ config :conveyor_backend, Oban,
 config :conveyor_backend,
   ecto_repos: [ConveyorBackend.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [ConveyorBackend.Accounts]
+  ash_domains: [ConveyorBackend.Orgs, ConveyorBackend.Accounts]
 
 # Configure Elixir's Logger
 config :logger, :default_formatter,

@@ -186,6 +186,9 @@ defmodule ConveyorBackend.Accounts.User do
       # Generates remember me token, if required
       change {AshAuthentication.Strategy.RememberMe.MaybeGenerateTokenChange, strategy: :remember_me}
 
+      # Creates a personal organization for each user
+      change ConveyorBackend.Accounts.User.Changes.CreatePersonalOrganization
+
       # validates that the password matches the confirmation
       validate PasswordConfirmationValidation
 
