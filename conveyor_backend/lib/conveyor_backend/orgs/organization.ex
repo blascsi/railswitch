@@ -42,14 +42,17 @@ defmodule ConveyorBackend.Orgs.Organization do
 
   policies do
     policy action_type(:create) do
+      description "Any signed-in user can create an organization"
       authorize_if actor_present()
     end
 
     policy action_type(:read) do
+      description "Members of an organization can read it"
       authorize_if expr(exists(memberships, user_id == ^actor(:id)))
     end
 
     policy action_type([:update, :destroy]) do
+      description "Only owners can update or delete an organization"
       authorize_if expr(exists(memberships, user_id == ^actor(:id) and role == :owner))
     end
   end
