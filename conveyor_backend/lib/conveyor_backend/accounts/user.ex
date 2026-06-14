@@ -331,6 +331,8 @@ defmodule ConveyorBackend.Accounts.User do
     end
 
     attribute :confirmed_at, :utc_datetime_usec
+
+    timestamps()
   end
 
   identities do
