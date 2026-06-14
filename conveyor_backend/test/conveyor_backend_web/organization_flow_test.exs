@@ -145,7 +145,7 @@ defmodule ConveyorBackendWeb.OrganizationFlowTest do
         |> get("/api/json/memberships")
 
       assert conn.status == 400
-      assert conn.resp_body =~ "invalid x-organization-id"
+      assert %{"errors" => [%{"code" => "invalid_header"}]} = Jason.decode!(conn.resp_body)
     end
   end
 

@@ -28,9 +28,22 @@ defmodule ConveyorBackendWeb.Plugs.SetTenant do
           :error ->
             conn
             |> put_resp_content_type("application/vnd.api+json")
-            |> send_resp(400, ~s({"errors":[{"detail":"invalid x-organization-id"}]}))
+            |> send_resp(400, invalid_tenant_id_error())
             |> halt()
         end
     end
+  end
+
+  defp invalid_tenant_id_error do
+    AshJsonApi.Serializer.serialize_errors(nil, [
+      %AshJsonApi.Error{
+        id: Ash.UUID.generate(),
+        status_code: 400,
+        code: "invalid_header",
+        title: "InvalidHeader",
+        detail: "x-organization-id must be a valid UUID",
+        meta: %{}
+      }
+    ])
   end
 end
