@@ -295,20 +295,15 @@ defmodule ConveyorBackend.Accounts.User do
       authorize_if always()
     end
 
-    policy action_type(:read) do
-      description "Users should be able to read their own data, and allowed to log in with password or remember me token"
-
-      authorize_if action(:sign_in_with_password)
-      authorize_if action(:sign_in_with_remember_me)
-
-      authorize_if accessing_from(ConveyorBackend.Orgs.Membership, :user)
-
-      authorize_if expr(id == ^actor(:id))
+    bypass action([:sign_in_with_password, :sign_in_with_remember_me, :register_with_password]) do
+      description "Sign-in and registration is always public"
+      authorize_if always()
     end
 
-    policy action(:register_with_password) do
-      description "Anybody can register"
-      authorize_if always()
+    policy action_type(:read) do
+      description "Users can read themselves, and other members of their organizations"
+      authorize_if expr(id == ^actor(:id))
+      authorize_if accessing_from(ConveyorBackend.Orgs.Membership, :user)
     end
 
     policy action(:change_password) do
