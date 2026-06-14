@@ -11,18 +11,7 @@ defmodule ConveyorBackend.Orgs.Organization.Changes.AddOwnerMembership do
   @impl true
   def change(changeset, _opts, %{actor: actor}) do
     Ash.Changeset.after_action(changeset, fn _changeset, org ->
-      ConveyorBackend.Orgs.Membership
-      |> Ash.Changeset.for_create(
-        :create,
-        %{
-          user_id: actor.id,
-          organization_id: org.id,
-          role: :owner
-        },
-        authorize?: false
-      )
-      |> Ash.create!()
-
+      ConveyorBackend.Orgs.add_member!(org.id, actor.id, :owner, authorize?: false)
       {:ok, org}
     end)
   end
