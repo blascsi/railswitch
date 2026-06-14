@@ -12,18 +12,12 @@ defmodule ConveyorBackend.Accounts do
       base_route "/users", User do
         post :register_with_password do
           route "/register"
-
-          metadata fn _subject, user, _request ->
-            remember_me_meta(user)
-          end
+          metadata &remember_me_metadata/3
         end
 
         post :sign_in_with_password do
           route "/sign-in"
-
-          metadata fn _subject, user, _request ->
-            remember_me_meta(user)
-          end
+          metadata &remember_me_metadata/3
         end
 
         get :current_user, route: "/me"
@@ -55,7 +49,7 @@ defmodule ConveyorBackend.Accounts do
     end
   end
 
-  def remember_me_meta(user) do
+  defp remember_me_metadata(_subject, user, _request) do
     meta = %{token: user.__metadata__.token}
 
     case Map.get(user.__metadata__, :remember_me) do

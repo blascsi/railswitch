@@ -18,31 +18,31 @@ defmodule ConveyorBackend.Accounts.User.Changes.EnsureNoSolelyOwnedOrganizations
   end
 
   @impl true
-  def change(changeset, _opts, _context) do
-    Ash.Changeset.before_action(changeset, &check_with_lock/1)
+  def change(changeset, _opts, context) do
+    Ash.Changeset.before_action(changeset, &check_with_lock(&1, context.actor))
   end
 
-  defp check_with_lock(changeset) do
+  defp check_with_lock(changeset, actor) do
     user_id = changeset.data.id
 
-    case solely_owned_org_ids(user_id) do
+    case solely_owned_org_ids(user_id, actor) do
       [] ->
         changeset
 
       org_ids ->
         Ash.Changeset.add_error(changeset,
           message:
-            "you are the only owner of: #{org_names(org_ids)}. Delete these " <>
+            "you are the only owner of: #{org_names(org_ids, actor)}. Delete these " <>
               "organizations or transfer ownership before deleting your account"
         )
     end
   end
 
-  defp solely_owned_org_ids(user_id) do
+  defp solely_owned_org_ids(user_id, actor) do
     owned_org_ids =
       Membership
       |> Ash.Query.filter(user_id == ^user_id and role == :owner)
-      |> Ash.read!(authorize?: false)
+      |> Ash.read!(actor: actor)
       |> Enum.map(& &1.organization_id)
 
     case owned_org_ids do
@@ -64,11 +64,11 @@ defmodule ConveyorBackend.Accounts.User.Changes.EnsureNoSolelyOwnedOrganizations
     end
   end
 
-  defp org_names(org_ids) do
+  defp org_names(org_ids, actor) do
     ConveyorBackend.Orgs.Organization
     |> Ash.Query.filter(id in ^org_ids)
     |> Ash.Query.select([:name])
-    |> Ash.read!(authorize?: false)
+    |> Ash.read!(actor: actor)
     |> Enum.map(& &1.name)
     |> Enum.sort()
     |> Enum.join(", ")

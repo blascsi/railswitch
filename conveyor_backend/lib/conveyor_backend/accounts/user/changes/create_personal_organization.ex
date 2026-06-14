@@ -10,9 +10,7 @@ defmodule ConveyorBackend.Accounts.User.Changes.CreatePersonalOrganization do
   @impl true
   def change(changeset, _opts, _context) do
     Ash.Changeset.after_action(changeset, fn _changeset, user ->
-      _org =
-        ConveyorBackend.Orgs.create_organization!(personal_org_name(user), actor: user)
-
+      ConveyorBackend.Orgs.create_organization!(personal_org_name(user), actor: user)
       {:ok, user}
     end)
   end
