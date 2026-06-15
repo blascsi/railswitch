@@ -25,6 +25,8 @@ defmodule ConveyorBackendWeb.Plugs.RememberMe do
   alias ConveyorBackend.Accounts.User
   alias ConveyorBackendWeb.AuthCookies
 
+  require Logger
+
   @impl true
   def init(opts), do: Keyword.put_new(opts, :refresh_within, {7, :days})
 
@@ -78,7 +80,9 @@ defmodule ConveyorBackendWeb.Plugs.RememberMe do
     %{"cookie_name" => name, "token" => new_token, "max_age" => max_age} =
       user.__metadata__.remember_me
 
-    AshAuthentication.TokenResource.Actions.revoke(Token, old_token, [])
+    with {:error, reason} <- AshAuthentication.TokenResource.Actions.revoke(Token, old_token, []) do
+      Logger.warning("Failed to revoke rotated remember-me token: #{inspect(reason)}")
+    end
 
     AuthCookies.put_remember_me_cookie(conn, name, new_token, max_age)
   end
