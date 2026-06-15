@@ -129,7 +129,7 @@ defmodule ConveyorBackend.Accounts.User do
       end
 
       argument :remember_me, :boolean do
-        description "Wether to generate a remember me token."
+        description "Whether to generate a remember me token."
         allow_nil? true
       end
 

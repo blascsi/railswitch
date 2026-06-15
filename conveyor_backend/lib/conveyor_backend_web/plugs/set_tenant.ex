@@ -3,7 +3,7 @@ defmodule ConveyorBackendWeb.Plugs.SetTenant do
   Sets the Ash tenant from the `x-organization-id` header.
 
   This plug does not do any verification to see if the actor
-  actually has access to the tenant, the tenant's poilicies
+  actually has access to the tenant, the tenant's policies
   should be responsible for that.
   """
 
