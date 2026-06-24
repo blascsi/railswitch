@@ -3,6 +3,7 @@ packages:
   - "packages/*"
 
 catalog:
+  '@biomejs/biome': 2.5.1
   typescript: ^6.0.3
 
 catalogMode: strict

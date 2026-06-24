@@ -1,0 +1,25 @@
+{
+  "name": "@conveyor/config",
+  "version": "0.1.0",
+  "description": "A shared config package for Conveyor's JS/TS projects",
+  "private": true,
+  "exports": {
+    "./biome": "./biome.json",
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.app.json": "./tsconfig.app.json",
+    "./tsconfig.node.json": "./tsconfig.node.json",
+    "./tsconfig.lib.json": "./tsconfig.lib.json"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "config"
+  ],
+  "author": "Attila Blascsak <attila@blascsak.com>",
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "typescript": "catalog:"
+  }
+}
