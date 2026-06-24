@@ -1,0 +1,11 @@
+{
+  "name": "@conveyor/root",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "preinstall": "npx only-allow pnpm"
+  }
+}
