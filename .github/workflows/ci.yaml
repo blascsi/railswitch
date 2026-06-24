@@ -21,9 +21,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            conveyor_backend/deps
-            conveyor_backend/_build
-          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('conveyor_backend/mix.lock') }}
+            elixir/conveyor_backend/deps
+            elixir/conveyor_backend/_build
+          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('elixir/conveyor_backend/mix.lock') }}
           restore-keys: ${{ runner.os }}-conveyor-backend-mix-
 
       - name: Install Hex & Rebar
@@ -32,7 +32,7 @@ jobs:
           mix local.rebar --force
 
       - name: Fetch & compile conveyor backend deps
-        working-directory: conveyor_backend
+        working-directory: elixir/conveyor_backend
         env:
           MIX_ENV: test
         run: |
@@ -73,9 +73,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            conveyor_backend/deps
-            conveyor_backend/_build
-          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('conveyor_backend/mix.lock') }}
+            elixir/conveyor_backend/deps
+            elixir/conveyor_backend/_build
+          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('elixir/conveyor_backend/mix.lock') }}
           restore-keys: ${{ runner.os }}-conveyor-backend-mix-
 
       - name: Install Hex & Rebar
@@ -84,21 +84,21 @@ jobs:
           mix local.rebar --force
 
       - name: Check if project compiles
-        working-directory: conveyor_backend
+        working-directory: elixir/conveyor_backend
         run: mix compile --warnings-as-errors
 
       - name: Check formatting
-        working-directory: conveyor_backend
+        working-directory: elixir/conveyor_backend
         run: mix format --check-formatted
 
       - name: Run linter
-        working-directory: conveyor_backend
+        working-directory: elixir/conveyor_backend
         run: mix credo --strict
 
       - name: Check for un-generated migrations
-        working-directory: conveyor_backend
+        working-directory: elixir/conveyor_backend
         run: mix ash.codegen --check
 
       - name: Run tests
-        working-directory: conveyor_backend
+        working-directory: elixir/conveyor_backend
         run: mix test
