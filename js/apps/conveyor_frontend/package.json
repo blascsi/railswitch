@@ -1,0 +1,30 @@
+{
+  "name": "conveyor-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "check": "biome check --write ./src",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:",
+    "@biomejs/biome": "catalog:",
+    "@conveyor/config": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:",
+    "@types/babel__core": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "babel-plugin-react-compiler": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

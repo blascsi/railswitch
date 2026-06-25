@@ -1,0 +1,3 @@
+{
+  "extends": ["@conveyor/config/biome"]
+}
