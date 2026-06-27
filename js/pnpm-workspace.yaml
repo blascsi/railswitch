@@ -7,6 +7,7 @@ catalog:
   "@biomejs/biome": 2.5.1
   '@mantine/core': ^9.4.0
   '@mantine/hooks': ^9.4.0
+  '@phosphor-icons/react': ^2.1.10
   "@rolldown/plugin-babel": ^0.2.3
   "@types/babel__core": ^7.20.5
   "@types/node": ^24.13.2
@@ -19,5 +20,7 @@ catalog:
   postcss-simple-vars: ^7.0.1
   react: ^19.2.7
   react-dom: ^19.2.7
+  react-error-boundary: ^6.1.2
   typescript: ~6.0.2
   vite: ^8.1.0
+  wouter: ^3.10.0
