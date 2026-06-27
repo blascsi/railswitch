@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@mantine/core": "catalog:",
+    "@mantine/form": "catalog:",
     "@mantine/hooks": "catalog:",
     "@phosphor-icons/react": "catalog:",
     "@tanstack/react-query": "catalog:",
+    "mantine-form-zod-resolver": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-error-boundary": "catalog:",
