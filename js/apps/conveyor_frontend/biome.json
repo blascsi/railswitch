@@ -1,3 +1,7 @@
 {
-  "extends": ["@conveyor/config/biome"]
+  "$schema": "https://biomejs.dev/schemas/2.5.1/schema.json",
+  "extends": ["@conveyor/config/biome"],
+  "files": {
+    "includes": ["src/**", "!src/generated"]
+  }
 }

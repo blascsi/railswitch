@@ -1,10 +1,20 @@
+import { heyApiPlugin } from "@hey-api/vite-plugin";
 import babel from "@rolldown/plugin-babel";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
+  plugins: [
+    react(),
+    babel({ presets: [reactCompilerPreset()] }),
+    heyApiPlugin({
+      config: {
+        input: "../../../elixir/conveyor_backend/generated/openapi.json",
+        output: "src/generated/client",
+      },
+    }),
+  ],
   build: {
     sourcemap: true,
     cssCodeSplit: true,
