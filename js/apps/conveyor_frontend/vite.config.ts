@@ -12,6 +12,29 @@ export default defineConfig({
       config: {
         input: "../../../elixir/conveyor_backend/generated/openapi.json",
         output: "src/generated/client",
+        plugins: [
+          {
+            name: "@hey-api/client-fetch",
+            runtimeConfigPath: "./src/hey-api.ts",
+          },
+          "@hey-api/typescript",
+          {
+            name: "zod",
+            requests: true,
+            responses: true,
+            definitions: true,
+          },
+          {
+            name: "@hey-api/sdk",
+            validator: true,
+          },
+          {
+            name: "@tanstack/react-query",
+            queryOptions: true,
+            mutationOptions: true,
+            queryKeys: { tags: true },
+          },
+        ],
       },
     }),
   ],

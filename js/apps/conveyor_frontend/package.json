@@ -13,10 +13,12 @@
     "@mantine/core": "catalog:",
     "@mantine/hooks": "catalog:",
     "@phosphor-icons/react": "catalog:",
+    "@tanstack/react-query": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-error-boundary": "catalog:",
-    "wouter": "catalog:"
+    "wouter": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@babel/core": "catalog:",
