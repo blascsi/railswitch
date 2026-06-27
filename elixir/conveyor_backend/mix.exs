@@ -80,6 +80,9 @@ defmodule ConveyorBackend.MixProject do
       setup: ["deps.get", "ash.setup", "run priv/repo/seeds.exs"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "openapi.generate": [
+        "openapi.spec.json --spec ConveyorBackendWeb.AshJsonApiRouter --vendor-extensions=false --start-app=false --pretty=true generated/openapi.json"
+      ],
       test: ["ash.setup --quiet", "test"],
       precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"]
     ]

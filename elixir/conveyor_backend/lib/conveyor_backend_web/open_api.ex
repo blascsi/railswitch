@@ -15,7 +15,23 @@ defmodule ConveyorBackendWeb.OpenApi do
     spec
     |> put_version()
     |> put_security_schemes()
+    |> fix_error_document()
     |> document_tenant_header()
+  end
+
+  # AshJsonApi bug: the "errors" schema is defined as a bare array, but the JSON:API spec
+  # requires error responses to be a document object with an `errors` key.
+  defp fix_error_document(spec) do
+    document = %Schema{
+      type: :object,
+      required: [:errors],
+      properties: %{
+        errors: Map.fetch!(spec.components.schemas, "errors")
+      }
+    }
+
+    schemas = Map.put(spec.components.schemas, "errors", document)
+    %{spec | components: %{spec.components | schemas: schemas}}
   end
 
   defp put_version(spec) do
