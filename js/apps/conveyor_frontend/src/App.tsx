@@ -11,9 +11,25 @@ import {
 } from "./components/GuardedRoute";
 import { PageErrorBoundary } from "./components/PageErrorBoundary";
 import { PageLoader } from "./components/PageLoader";
+import type { Errors } from "./generated/client";
 import { lazyWithPreload } from "./utils/lazy-with-preload";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      retry: (failureCount, error) => {
+        const status = Number(
+          (error as unknown as Errors)?.errors?.[0]?.status,
+        );
+        if (status >= 400 && status < 500) {
+          return false;
+        }
+        return failureCount < 2;
+      },
+    },
+  },
+});
 
 const AuthenticationPage = lazyWithPreload(
   () => import("./pages/Authentication.page"),
