@@ -4,7 +4,11 @@ import "./App.css";
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Suspense } from "react";
-import { Route, Switch } from "wouter";
+import { Switch } from "wouter";
+import {
+  AuthenticatedRoute,
+  UnauthenticatedRoute,
+} from "./components/GuardedRoute";
 import { PageErrorBoundary } from "./components/PageErrorBoundary";
 import { PageLoader } from "./components/PageLoader";
 import { lazyWithPreload } from "./utils/lazy-with-preload";
@@ -24,8 +28,8 @@ export function App() {
         <PageErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <Switch>
-              <Route path="/" component={AuthenticationPage} />
-              <Route path="/home" component={HomePage} />
+              <UnauthenticatedRoute path="/" component={AuthenticationPage} />
+              <AuthenticatedRoute path="/home" component={HomePage} />
             </Switch>
           </Suspense>
         </PageErrorBoundary>
