@@ -99,6 +99,10 @@ jobs:
         working-directory: elixir/conveyor_backend
         run: mix ash.codegen --check
 
+      - name: "Check for stale openapi.json"
+        working-directory: elixir/conveyor_backend
+        run: mix openapi.generate --check
+
       - name: Run tests
         working-directory: elixir/conveyor_backend
         run: mix test
