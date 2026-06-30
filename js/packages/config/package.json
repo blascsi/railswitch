@@ -1,7 +1,7 @@
 {
-  "name": "@conveyor/config",
+  "name": "@railswitch/config",
   "version": "0.1.0",
-  "description": "A shared config package for Conveyor's JS/TS projects",
+  "description": "A shared config package for Railswitch's JS/TS projects",
   "private": true,
   "exports": {
     "./biome": "./biome.json",

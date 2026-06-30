@@ -17,22 +17,22 @@ jobs:
         with:
           cache: true
 
-      - name: Cache conveyor backend deps & build
+      - name: Cache railswitch backend deps & build
         uses: actions/cache@v4
         with:
           path: |
-            elixir/conveyor_backend/deps
-            elixir/conveyor_backend/_build
-          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('elixir/conveyor_backend/mix.lock') }}
-          restore-keys: ${{ runner.os }}-conveyor-backend-mix-
+            elixir/railswitch_backend/deps
+            elixir/railswitch_backend/_build
+          key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/railswitch_backend/mix.lock') }}
+          restore-keys: ${{ runner.os }}-railswitch-backend-mix-
 
       - name: Install Hex & Rebar
         run: |
           mix local.hex --force
           mix local.rebar --force
 
-      - name: Fetch & compile conveyor backend deps
-        working-directory: elixir/conveyor_backend
+      - name: Fetch & compile railswitch backend deps
+        working-directory: elixir/railswitch_backend
         env:
           MIX_ENV: test
         run: |
@@ -59,8 +59,8 @@ jobs:
         working-directory: js
         run: pnpm install --frozen-lockfile
 
-  conveyor-backend-test-and-lint:
-    name: Conveyor backend tests and format check
+  railswitch-backend-test-and-lint:
+    name: Railswitch backend tests and format check
     runs-on: ubuntu-24.04
     needs: warm-caches
 
@@ -89,14 +89,14 @@ jobs:
         with:
           cache: true
 
-      - name: Restore conveyor backend deps cache
+      - name: Restore railswitch backend deps cache
         uses: actions/cache@v4
         with:
           path: |
-            elixir/conveyor_backend/deps
-            elixir/conveyor_backend/_build
-          key: ${{ runner.os }}-conveyor-backend-mix-${{ hashFiles('elixir/conveyor_backend/mix.lock') }}
-          restore-keys: ${{ runner.os }}-conveyor-backend-mix-
+            elixir/railswitch_backend/deps
+            elixir/railswitch_backend/_build
+          key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/railswitch_backend/mix.lock') }}
+          restore-keys: ${{ runner.os }}-railswitch-backend-mix-
 
       - name: Install Hex & Rebar
         run: |
@@ -104,27 +104,27 @@ jobs:
           mix local.rebar --force
 
       - name: Check if project compiles
-        working-directory: elixir/conveyor_backend
+        working-directory: elixir/railswitch_backend
         run: mix compile --warnings-as-errors
 
       - name: Check formatting
-        working-directory: elixir/conveyor_backend
+        working-directory: elixir/railswitch_backend
         run: mix format --check-formatted
 
       - name: Run linter
-        working-directory: elixir/conveyor_backend
+        working-directory: elixir/railswitch_backend
         run: mix credo --strict
 
       - name: Check for un-generated migrations
-        working-directory: elixir/conveyor_backend
+        working-directory: elixir/railswitch_backend
         run: mix ash.codegen --check
 
       - name: "Check for stale openapi.json"
-        working-directory: elixir/conveyor_backend
+        working-directory: elixir/railswitch_backend
         run: mix openapi.generate --check
 
       - name: Run tests
-        working-directory: elixir/conveyor_backend
+        working-directory: elixir/railswitch_backend
         run: mix test
 
   frontend-lint-and-build:
@@ -160,9 +160,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        working-directory: js/apps/conveyor_frontend
+        working-directory: js/apps/frontend
         run: pnpm run ci
 
       - name: Build
-        working-directory: js/apps/conveyor_frontend
+        working-directory: js/apps/frontend
         run: pnpm run build

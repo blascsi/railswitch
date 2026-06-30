@@ -92,7 +92,7 @@ importers:
 
   .: {}
 
-  apps/conveyor_frontend:
+  apps/frontend:
     dependencies:
       '@mantine/core':
         specifier: 'catalog:'
@@ -134,15 +134,15 @@ importers:
       '@biomejs/biome':
         specifier: 'catalog:'
         version: 2.5.1
-      '@conveyor/config':
-        specifier: workspace:*
-        version: link:../../packages/config
       '@hey-api/openapi-ts':
         specifier: 'catalog:'
         version: 0.99.0(typescript@6.0.3)
       '@hey-api/vite-plugin':
         specifier: 'catalog:'
         version: 0.3.2(@hey-api/openapi-ts@0.99.0(typescript@6.0.3))(vite@8.1.0(@types/node@24.13.2)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15)))
+      '@railswitch/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@rolldown/plugin-babel':
         specifier: 'catalog:'
         version: 0.2.3(@babel/core@7.29.7)(rolldown@1.1.3)(vite@8.1.0(@types/node@24.13.2)(jiti@2.7.0)(sugarss@5.0.1(postcss@8.5.15)))
