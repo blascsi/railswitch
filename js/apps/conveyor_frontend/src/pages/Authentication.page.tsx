@@ -22,6 +22,9 @@ import {
   postUsersRegisterMutation,
   postUsersSignInMutation,
 } from "../generated/client/@tanstack/react-query.gen";
+import { lazyWithPreload } from "../utils/lazy-with-preload";
+
+const HomePage = lazyWithPreload(() => import("./Home.page"));
 
 type Mode = "signin" | "register";
 
@@ -163,7 +166,11 @@ function AuthenticationPage() {
               key={form.key("rememberMe")}
               {...form.getInputProps("rememberMe", { type: "checkbox" })}
             />
-            <Button type="submit" loading={activeMutation.isPending}>
+            <Button
+              type="submit"
+              loading={activeMutation.isPending}
+              onMouseEnter={HomePage.preload}
+            >
               {submitLabel}
             </Button>
           </Stack>
