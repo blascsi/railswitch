@@ -39,6 +39,26 @@ jobs:
           mix deps.get
           mix deps.compile
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: js/package.json
+
+      - name: Get pnpm store path
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install frontend deps
+        working-directory: js
+        run: pnpm install --frozen-lockfile
+
   conveyor-backend-test-and-lint:
     name: Conveyor backend tests and format check
     runs-on: ubuntu-24.04
@@ -106,3 +126,43 @@ jobs:
       - name: Run tests
         working-directory: elixir/conveyor_backend
         run: mix test
+
+  frontend-lint-and-build:
+    name: Frontend lint and build
+    runs-on: ubuntu-24.04
+    needs: warm-caches
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: js/package.json
+
+      - name: Get pnpm store path
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Restore pnpm store cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install frontend deps
+        working-directory: js
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        working-directory: js/apps/conveyor_frontend
+        run: pnpm run ci
+
+      - name: Build
+        working-directory: js/apps/conveyor_frontend
+        run: pnpm run build
