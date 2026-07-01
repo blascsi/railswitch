@@ -4,5 +4,6 @@ defmodule RailswitchBackend.Flags do
 
   resources do
     resource RailswitchBackend.Flags.Project
+    resource RailswitchBackend.Flags.Flag
   end
 end
