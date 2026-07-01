@@ -28,6 +28,8 @@ defmodule RailswitchBackend.Flags.Flag do
 
       argument :project_id, :uuid, allow_nil?: false
 
+      validate {RailswitchBackend.Validations.LowercaseLettersAndUnderscoresAttribute, field: :name}
+
       change set_attribute(:project_id, arg(:project_id))
     end
   end
