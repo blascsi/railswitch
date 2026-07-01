@@ -69,7 +69,7 @@ config :railswitch_backend, RailswitchBackendWeb.Endpoint,
 config :railswitch_backend,
   ecto_repos: [RailswitchBackend.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [RailswitchBackend.Orgs, RailswitchBackend.Accounts]
+  ash_domains: [RailswitchBakcend.Flags, RailswitchBackend.Orgs, RailswitchBackend.Accounts]
 
 config :spark,
   formatter: [
