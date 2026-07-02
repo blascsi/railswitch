@@ -31,6 +31,7 @@ defmodule RailswitchBackend.Flags.Flag do
       validate {RailswitchBackend.Validations.LowercaseLettersAndUnderscoresAttribute, field: :name}
 
       change set_attribute(:project_id, arg(:project_id))
+      change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :flag}
     end
   end
 
