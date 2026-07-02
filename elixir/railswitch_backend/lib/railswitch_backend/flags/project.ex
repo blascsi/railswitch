@@ -3,8 +3,17 @@ defmodule RailswitchBackend.Flags.Project do
   use Ash.Resource,
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
-    extensions: [AshJsonApi.Resource],
+    extensions: [AshJsonApi.Resource, AshAuthentication],
     data_layer: AshPostgres.DataLayer
+
+  authentication do
+    strategies do
+      api_key :project_api_key do
+        api_key_relationship :valid_api_keys
+        multitenancy_relationship :organization
+      end
+    end
+  end
 
   json_api do
     type "project"
@@ -31,6 +40,11 @@ defmodule RailswitchBackend.Flags.Project do
       primary? true
       accept [:name]
     end
+
+    read :sign_in_with_project_api_key do
+      argument :api_key, :string, allow_nil?: false
+      prepare AshAuthentication.Strategy.ApiKey.SignInPreparation
+    end
   end
 
   multitenancy do
@@ -54,5 +68,7 @@ defmodule RailswitchBackend.Flags.Project do
       allow_nil? false
       public? true
     end
+
+    has_many :valid_api_keys, RailswitchBackend.Flags.ProjectApiKey
   end
 end
