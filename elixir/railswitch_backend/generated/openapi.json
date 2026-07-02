@@ -13,72 +13,542 @@
       }
     },
     "schemas": {
-      "error": {
+      "project-filter-organization_id": {
         "additionalProperties": false,
         "properties": {
-          "code": {
-            "description": "An application-specific error code, expressed as a string value.",
+          "eq": {
+            "format": "uuid",
             "type": "string"
           },
-          "detail": {
-            "description": "A human-readable explanation specific to this occurrence of the problem.",
+          "greater_than": {
+            "format": "uuid",
             "type": "string"
           },
-          "id": {
-            "description": "A unique identifier for this particular occurrence of the problem.",
+          "greater_than_or_equal": {
+            "format": "uuid",
             "type": "string"
           },
-          "links": {
-            "$ref": "#/components/schemas/links"
-          },
-          "source": {
-            "properties": {
-              "parameter": {
-                "description": "A string indicating which query parameter caused the error.",
-                "type": "string"
-              },
-              "pointer": {
-                "description": "A JSON Pointer [RFC6901] to the associated entity in the request document [e.g. \"/data\" for a primary data object, or \"/data/attributes/title\" for a specific attribute].",
-                "type": "string"
-              }
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
             },
-            "type": "object"
+            "type": "array"
           },
-          "status": {
-            "description": "The HTTP status code applicable to this problem, expressed as a string value.",
+          "is_distinct_from": {
+            "format": "uuid",
             "type": "string"
           },
-          "title": {
-            "description": "A short, human-readable summary of the problem. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.",
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
             "type": "string"
           }
         },
         "type": "object"
       },
-      "errors": {
+      "organization-filter": {
+        "additionalProperties": false,
+        "description": "Filters the query to results matching the given filter object",
+        "example": "",
         "properties": {
-          "errors": {
+          "and": {
             "items": {
-              "$ref": "#/components/schemas/error"
+              "$ref": "#/components/schemas/organization-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "id": {
+            "$ref": "#/components/schemas/organization-filter-id"
+          },
+          "name": {
+            "$ref": "#/components/schemas/organization-filter-name"
+          },
+          "not": {
+            "$ref": "#/components/schemas/organization-filter"
+          },
+          "or": {
+            "items": {
+              "$ref": "#/components/schemas/organization-filter"
             },
             "type": "array",
             "uniqueItems": true
           }
         },
-        "required": [
-          "errors"
-        ],
+        "type": "deepObject"
+      },
+      "project-filter-id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
         "type": "object"
       },
-      "link": {
-        "description": "A link MUST be represented as either: a string containing the link's URL or a link object.",
-        "type": "string"
+      "flag-filter-project_id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "user-filter-id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "environment-filter-id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "membership-filter-id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "flag-filter-id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
       },
       "links": {
         "additionalProperties": {
           "$ref": "#/components/schemas/link"
         },
         "type": "object"
+      },
+      "user-filter": {
+        "additionalProperties": false,
+        "description": "Filters the query to results matching the given filter object",
+        "example": "",
+        "properties": {
+          "and": {
+            "items": {
+              "$ref": "#/components/schemas/user-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "email": {
+            "$ref": "#/components/schemas/user-filter-email"
+          },
+          "id": {
+            "$ref": "#/components/schemas/user-filter-id"
+          },
+          "not": {
+            "$ref": "#/components/schemas/user-filter"
+          },
+          "or": {
+            "items": {
+              "$ref": "#/components/schemas/user-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "type": "deepObject"
+      },
+      "organization-filter-id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "membership-filter-user_id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "environment-filter": {
+        "additionalProperties": false,
+        "description": "Filters the query to results matching the given filter object",
+        "example": "",
+        "properties": {
+          "and": {
+            "items": {
+              "$ref": "#/components/schemas/environment-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "id": {
+            "$ref": "#/components/schemas/environment-filter-id"
+          },
+          "name": {
+            "$ref": "#/components/schemas/environment-filter-name"
+          },
+          "not": {
+            "$ref": "#/components/schemas/environment-filter"
+          },
+          "or": {
+            "items": {
+              "$ref": "#/components/schemas/environment-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/project-filter"
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/environment-filter-project_id"
+          }
+        },
+        "type": "deepObject"
       },
       "membership": {
         "additionalProperties": false,
@@ -154,91 +624,6 @@
         ],
         "type": "object"
       },
-      "membership-filter": {
-        "additionalProperties": false,
-        "description": "Filters the query to results matching the given filter object",
-        "example": "",
-        "properties": {
-          "and": {
-            "items": {
-              "$ref": "#/components/schemas/membership-filter"
-            },
-            "type": "array",
-            "uniqueItems": true
-          },
-          "id": {
-            "$ref": "#/components/schemas/membership-filter-id"
-          },
-          "not": {
-            "$ref": "#/components/schemas/membership-filter"
-          },
-          "or": {
-            "items": {
-              "$ref": "#/components/schemas/membership-filter"
-            },
-            "type": "array",
-            "uniqueItems": true
-          },
-          "role": {
-            "$ref": "#/components/schemas/membership-filter-role"
-          },
-          "user": {
-            "$ref": "#/components/schemas/user-filter"
-          },
-          "user_id": {
-            "$ref": "#/components/schemas/membership-filter-user_id"
-          }
-        },
-        "type": "deepObject"
-      },
-      "membership-filter-id": {
-        "additionalProperties": false,
-        "properties": {
-          "eq": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "greater_than": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "greater_than_or_equal": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "in": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "is_distinct_from": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "is_nil": {
-            "type": "boolean"
-          },
-          "is_not_distinct_from": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "less_than": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "less_than_or_equal": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "not_eq": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
       "membership-filter-role": {
         "additionalProperties": false,
         "properties": {
@@ -302,165 +687,55 @@
         },
         "type": "object"
       },
-      "membership-filter-user_id": {
+      "environment-filter-name": {
         "additionalProperties": false,
         "properties": {
+          "contains": {
+            "type": "string"
+          },
           "eq": {
-            "format": "uuid",
             "type": "string"
           },
           "greater_than": {
-            "format": "uuid",
             "type": "string"
           },
           "greater_than_or_equal": {
-            "format": "uuid",
+            "type": "string"
+          },
+          "ilike": {
             "type": "string"
           },
           "in": {
             "items": {
-              "format": "uuid",
               "type": "string"
             },
             "type": "array"
           },
           "is_distinct_from": {
-            "format": "uuid",
             "type": "string"
           },
           "is_nil": {
             "type": "boolean"
           },
           "is_not_distinct_from": {
-            "format": "uuid",
             "type": "string"
           },
           "less_than": {
-            "format": "uuid",
             "type": "string"
           },
           "less_than_or_equal": {
-            "format": "uuid",
+            "type": "string"
+          },
+          "like": {
             "type": "string"
           },
           "not_eq": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "organization": {
-        "additionalProperties": false,
-        "description": "A \"Resource object\" representing a organization",
-        "properties": {
-          "attributes": {
-            "additionalProperties": false,
-            "description": "An attributes object for a organization",
-            "properties": {
-              "name": {
-                "description": "Field included by default.",
-                "type": "string"
-              }
-            },
-            "required": [
-              "name"
-            ],
-            "type": "object"
-          },
-          "id": {
             "type": "string"
           },
-          "relationships": {
-            "additionalProperties": false,
-            "description": "A relationships object for a organization",
-            "properties": {},
-            "type": "object"
-          },
-          "type": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "type",
-          "id"
-        ],
-        "type": "object"
-      },
-      "organization-filter": {
-        "additionalProperties": false,
-        "description": "Filters the query to results matching the given filter object",
-        "example": "",
-        "properties": {
-          "and": {
-            "items": {
-              "$ref": "#/components/schemas/organization-filter"
-            },
-            "type": "array",
-            "uniqueItems": true
-          },
-          "id": {
-            "$ref": "#/components/schemas/organization-filter-id"
-          },
-          "name": {
-            "$ref": "#/components/schemas/organization-filter-name"
-          },
-          "not": {
-            "$ref": "#/components/schemas/organization-filter"
-          },
-          "or": {
-            "items": {
-              "$ref": "#/components/schemas/organization-filter"
-            },
-            "type": "array",
-            "uniqueItems": true
-          }
-        },
-        "type": "deepObject"
-      },
-      "organization-filter-id": {
-        "additionalProperties": false,
-        "properties": {
-          "eq": {
-            "format": "uuid",
+          "string_ends_with": {
             "type": "string"
           },
-          "greater_than": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "greater_than_or_equal": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "in": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "is_distinct_from": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "is_nil": {
-            "type": "boolean"
-          },
-          "is_not_distinct_from": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "less_than": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "less_than_or_equal": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "not_eq": {
-            "format": "uuid",
+          "string_starts_with": {
             "type": "string"
           }
         },
@@ -520,73 +795,148 @@
         },
         "type": "object"
       },
-      "user": {
+      "flag-filter-name": {
         "additionalProperties": false,
-        "description": "A \"Resource object\" representing a user",
         "properties": {
-          "attributes": {
-            "additionalProperties": false,
-            "description": "An attributes object for a user",
-            "properties": {
-              "email": {
-                "description": "Field included by default.",
-                "type": "string"
-              }
-            },
-            "required": [
-              "email"
-            ],
-            "type": "object"
-          },
-          "id": {
+          "contains": {
             "type": "string"
           },
-          "relationships": {
-            "additionalProperties": false,
-            "description": "A relationships object for a user",
-            "properties": {},
-            "type": "object"
+          "eq": {
+            "type": "string"
           },
-          "type": {
+          "greater_than": {
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "type": "string"
+          },
+          "ilike": {
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "type": "string"
+          },
+          "less_than": {
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "type": "string"
+          },
+          "like": {
+            "type": "string"
+          },
+          "not_eq": {
+            "type": "string"
+          },
+          "string_ends_with": {
+            "type": "string"
+          },
+          "string_starts_with": {
             "type": "string"
           }
         },
-        "required": [
-          "type",
-          "id"
-        ],
         "type": "object"
       },
-      "user-filter": {
+      "environment-filter-project_id": {
+        "additionalProperties": false,
+        "properties": {
+          "eq": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "greater_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "in": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_nil": {
+            "type": "boolean"
+          },
+          "is_not_distinct_from": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "less_than_or_equal": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "not_eq": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "flag-filter": {
         "additionalProperties": false,
         "description": "Filters the query to results matching the given filter object",
         "example": "",
         "properties": {
           "and": {
             "items": {
-              "$ref": "#/components/schemas/user-filter"
+              "$ref": "#/components/schemas/flag-filter"
             },
             "type": "array",
             "uniqueItems": true
           },
-          "email": {
-            "$ref": "#/components/schemas/user-filter-email"
-          },
           "id": {
-            "$ref": "#/components/schemas/user-filter-id"
+            "$ref": "#/components/schemas/flag-filter-id"
+          },
+          "name": {
+            "$ref": "#/components/schemas/flag-filter-name"
           },
           "not": {
-            "$ref": "#/components/schemas/user-filter"
+            "$ref": "#/components/schemas/flag-filter"
           },
           "or": {
             "items": {
-              "$ref": "#/components/schemas/user-filter"
+              "$ref": "#/components/schemas/flag-filter"
             },
             "type": "array",
             "uniqueItems": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/project-filter"
+          },
+          "project_id": {
+            "$ref": "#/components/schemas/flag-filter-project_id"
           }
         },
         "type": "deepObject"
+      },
+      "link": {
+        "description": "A link MUST be represented as either: a string containing the link's URL or a link object.",
+        "type": "string"
       },
       "user-filter-email": {
         "additionalProperties": false,
@@ -636,52 +986,575 @@
         },
         "type": "object"
       },
-      "user-filter-id": {
+      "environment": {
+        "additionalProperties": false,
+        "description": "A \"Resource object\" representing a environment",
+        "properties": {
+          "attributes": {
+            "additionalProperties": false,
+            "description": "An attributes object for a environment",
+            "properties": {
+              "name": {
+                "description": "Field included by default.",
+                "type": "string"
+              },
+              "project_id": {
+                "description": "Field included by default.",
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "project_id"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relationships": {
+            "additionalProperties": false,
+            "description": "A relationships object for a environment",
+            "properties": {
+              "project": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "description": "An identifier for project",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "meta": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "id"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ],
+        "type": "object"
+      },
+      "project-filter": {
+        "additionalProperties": false,
+        "description": "Filters the query to results matching the given filter object",
+        "example": "",
+        "properties": {
+          "and": {
+            "items": {
+              "$ref": "#/components/schemas/project-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "id": {
+            "$ref": "#/components/schemas/project-filter-id"
+          },
+          "name": {
+            "$ref": "#/components/schemas/project-filter-name"
+          },
+          "not": {
+            "$ref": "#/components/schemas/project-filter"
+          },
+          "or": {
+            "items": {
+              "$ref": "#/components/schemas/project-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "organization": {
+            "$ref": "#/components/schemas/organization-filter"
+          },
+          "organization_id": {
+            "$ref": "#/components/schemas/project-filter-organization_id"
+          }
+        },
+        "type": "deepObject"
+      },
+      "user": {
+        "additionalProperties": false,
+        "description": "A \"Resource object\" representing a user",
+        "properties": {
+          "attributes": {
+            "additionalProperties": false,
+            "description": "An attributes object for a user",
+            "properties": {
+              "email": {
+                "description": "Field included by default.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "email"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relationships": {
+            "additionalProperties": false,
+            "description": "A relationships object for a user",
+            "properties": {},
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ],
+        "type": "object"
+      },
+      "error": {
         "additionalProperties": false,
         "properties": {
+          "code": {
+            "description": "An application-specific error code, expressed as a string value.",
+            "type": "string"
+          },
+          "detail": {
+            "description": "A human-readable explanation specific to this occurrence of the problem.",
+            "type": "string"
+          },
+          "id": {
+            "description": "A unique identifier for this particular occurrence of the problem.",
+            "type": "string"
+          },
+          "links": {
+            "$ref": "#/components/schemas/links"
+          },
+          "source": {
+            "properties": {
+              "parameter": {
+                "description": "A string indicating which query parameter caused the error.",
+                "type": "string"
+              },
+              "pointer": {
+                "description": "A JSON Pointer [RFC6901] to the associated entity in the request document [e.g. \"/data\" for a primary data object, or \"/data/attributes/title\" for a specific attribute].",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "status": {
+            "description": "The HTTP status code applicable to this problem, expressed as a string value.",
+            "type": "string"
+          },
+          "title": {
+            "description": "A short, human-readable summary of the problem. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "membership-filter": {
+        "additionalProperties": false,
+        "description": "Filters the query to results matching the given filter object",
+        "example": "",
+        "properties": {
+          "and": {
+            "items": {
+              "$ref": "#/components/schemas/membership-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "id": {
+            "$ref": "#/components/schemas/membership-filter-id"
+          },
+          "not": {
+            "$ref": "#/components/schemas/membership-filter"
+          },
+          "or": {
+            "items": {
+              "$ref": "#/components/schemas/membership-filter"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/membership-filter-role"
+          },
+          "user": {
+            "$ref": "#/components/schemas/user-filter"
+          },
+          "user_id": {
+            "$ref": "#/components/schemas/membership-filter-user_id"
+          }
+        },
+        "type": "deepObject"
+      },
+      "errors": {
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/error"
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "errors"
+        ],
+        "type": "object"
+      },
+      "flag": {
+        "additionalProperties": false,
+        "description": "A \"Resource object\" representing a flag",
+        "properties": {
+          "attributes": {
+            "additionalProperties": false,
+            "description": "An attributes object for a flag",
+            "properties": {
+              "name": {
+                "description": "Field included by default.",
+                "type": "string"
+              },
+              "project_id": {
+                "description": "Field included by default.",
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "project_id"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relationships": {
+            "additionalProperties": false,
+            "description": "A relationships object for a flag",
+            "properties": {
+              "project": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "description": "An identifier for project",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "meta": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "id"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ],
+        "type": "object"
+      },
+      "flag_environment": {
+        "additionalProperties": false,
+        "description": "A \"Resource object\" representing a flag_environment",
+        "properties": {
+          "attributes": {
+            "additionalProperties": false,
+            "description": "An attributes object for a flag_environment",
+            "properties": {
+              "environment_id": {
+                "description": "Field included by default.",
+                "format": "uuid",
+                "type": "string"
+              },
+              "flag_id": {
+                "description": "Field included by default.",
+                "format": "uuid",
+                "type": "string"
+              },
+              "rules": {
+                "description": "Field included by default.",
+                "type": "object"
+              }
+            },
+            "required": [
+              "rules",
+              "flag_id",
+              "environment_id"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relationships": {
+            "additionalProperties": false,
+            "description": "A relationships object for a flag_environment",
+            "properties": {
+              "environment": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "description": "An identifier for environment",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "meta": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "id"
+                    ],
+                    "type": "object"
+                  }
+                }
+              },
+              "flag": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "description": "An identifier for flag",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "meta": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "id"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ],
+        "type": "object"
+      },
+      "organization": {
+        "additionalProperties": false,
+        "description": "A \"Resource object\" representing a organization",
+        "properties": {
+          "attributes": {
+            "additionalProperties": false,
+            "description": "An attributes object for a organization",
+            "properties": {
+              "name": {
+                "description": "Field included by default.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relationships": {
+            "additionalProperties": false,
+            "description": "A relationships object for a organization",
+            "properties": {},
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ],
+        "type": "object"
+      },
+      "project-filter-name": {
+        "additionalProperties": false,
+        "properties": {
+          "contains": {
+            "type": "string"
+          },
           "eq": {
-            "format": "uuid",
             "type": "string"
           },
           "greater_than": {
-            "format": "uuid",
             "type": "string"
           },
           "greater_than_or_equal": {
-            "format": "uuid",
+            "type": "string"
+          },
+          "ilike": {
             "type": "string"
           },
           "in": {
             "items": {
-              "format": "uuid",
               "type": "string"
             },
             "type": "array"
           },
           "is_distinct_from": {
-            "format": "uuid",
             "type": "string"
           },
           "is_nil": {
             "type": "boolean"
           },
           "is_not_distinct_from": {
-            "format": "uuid",
             "type": "string"
           },
           "less_than": {
-            "format": "uuid",
             "type": "string"
           },
           "less_than_or_equal": {
-            "format": "uuid",
+            "type": "string"
+          },
+          "like": {
             "type": "string"
           },
           "not_eq": {
-            "format": "uuid",
+            "type": "string"
+          },
+          "string_ends_with": {
+            "type": "string"
+          },
+          "string_starts_with": {
             "type": "string"
           }
         },
+        "type": "object"
+      },
+      "project": {
+        "additionalProperties": false,
+        "description": "A \"Resource object\" representing a project",
+        "properties": {
+          "attributes": {
+            "additionalProperties": false,
+            "description": "An attributes object for a project",
+            "properties": {
+              "name": {
+                "description": "Field included by default.",
+                "type": "string"
+              },
+              "organization_id": {
+                "description": "Field included by default.",
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "organization_id"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "relationships": {
+            "additionalProperties": false,
+            "description": "A relationships object for a project",
+            "properties": {
+              "organization": {
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "description": "An identifier for organization",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "meta": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "id"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ],
         "type": "object"
       }
     },
@@ -706,6 +1579,978 @@
   },
   "openapi": "3.0.0",
   "paths": {
+    "/environments": {
+      "get": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/environments operation on environment resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filters the query to results with attributes matching the given filter object",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/environment-filter"
+            },
+            "style": "deepObject"
+          },
+          {
+            "description": "Sort order to apply to the results",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "pattern": "^(id|-id|\\+\\+id|--id|name|-name|\\+\\+name|--name|project_id|-project_id|\\+\\+project_id|--project_id)(,(id|-id|\\+\\+id|--id|name|-name|\\+\\+name|--name|project_id|-project_id|\\+\\+project_id|--project_id))*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Paginates the response with the limit and offset or keyset pagination.",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "example": {
+                "limit": 25
+              },
+              "properties": {
+                "after": {
+                  "type": "string"
+                },
+                "before": {
+                  "type": "string"
+                },
+                "count": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "limit": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "offset": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "environment": "id,name,project_id"
+              },
+              "properties": {
+                "environment": {
+                  "description": "Comma separated field names for environment",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "description": "An array of resource objects representing a environment",
+                      "items": {
+                        "$ref": "#/components/schemas/environment"
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "environment"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/environments operation on environment resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "environment": "id,name,project_id"
+              },
+              "properties": {
+                "environment": {
+                  "description": "Comma separated field names for environment",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "attributes": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "project_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "project_id"
+                        ],
+                        "type": "object"
+                      },
+                      "relationships": {
+                        "additionalProperties": false,
+                        "properties": {},
+                        "type": "object"
+                      },
+                      "type": {
+                        "enum": [
+                          "environment"
+                        ]
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "data"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "Request body for the /environments operation on environment resource",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/environment"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "environment"
+        ]
+      }
+    },
+    "/environments/{id}": {
+      "delete": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/environments/:id operation on environment resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "environment": "id,name,project_id"
+              },
+              "properties": {
+                "environment": {
+                  "description": "Comma separated field names for environment",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "environment"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/environments/:id operation on environment resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "environment": "id,name,project_id"
+              },
+              "properties": {
+                "environment": {
+                  "description": "Comma separated field names for environment",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/environment"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "environment"
+        ]
+      }
+    },
+    "/flags": {
+      "get": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/flags operation on flag resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filters the query to results with attributes matching the given filter object",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/flag-filter"
+            },
+            "style": "deepObject"
+          },
+          {
+            "description": "Sort order to apply to the results",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "pattern": "^(id|-id|\\+\\+id|--id|name|-name|\\+\\+name|--name|project_id|-project_id|\\+\\+project_id|--project_id)(,(id|-id|\\+\\+id|--id|name|-name|\\+\\+name|--name|project_id|-project_id|\\+\\+project_id|--project_id))*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Paginates the response with the limit and offset or keyset pagination.",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "example": {
+                "limit": 25
+              },
+              "properties": {
+                "after": {
+                  "type": "string"
+                },
+                "before": {
+                  "type": "string"
+                },
+                "count": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "limit": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "offset": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "flag": "id,name,project_id"
+              },
+              "properties": {
+                "flag": {
+                  "description": "Comma separated field names for flag",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "description": "An array of resource objects representing a flag",
+                      "items": {
+                        "$ref": "#/components/schemas/flag"
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "flag"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/flags operation on flag resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "flag": "id,name,project_id"
+              },
+              "properties": {
+                "flag": {
+                  "description": "Comma separated field names for flag",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "attributes": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "project_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "project_id"
+                        ],
+                        "type": "object"
+                      },
+                      "relationships": {
+                        "additionalProperties": false,
+                        "properties": {},
+                        "type": "object"
+                      },
+                      "type": {
+                        "enum": [
+                          "flag"
+                        ]
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "data"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "Request body for the /flags operation on flag resource",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/flag"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "flag"
+        ]
+      }
+    },
+    "/flags/{id}": {
+      "delete": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/flags/:id operation on flag resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "flag": "id,name,project_id"
+              },
+              "properties": {
+                "flag": {
+                  "description": "Comma separated field names for flag",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "flag"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/flags/:id operation on flag resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "flag": "id,name,project_id"
+              },
+              "properties": {
+                "flag": {
+                  "description": "Comma separated field names for flag",
+                  "example": "id,name,project_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/flag"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "flag"
+        ]
+      }
+    },
     "/memberships": {
       "get": {
         "callbacks": {},
@@ -1814,6 +3659,645 @@
         },
         "tags": [
           "organization"
+        ]
+      }
+    },
+    "/projects": {
+      "get": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/projects operation on project resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filters the query to results with attributes matching the given filter object",
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/project-filter"
+            },
+            "style": "deepObject"
+          },
+          {
+            "description": "Sort order to apply to the results",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "pattern": "^(id|-id|\\+\\+id|--id|name|-name|\\+\\+name|--name|organization_id|-organization_id|\\+\\+organization_id|--organization_id)(,(id|-id|\\+\\+id|--id|name|-name|\\+\\+name|--name|organization_id|-organization_id|\\+\\+organization_id|--organization_id))*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Paginates the response with the limit and offset or keyset pagination.",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "example": {
+                "limit": 25
+              },
+              "properties": {
+                "after": {
+                  "type": "string"
+                },
+                "before": {
+                  "type": "string"
+                },
+                "count": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "limit": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "offset": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "project": "id,name,organization_id"
+              },
+              "properties": {
+                "project": {
+                  "description": "Comma separated field names for project",
+                  "example": "id,name,organization_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "description": "An array of resource objects representing a project",
+                      "items": {
+                        "$ref": "#/components/schemas/project"
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "project"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/projects operation on project resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "project": "id,name,organization_id"
+              },
+              "properties": {
+                "project": {
+                  "description": "Comma separated field names for project",
+                  "example": "id,name,organization_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "attributes": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ],
+                        "type": "object"
+                      },
+                      "relationships": {
+                        "additionalProperties": false,
+                        "properties": {},
+                        "type": "object"
+                      },
+                      "type": {
+                        "enum": [
+                          "project"
+                        ]
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "data"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "Request body for the /projects operation on project resource",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/project"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "project"
+        ]
+      }
+    },
+    "/projects/{id}": {
+      "delete": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/projects/:id operation on project resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "project": "id,name,organization_id"
+              },
+              "properties": {
+                "project": {
+                  "description": "Comma separated field names for project",
+                  "example": "id,name,organization_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "project"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/projects/:id operation on project resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "project": "id,name,organization_id"
+              },
+              "properties": {
+                "project": {
+                  "description": "Comma separated field names for project",
+                  "example": "id,name,organization_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/project"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "project"
+        ]
+      },
+      "patch": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "/projects/:id operation on project resource",
+        "parameters": [
+          {
+            "description": "Selects the organization (tenant) the request acts within. Must be the UUID of an organization the authenticated user belongs to. Omit to make an untenanted request.",
+            "in": "header",
+            "name": "x-organization-id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Relationship paths to include in the response",
+            "explode": false,
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "schema": {
+              "pattern": "^()(,())*$",
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "Limits the response fields to only those listed for each type",
+            "in": "query",
+            "name": "fields",
+            "required": false,
+            "schema": {
+              "additionalProperties": true,
+              "example": {
+                "project": "id,name,organization_id"
+              },
+              "properties": {
+                "project": {
+                  "description": "Comma separated field names for project",
+                  "example": "id,name,organization_id",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "style": "deepObject"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "attributes": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "relationships": {
+                        "additionalProperties": false,
+                        "properties": {},
+                        "type": "object"
+                      },
+                      "type": {
+                        "enum": [
+                          "project"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "data"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "Request body for the /projects/:id operation on project resource",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/project"
+                    },
+                    "included": {
+                      "items": {
+                        "oneOf": []
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "meta": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Success"
+          },
+          "400": {
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            },
+            "description": "The x-organization-id header was present but not a valid UUID."
+          },
+          "default": {
+            "$ref": "#/components/responses/errors"
+          }
+        },
+        "tags": [
+          "project"
         ]
       }
     },
