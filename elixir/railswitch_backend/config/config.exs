@@ -71,7 +71,6 @@ config :railswitch_backend,
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [
     RailswitchBackend.Flags,
-    RailswitchBakcend.Flags,
     RailswitchBackend.Orgs,
     RailswitchBackend.Accounts
   ]

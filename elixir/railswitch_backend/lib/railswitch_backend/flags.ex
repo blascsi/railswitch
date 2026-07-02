@@ -6,5 +6,6 @@ defmodule RailswitchBackend.Flags do
     resource RailswitchBackend.Flags.Project
     resource RailswitchBackend.Flags.Flag
     resource RailswitchBackend.Flags.Environment
+    resource RailswitchBackend.Flags.FlagEnvironment
   end
 end
