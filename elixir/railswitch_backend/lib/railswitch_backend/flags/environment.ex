@@ -4,7 +4,8 @@ defmodule RailswitchBackend.Flags.Environment do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
     extensions: [AshJsonApi.Resource],
-    data_layer: AshPostgres.DataLayer
+    data_layer: AshPostgres.DataLayer,
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "environment"
@@ -33,6 +34,13 @@ defmodule RailswitchBackend.Flags.Environment do
       change set_attribute(:project_id, arg(:project_id))
       change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :environment}
     end
+  end
+
+  pub_sub do
+    module RailswitchBackendWeb.Endpoint
+    prefix "environments"
+
+    publish :destroy, [:id]
   end
 
   multitenancy do

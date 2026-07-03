@@ -4,7 +4,8 @@ defmodule RailswitchBackend.Flags.Flag do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
     extensions: [AshJsonApi.Resource],
-    data_layer: AshPostgres.DataLayer
+    data_layer: AshPostgres.DataLayer,
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "flag"
@@ -33,6 +34,13 @@ defmodule RailswitchBackend.Flags.Flag do
       change set_attribute(:project_id, arg(:project_id))
       change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :flag}
     end
+  end
+
+  pub_sub do
+    module RailswitchBackendWeb.Endpoint
+    prefix "flags"
+
+    publish :destroy, [:project_id]
   end
 
   multitenancy do

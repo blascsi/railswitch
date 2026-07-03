@@ -4,7 +4,8 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
     extensions: [AshJsonApi.Resource],
-    data_layer: AshPostgres.DataLayer
+    data_layer: AshPostgres.DataLayer,
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "flag_environment"
@@ -22,7 +23,30 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
   end
 
   actions do
-    defaults [:read, :create, :update, :destroy]
+    defaults [:read, :destroy]
+
+    create :create do
+      accept [:rules]
+
+      argument :flag_id, :uuid, allow_nil?: false
+      argument :environment_id, :uuid, allow_nil?: false
+
+      change set_attribute(:flag_id, arg(:flag_id))
+      change set_attribute(:environment_id, arg(:environment_id))
+    end
+
+    update :update do
+      accept [:rules]
+    end
+  end
+
+  pub_sub do
+    module RailswitchBackendWeb.Endpoint
+    prefix "flag_environments"
+
+    publish :create, [:environment_id]
+    publish :update, [:environment_id]
+    publish :destroy, [:environment_id]
   end
 
   multitenancy do

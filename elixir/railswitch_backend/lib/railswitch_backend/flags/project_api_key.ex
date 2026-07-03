@@ -5,7 +5,8 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
     data_layer: AshPostgres.DataLayer,
-    authorizers: [Ash.Policy.Authorizer]
+    authorizers: [Ash.Policy.Authorizer],
+    notifiers: [Ash.Notifier.PubSub]
 
   postgres do
     table "project_api_keys"
@@ -31,6 +32,13 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
     bypass always() do
       authorize_if AshAuthentication.Checks.AshAuthenticationInteraction
     end
+  end
+
+  pub_sub do
+    module RailswitchBackendWeb.Endpoint
+    prefix "api_key"
+
+    publish :destroy, [:id], event: "disconnect"
   end
 
   # `global? true` because AshAuthentication's SignInPreparation must read the
