@@ -42,13 +42,15 @@ defmodule RailswitchBackend.Flags do
 
     resource Flag do
       define :list_flags, action: :read
+      define :get_flag_by_id, action: :read, get_by: :id
       define :create_flag, action: :create
       define :delete_flag, action: :destroy
     end
 
     resource Environment do
       define :list_environments, action: :read
-      define :create_environemnt, action: :create
+      define :get_environment_by_name, action: :read, get_by_identity: :unique_name
+      define :create_environment, action: :create
       define :delete_environment, action: :destroy
     end
 
@@ -59,6 +61,10 @@ defmodule RailswitchBackend.Flags do
       define :delete_flag_environments, action: :destroy
     end
 
-    resource RailswitchBackend.Flags.ProjectApiKey
+    resource RailswitchBackend.Flags.ProjectApiKey do
+      define :get_api_key_by_id, action: :read, get_by: :id
+      define :create_api_key, action: :create
+      define :delete_api_key, action: :destroy
+    end
   end
 end
