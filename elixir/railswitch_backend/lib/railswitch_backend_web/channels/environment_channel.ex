@@ -19,23 +19,28 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
 
   # The API-key handshake on SdkSocket is the authorization here; every read
   # is scoped by the authenticated socket assigns.
+  #
+  # The environment is looked up again after subscribing: a destroy between
+  # the first lookup and the subscription is published before we can hear it,
+  # which would leave the client a live-looking but dead session.
   @impl true
   def join("environment:" <> name, _payload, socket) do
     %{project_id: project_id, organization_id: organization_id} = socket.assigns
+    lookup_opts = [tenant: organization_id, authorize?: false]
 
-    case Flags.get_environment_by_name(project_id, name,
-           tenant: organization_id,
-           authorize?: false
-         ) do
-      {:ok, environment} ->
-        subscribe_to_internal_topics(environment, project_id)
-
-        {:ok, %{flags: initial_state(environment, organization_id)}, socket}
-
-      {:error, _not_found} ->
-        {:error, %{reason: "environment not found"}}
+    with {:ok, environment} <- Flags.get_environment_by_name(project_id, name, lookup_opts),
+         subscribe_to_internal_topics(environment, project_id),
+         {:ok, environment} <- Flags.get_environment_by_name(project_id, name, lookup_opts) do
+      {:ok, %{flags: initial_state(environment, organization_id)}, socket}
+    else
+      {:error, _not_found} -> {:error, %{reason: "environment not found"}}
     end
   end
+
+  # SDK clients only listen; pushes are ignored rather than crashing the
+  # channel.
+  @impl true
+  def handle_in(_event, _payload, socket), do: {:noreply, socket}
 
   # Internal-topic notifications (see the pub_sub blocks on the Flags
   # resources). Payloads are raw %Ash.Notifier.Notification{} structs; events
@@ -71,6 +76,10 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
     push(socket, "environment_deleted", %{})
     {:stop, :shutdown, socket}
   end
+
+  # Events the SDK wire format doesn't speak (e.g. a publish added to a
+  # subscribed topic later) are ignored rather than crashing the channel.
+  def handle_info(_message, socket), do: {:noreply, socket}
 
   # FlagEnvironment notifications carry flag_id but not the flag name the SDK
   # wire format speaks in. If the flag is already gone (deletion race), the

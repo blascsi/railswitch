@@ -178,4 +178,30 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       assert_receive {:DOWN, ^ref, :process, _pid, :shutdown}
     end
   end
+
+  describe "unexpected messages" do
+    setup ctx do
+      {:ok, _reply, socket} = subscribe_and_join(ctx.socket, "environment:production")
+      %{socket: socket}
+    end
+
+    test "ignores pushes from the client", ctx do
+      push(ctx.socket, "unsupported", %{"some" => "payload"})
+
+      create_flag!(ctx, "checkout")
+
+      assert_push "flag_created", %{flag: "checkout"}
+    end
+
+    test "ignores internal events it does not forward", ctx do
+      send(
+        ctx.socket.channel_pid,
+        %Phoenix.Socket.Broadcast{topic: "flags:#{ctx.project.id}", event: "update", payload: nil}
+      )
+
+      create_flag!(ctx, "checkout")
+
+      assert_push "flag_created", %{flag: "checkout"}
+    end
+  end
 end
