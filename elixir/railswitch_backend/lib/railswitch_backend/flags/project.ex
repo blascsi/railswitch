@@ -43,6 +43,12 @@ defmodule RailswitchBackend.Flags.Project do
 
     read :sign_in_with_project_api_key do
       argument :api_key, :string, allow_nil?: false
+
+      # `:allow_global` because callers don't know the tenant before signing
+      # in — the SignInPreparation resolves it from the API key's organization
+      # (the strategy's `multitenancy_relationship`) and sets it mid-query.
+      multitenancy :allow_global
+
       prepare AshAuthentication.Strategy.ApiKey.SignInPreparation
     end
   end

@@ -11,6 +11,13 @@ defmodule RailswitchBackendWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  # SDK clients authenticate with an API key rather than a session cookie, and
+  # browser SDKs run on arbitrary customer domains, so origin checking is
+  # disabled for this socket only.
+  socket "/sdk/socket", RailswitchBackendWeb.SdkSocket,
+    websocket: [check_origin: false],
+    longpoll: false
+
   # socket "/live", Phoenix.LiveView.Socket,
   #   websocket: [connect_info: [session: @session_options]],
   #   longpoll: [connect_info: [session: @session_options]]
