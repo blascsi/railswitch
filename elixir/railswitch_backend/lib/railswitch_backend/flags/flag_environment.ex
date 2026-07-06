@@ -5,6 +5,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
     domain: RailswitchBackend.Flags,
     extensions: [AshJsonApi.Resource],
     data_layer: AshPostgres.DataLayer,
+    authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
   json_api do
@@ -37,6 +38,13 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
 
     update :update do
       accept [:rules]
+    end
+  end
+
+  policies do
+    policy always() do
+      description "Only members of the owning organization can act on flag environments"
+      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
     end
   end
 

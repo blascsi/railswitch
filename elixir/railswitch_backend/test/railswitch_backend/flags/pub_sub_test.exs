@@ -15,30 +15,34 @@ defmodule RailswitchBackend.Flags.PubSubTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
-  alias RailswitchBackend.Orgs
+  alias RailswitchBackend.OrgsGenerator
 
   setup do
     user = generate(AccountsGenerator.user())
-    org = Orgs.create_organization!("PubSub Test Org", actor: user)
+    org = generate(OrgsGenerator.organization(actor: user))
     project = generate(FlagsGenerator.project(tenant: org.id))
 
     environment =
       generate(FlagsGenerator.environment(tenant: org.id, project_id: project.id, name: "production"))
 
-    %{org: org, project: project, environment: environment}
+    %{user: user, org: org, project: project, environment: environment}
   end
 
   defp subscribe(topic), do: :ok = Phoenix.PubSub.subscribe(RailswitchBackend.PubSub, topic)
 
   defp create_flag!(ctx, name \\ "checkout") do
-    Flags.create_flag!(%{name: name, project_id: ctx.project.id}, tenant: ctx.org.id)
+    Flags.create_flag!(%{name: name, project_id: ctx.project.id},
+      tenant: ctx.org.id,
+      actor: ctx.user
+    )
   end
 
   defp flag_environment!(ctx) do
     [flag_environment] =
       Flags.list_flag_environments!(
         query: [filter: [environment_id: ctx.environment.id]],
-        tenant: ctx.org.id
+        tenant: ctx.org.id,
+        actor: ctx.user
       )
 
     flag_environment
@@ -63,7 +67,10 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       flag_environment = flag_environment!(ctx)
       subscribe("flag_environments:#{ctx.environment.id}")
 
-      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}}, tenant: ctx.org.id)
+      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
 
       assert_receive %Broadcast{event: "update", payload: %Notification{data: data}}
       assert data.id == flag_environment.id
@@ -75,7 +82,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       flag_environment = flag_environment!(ctx)
       subscribe("flag_environments:#{ctx.environment.id}")
 
-      Flags.delete_flag_environments!(flag_environment, tenant: ctx.org.id)
+      Flags.delete_flag_environments!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "destroy", payload: %Notification{data: data}}
       assert data.id == flag_environment.id
@@ -87,7 +94,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       flag = create_flag!(ctx)
       subscribe("flags:#{ctx.project.id}")
 
-      Flags.delete_flag!(flag, tenant: ctx.org.id)
+      Flags.delete_flag!(flag, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "destroy", payload: %Notification{data: data}}
       assert data.name == "checkout"
@@ -98,7 +105,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
     test "destroying an environment publishes destroy on its topic", ctx do
       subscribe("environments:#{ctx.environment.id}")
 
-      Flags.delete_environment!(ctx.environment, tenant: ctx.org.id)
+      Flags.delete_environment!(ctx.environment, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "destroy", payload: %Notification{}}
     end
@@ -109,7 +116,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       api_key = generate(FlagsGenerator.api_key(tenant: ctx.org.id, project_id: ctx.project.id))
       subscribe("api_key:#{api_key.id}")
 
-      Flags.delete_api_key!(api_key, tenant: ctx.org.id, authorize?: false)
+      Flags.delete_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "disconnect"}
     end

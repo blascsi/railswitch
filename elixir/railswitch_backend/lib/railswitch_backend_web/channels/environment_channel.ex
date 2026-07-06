@@ -17,11 +17,16 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
   alias Phoenix.Socket.Broadcast
   alias RailswitchBackend.Flags
 
+  # The API-key handshake on SdkSocket is the authorization here; every read
+  # is scoped by the authenticated socket assigns.
   @impl true
   def join("environment:" <> name, _payload, socket) do
     %{project_id: project_id, organization_id: organization_id} = socket.assigns
 
-    case Flags.get_environment_by_name(project_id, name, tenant: organization_id) do
+    case Flags.get_environment_by_name(project_id, name,
+           tenant: organization_id,
+           authorize?: false
+         ) do
       {:ok, environment} ->
         subscribe_to_internal_topics(environment, project_id)
 
@@ -72,7 +77,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
   # event is dropped — the client still receives flag_deleted via the
   # flags:<project_id> topic, which supersedes it.
   defp with_flag_name(socket, flag_id, fun) do
-    case Flags.get_flag_by_id(flag_id, tenant: socket.assigns.organization_id) do
+    case Flags.get_flag_by_id(flag_id, tenant: socket.assigns.organization_id, authorize?: false) do
       {:ok, flag} -> fun.(flag.name)
       {:error, _not_found} -> :ok
     end
@@ -92,7 +97,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
     [
       query: [filter: [environment_id: environment.id]],
       load: :flag,
-      tenant: organization_id
+      tenant: organization_id,
+      authorize?: false
     ]
     |> Flags.list_flag_environments!()
     |> Map.new(fn flag_environment -> {flag_environment.flag.name, flag_environment.rules} end)

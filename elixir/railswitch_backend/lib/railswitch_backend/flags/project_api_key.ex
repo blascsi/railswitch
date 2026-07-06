@@ -32,6 +32,11 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
     bypass always() do
       authorize_if AshAuthentication.Checks.AshAuthenticationInteraction
     end
+
+    policy always() do
+      description "Only members of the owning organization can act on api keys"
+      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
+    end
   end
 
   pub_sub do

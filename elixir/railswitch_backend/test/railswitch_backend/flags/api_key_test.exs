@@ -6,17 +6,21 @@ defmodule RailswitchBackend.Flags.ApiKeyTest do
 
   import Ash.Generator
 
+  alias Ash.Error.Forbidden
+  alias Ash.Error.Invalid
+  alias Ash.Error.Query.NotFound
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
-  alias RailswitchBackend.Orgs
+  alias RailswitchBackend.OrgsGenerator
 
   setup do
     user = generate(AccountsGenerator.user())
-    org = Orgs.create_organization!("Api Key Test Org", actor: user)
+    org = generate(OrgsGenerator.organization(actor: user))
     project = generate(FlagsGenerator.project(tenant: org.id))
+    outsider = generate(AccountsGenerator.user())
 
-    %{org: org, project: project}
+    %{user: user, org: org, project: project, outsider: outsider}
   end
 
   describe "create" do
@@ -24,12 +28,62 @@ defmodule RailswitchBackend.Flags.ApiKeyTest do
       api_key =
         Flags.create_api_key!(%{project_id: ctx.project.id},
           tenant: ctx.org.id,
-          authorize?: false
+          actor: ctx.user
         )
 
       assert api_key.organization_id == ctx.org.id
       assert api_key.project_id == ctx.project.id
       assert String.starts_with?(api_key.__metadata__.plaintext_api_key, "railswitch_")
+    end
+
+    test "an outsider cannot create an api key", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.create_api_key(%{project_id: ctx.project.id},
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
+
+    test "a request without an actor cannot create an api key", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.create_api_key(%{project_id: ctx.project.id}, tenant: ctx.org.id)
+    end
+  end
+
+  describe "read" do
+    test "a member can look up the api key by id", ctx do
+      api_key =
+        Flags.create_api_key!(%{project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:ok, found} =
+               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, actor: ctx.user)
+
+      assert found.id == api_key.id
+    end
+
+    test "an outsider cannot look up the api key by id", ctx do
+      api_key =
+        Flags.create_api_key!(%{project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, actor: ctx.outsider)
+    end
+
+    test "a request without an actor cannot look up the api key by id", ctx do
+      api_key =
+        Flags.create_api_key!(%{project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id)
     end
   end
 
@@ -38,13 +92,35 @@ defmodule RailswitchBackend.Flags.ApiKeyTest do
       api_key =
         Flags.create_api_key!(%{project_id: ctx.project.id},
           tenant: ctx.org.id,
-          authorize?: false
+          actor: ctx.user
         )
 
-      assert :ok = Flags.delete_api_key!(api_key, tenant: ctx.org.id, authorize?: false)
+      assert :ok = Flags.delete_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
 
-      assert {:error, %Ash.Error.Invalid{errors: [%Ash.Error.Query.NotFound{}]}} =
-               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, authorize?: false)
+      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, actor: ctx.user)
+    end
+
+    test "an outsider cannot delete the api key", ctx do
+      api_key =
+        Flags.create_api_key!(%{project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:error, %Forbidden{}} =
+               Flags.delete_api_key(api_key, tenant: ctx.org.id, actor: ctx.outsider)
+    end
+
+    test "a request without an actor cannot delete the api key", ctx do
+      api_key =
+        Flags.create_api_key!(%{project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:error, %Forbidden{}} =
+               Flags.delete_api_key(api_key, tenant: ctx.org.id)
     end
   end
 end

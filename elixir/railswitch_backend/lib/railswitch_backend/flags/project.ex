@@ -4,7 +4,8 @@ defmodule RailswitchBackend.Flags.Project do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
     extensions: [AshJsonApi.Resource, AshAuthentication],
-    data_layer: AshPostgres.DataLayer
+    data_layer: AshPostgres.DataLayer,
+    authorizers: [Ash.Policy.Authorizer]
 
   authentication do
     strategies do
@@ -50,6 +51,17 @@ defmodule RailswitchBackend.Flags.Project do
       multitenancy :allow_global
 
       prepare AshAuthentication.Strategy.ApiKey.SignInPreparation
+    end
+  end
+
+  policies do
+    bypass always() do
+      authorize_if AshAuthentication.Checks.AshAuthenticationInteraction
+    end
+
+    policy always() do
+      description "Only members of the owning organization can act on projects"
+      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
     end
   end
 

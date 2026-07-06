@@ -6,12 +6,12 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
-  alias RailswitchBackend.Orgs
+  alias RailswitchBackend.OrgsGenerator
   alias RailswitchBackendWeb.SdkSocket
 
   setup do
     user = generate(AccountsGenerator.user())
-    org = Orgs.create_organization!("Environment Channel Test Org", actor: user)
+    org = generate(OrgsGenerator.organization(actor: user))
     project = generate(FlagsGenerator.project(tenant: org.id))
 
     environment =
@@ -25,14 +25,18 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
   end
 
   defp create_flag!(ctx, name) do
-    Flags.create_flag!(%{name: name, project_id: ctx.project.id}, tenant: ctx.org.id)
+    Flags.create_flag!(%{name: name, project_id: ctx.project.id},
+      tenant: ctx.org.id,
+      actor: ctx.user
+    )
   end
 
   defp flag_environment!(ctx, flag) do
     [flag_environment] =
       Flags.list_flag_environments!(
         query: [filter: [environment_id: ctx.environment.id, flag_id: flag.id]],
-        tenant: ctx.org.id
+        tenant: ctx.org.id,
+        actor: ctx.user
       )
 
     flag_environment
@@ -43,7 +47,10 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       flag = create_flag!(ctx, "checkout")
       flag_environment = flag_environment!(ctx, flag)
 
-      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}}, tenant: ctx.org.id)
+      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
 
       create_flag!(ctx, "search")
 
@@ -79,7 +86,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
     test "refuses to join an environment of a project in another organization", ctx do
       other_user = generate(AccountsGenerator.user())
-      other_org = Orgs.create_organization!("Other Org", actor: other_user)
+      other_org = generate(OrgsGenerator.organization(actor: other_user))
       other_project = generate(FlagsGenerator.project(tenant: other_org.id))
 
       generate(
@@ -111,7 +118,10 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       flag = create_flag!(ctx, "checkout")
       flag_environment = flag_environment!(ctx, flag)
 
-      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}}, tenant: ctx.org.id)
+      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
 
       assert_push "flag_updated", %{flag: "checkout", rules: %{"enabled" => true}}
     end
@@ -120,7 +130,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       flag = create_flag!(ctx, "checkout")
       flag_environment = flag_environment!(ctx, flag)
 
-      Flags.delete_flag_environments!(flag_environment, tenant: ctx.org.id)
+      Flags.delete_flag_environments!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
 
       assert_push "flag_deleted", %{flag: "checkout"}
     end
@@ -128,7 +138,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
     test "pushes flag_deleted when the flag itself is destroyed", ctx do
       flag = create_flag!(ctx, "checkout")
 
-      Flags.delete_flag!(flag, tenant: ctx.org.id)
+      Flags.delete_flag!(flag, tenant: ctx.org.id, actor: ctx.user)
 
       assert_push "flag_deleted", %{flag: "checkout"}
     end
@@ -146,11 +156,14 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       assert_push "flag_created", %{flag: "checkout"}
 
       [staging_flag_environment] =
-        [query: [filter: [flag_id: flag.id]], tenant: ctx.org.id]
+        [query: [filter: [flag_id: flag.id]], tenant: ctx.org.id, actor: ctx.user]
         |> Flags.list_flag_environments!()
         |> Enum.reject(&(&1.environment_id == ctx.environment.id))
 
-      Flags.update_flag_environments!(staging_flag_environment, %{rules: %{"enabled" => true}}, tenant: ctx.org.id)
+      Flags.update_flag_environments!(staging_flag_environment, %{rules: %{"enabled" => true}},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
 
       refute_push "flag_updated", %{flag: "checkout"}
     end
@@ -159,7 +172,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       Process.flag(:trap_exit, true)
       ref = Process.monitor(ctx.socket.channel_pid)
 
-      Flags.delete_environment!(ctx.environment, tenant: ctx.org.id)
+      Flags.delete_environment!(ctx.environment, tenant: ctx.org.id, actor: ctx.user)
 
       assert_push "environment_deleted", %{}
       assert_receive {:DOWN, ^ref, :process, _pid, :shutdown}

@@ -59,11 +59,14 @@ defmodule RailswitchBackend.Flags.Changes.CreateFlagEnvironments do
   # then insert the join rows. Two concurrent creations in the same project
   # could each miss the other's uncommitted record, so we serialize them by
   # locking the project row for the duration of the surrounding transaction.
+  #
+  # The lock skips authorization: it is an internal implementation detail, and
+  # the parent create action already enforces its own policies.
   defp lock_project(record, scope_opts) do
     Ash.get!(
       RailswitchBackend.Flags.Project,
       record.project_id,
-      Keyword.put(scope_opts, :lock, :for_update)
+      scope_opts |> Keyword.put(:lock, :for_update) |> Keyword.put(:authorize?, false)
     )
   end
 

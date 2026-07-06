@@ -6,16 +6,17 @@ defmodule RailswitchBackendWeb.SdkSocketTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
-  alias RailswitchBackend.Orgs
+  alias RailswitchBackend.OrgsGenerator
   alias RailswitchBackendWeb.SdkSocket
 
   setup do
     user = generate(AccountsGenerator.user())
-    org = Orgs.create_organization!("Sdk Socket Test Org", actor: user)
+    org = generate(OrgsGenerator.organization(actor: user))
     project = generate(FlagsGenerator.project(tenant: org.id))
     api_key = generate(FlagsGenerator.api_key(tenant: org.id, project_id: project.id))
 
     %{
+      user: user,
       org: org,
       project: project,
       api_key: api_key,
@@ -40,7 +41,7 @@ defmodule RailswitchBackendWeb.SdkSocketTest do
     end
 
     test "refuses connection with a deleted API key", ctx do
-      :ok = Flags.delete_api_key!(ctx.api_key, tenant: ctx.org.id, authorize?: false)
+      :ok = Flags.delete_api_key!(ctx.api_key, tenant: ctx.org.id, actor: ctx.user)
 
       assert :error = connect(SdkSocket, %{"api_key" => ctx.plaintext_key})
     end

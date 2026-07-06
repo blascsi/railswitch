@@ -5,6 +5,7 @@ defmodule RailswitchBackend.Flags.Environment do
     domain: RailswitchBackend.Flags,
     extensions: [AshJsonApi.Resource],
     data_layer: AshPostgres.DataLayer,
+    authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
   json_api do
@@ -33,6 +34,13 @@ defmodule RailswitchBackend.Flags.Environment do
 
       change set_attribute(:project_id, arg(:project_id))
       change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :environment}
+    end
+  end
+
+  policies do
+    policy always() do
+      description "Only members of the owning organization can act on environments"
+      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
     end
   end
 
