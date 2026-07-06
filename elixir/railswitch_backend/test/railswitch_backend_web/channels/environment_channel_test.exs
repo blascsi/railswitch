@@ -94,4 +94,75 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
                subscribe_and_join(ctx.socket, "environment:staging")
     end
   end
+
+  describe "event forwarding" do
+    setup ctx do
+      {:ok, _reply, socket} = subscribe_and_join(ctx.socket, "environment:production")
+      %{socket: socket}
+    end
+
+    test "pushes flag_created when a flag is created", ctx do
+      create_flag!(ctx, "checkout")
+
+      assert_push "flag_created", %{flag: "checkout", rules: %{}}
+    end
+
+    test "pushes flag_updated when a flag environment's rules change", ctx do
+      flag = create_flag!(ctx, "checkout")
+      flag_environment = flag_environment!(ctx, flag)
+
+      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}}, tenant: ctx.org.id)
+
+      assert_push "flag_updated", %{flag: "checkout", rules: %{"enabled" => true}}
+    end
+
+    test "pushes flag_deleted when a flag environment is destroyed", ctx do
+      flag = create_flag!(ctx, "checkout")
+      flag_environment = flag_environment!(ctx, flag)
+
+      Flags.delete_flag_environments!(flag_environment, tenant: ctx.org.id)
+
+      assert_push "flag_deleted", %{flag: "checkout"}
+    end
+
+    test "pushes flag_deleted when the flag itself is destroyed", ctx do
+      flag = create_flag!(ctx, "checkout")
+
+      Flags.delete_flag!(flag, tenant: ctx.org.id)
+
+      assert_push "flag_deleted", %{flag: "checkout"}
+    end
+
+    test "does not push events from other environments", ctx do
+      generate(
+        FlagsGenerator.environment(
+          tenant: ctx.org.id,
+          project_id: ctx.project.id,
+          name: "staging"
+        )
+      )
+
+      flag = create_flag!(ctx, "checkout")
+      assert_push "flag_created", %{flag: "checkout"}
+
+      [staging_flag_environment] =
+        [query: [filter: [flag_id: flag.id]], tenant: ctx.org.id]
+        |> Flags.list_flag_environments!()
+        |> Enum.reject(&(&1.environment_id == ctx.environment.id))
+
+      Flags.update_flag_environments!(staging_flag_environment, %{rules: %{"enabled" => true}}, tenant: ctx.org.id)
+
+      refute_push "flag_updated", %{flag: "checkout"}
+    end
+
+    test "pushes environment_deleted and stops when the environment is destroyed", ctx do
+      Process.flag(:trap_exit, true)
+      ref = Process.monitor(ctx.socket.channel_pid)
+
+      Flags.delete_environment!(ctx.environment, tenant: ctx.org.id)
+
+      assert_push "environment_deleted", %{}
+      assert_receive {:DOWN, ^ref, :process, _pid, :shutdown}
+    end
+  end
 end
