@@ -67,7 +67,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       flag_environment = flag_environment!(ctx)
       subscribe("flag_environments:#{ctx.environment.id}")
 
-      Flags.update_flag_environments!(flag_environment, %{rules: %{"enabled" => true}},
+      Flags.update_flag_environment!(flag_environment, %{rules: %{"enabled" => true}},
         tenant: ctx.org.id,
         actor: ctx.user
       )
@@ -82,7 +82,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       flag_environment = flag_environment!(ctx)
       subscribe("flag_environments:#{ctx.environment.id}")
 
-      Flags.delete_flag_environments!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
+      Flags.delete_flag_environment!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "destroy", payload: %Notification{data: data}}
       assert data.id == flag_environment.id

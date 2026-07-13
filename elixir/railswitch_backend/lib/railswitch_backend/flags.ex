@@ -56,9 +56,9 @@ defmodule RailswitchBackend.Flags do
 
     resource RailswitchBackend.Flags.FlagEnvironment do
       define :list_flag_environments, action: :read
-      define :create_flag_environments, action: :create
-      define :update_flag_environments, action: :update
-      define :delete_flag_environments, action: :destroy
+      define :create_flag_environment, action: :create
+      define :update_flag_environment, action: :update
+      define :delete_flag_environment, action: :destroy
     end
 
     resource RailswitchBackend.Flags.ProjectApiKey do
