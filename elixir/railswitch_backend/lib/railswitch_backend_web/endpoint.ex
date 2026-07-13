@@ -45,11 +45,10 @@ defmodule RailswitchBackendWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json, AshJsonApi.Plug.Parser],
+    parsers: [:json, AshJsonApi.Plug.Parser],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
-  plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
 
