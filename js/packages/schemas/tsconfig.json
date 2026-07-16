@@ -1,0 +1,3 @@
+{
+  "extends": "@railswitch/config/tsconfig.base.json"
+}

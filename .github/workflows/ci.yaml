@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
 
-      - name: Install frontend deps
+      - name: Install JS deps
         working-directory: js
         run: pnpm install --frozen-lockfile
 
@@ -155,14 +155,55 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
 
-      - name: Install frontend deps
+      - name: Install js deps
         working-directory: js
         run: pnpm install --frozen-lockfile
 
       - name: Lint
         working-directory: js/apps/frontend
-        run: pnpm run ci
+        run: pnpm run check:ci
 
       - name: Build
         working-directory: js/apps/frontend
         run: pnpm run build
+
+
+  schemas-lint-and-build:
+    name: Schemas lint and build
+    runs-on: ubuntu-24.04
+    needs: warm-caches
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: js/package.json
+
+      - name: Get pnpm store path
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Restore pnpm store cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install js deps
+        working-directory: js
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        working-directory: js/packages/schemas
+        run: pnpm typecheck
+
+      - name: Lint
+        working-directory: js/packages/schemas
+        run: pnpm run check:ci

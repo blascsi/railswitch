@@ -1,0 +1,28 @@
+{
+  "name": "@railswitch/schemas",
+  "version": "0.1.0",
+  "description": "The JSON Schemas used by the Railswitch project",
+  "private": true,
+  "scripts": {
+    "check": "biome check --write",
+    "check:ci": "biome ci",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "schema",
+    "json"
+  ],
+  "author": "Attila Blascsak <attila@blascsak.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@railswitch/config": "workspace:*",
+    "typescript": "catalog:",
+    "zod": "catalog:"
+  }
+}

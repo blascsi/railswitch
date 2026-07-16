@@ -76,7 +76,7 @@ catalogs:
       specifier: ^6.1.2
       version: 6.1.2
     typescript:
-      specifier: ~6.0.2
+      specifier: ~6.0.3
       version: 6.0.3
     vite:
       specifier: ^8.1.0
@@ -192,6 +192,21 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+
+  packages/schemas:
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 'catalog:'
+        version: 2.5.1
+      '@railswitch/config':
+        specifier: workspace:*
+        version: link:../config
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
 
 packages:
 
