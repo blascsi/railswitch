@@ -1,0 +1,68 @@
+{
+  "testCases": [
+    {
+      "description": "Nested accessors work for attribute conditions",
+      "context": {
+        "user": {
+          "attributes": {
+            "id": "123",
+          },
+        },
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "user.attributes.id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "default",
+      "expected": "works",
+    },
+    {
+      "description": "If an attribute does not exists for an attribute condition, it skips the evaluation",
+      "context": {
+        "user": {
+          "attributes": {
+            "id": "123",
+          },
+        },
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "user.attributes.name",
+                "operator": "eq",
+                "value": "Tester",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "default",
+      "expected": "default",
+    },
+  ],
+}

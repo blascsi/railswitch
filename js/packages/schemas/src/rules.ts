@@ -67,13 +67,15 @@ const ruleSchema = z.strictObject({
   description: z.string().optional(),
   enabled: z.boolean(),
   conditions: conditionGroupSchema,
-  result: valueResultSchema,
+  result: resultSchema,
 });
 
 export const rulesSchema = z.array(ruleSchema);
 
 export type Rules = z.infer<typeof rulesSchema>;
 export type Rule = z.infer<typeof ruleSchema>;
+export type RuleResult = z.infer<typeof resultSchema>;
+export type RuleValueResult = z.infer<typeof valueResultSchema>;
 export type ConditionGroup = z.infer<typeof conditionGroupSchema>;
 export type Conditions = z.infer<typeof conditionsSchema>;
 export type Condition = z.infer<typeof conditionSchema>;

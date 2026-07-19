@@ -1,0 +1,116 @@
+{
+  "testCases": [
+    {
+      "description": "The equals operator succeeds when the values are equal",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "default",
+      "expected": "works",
+    },
+    {
+      "description": "The equals operator fails when the values are not equal",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "1234",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "default",
+      "expected": "default",
+    },
+    {
+      "description": "The equals operator fails when the values are equal, but not the same type",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": 123,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "default",
+      "expected": "default",
+    },
+    {
+      "description": "The equals operator fails when the attribute it's looking for does not exists",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "not_existing",
+                "operator": "eq",
+                "value": 123,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "default",
+      "expected": "default",
+    },
+  ],
+}

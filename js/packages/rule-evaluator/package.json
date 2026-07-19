@@ -1,0 +1,33 @@
+{
+  "name": "@railswitch/rule-evaluator",
+  "version": "0.1.0",
+  "description": "The rule evaluation logic for Railswitch flags",
+  "private": true,
+  "scripts": {
+    "check": "biome check --write",
+    "check:ci": "biome ci",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "keywords": [
+    "feature-flags"
+  ],
+  "author": "Attila Blascsak <attila@blascsak.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@railswitch/schemas": "workspace:*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@railswitch/config": "workspace:*",
+    "@types/node": "catalog:",
+    "jsonc-parser": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

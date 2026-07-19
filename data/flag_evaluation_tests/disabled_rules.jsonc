@@ -1,0 +1,60 @@
+{
+  "testCases": [
+    {
+      "description": "A disabled rule doesn't evaluate to true",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": false,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "enabled",
+          },
+        },
+      ],
+      "defaultValue": "disabled",
+      "expected": "disabled",
+    },
+    {
+      "description": "The same rule if enabled matches, and returns it's result",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "enabled",
+          },
+        },
+      ],
+      "defaultValue": "disabled",
+      "expected": "enabled",
+    },
+  ]
+}
