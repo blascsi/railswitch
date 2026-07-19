@@ -42,6 +42,9 @@ catalogs:
     '@types/node':
       specifier: ^24.13.2
       version: 24.13.2
+    '@types/phoenix':
+      specifier: ^1.6.7
+      version: 1.6.7
     '@types/react':
       specifier: ^19.2.17
       version: 19.2.17
@@ -60,6 +63,9 @@ catalogs:
     mantine-form-zod-resolver:
       specifier: ^1.3.0
       version: 1.3.0
+    phoenix:
+      specifier: ^1.8.9
+      version: 1.8.9
     postcss:
       specifier: ^8.5.15
       version: 8.5.15
@@ -238,6 +244,31 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.4.3
+
+  packages/sdk:
+    dependencies:
+      '@railswitch/rule-evaluator':
+        specifier: workspace:*
+        version: link:../rule-evaluator
+      '@railswitch/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      phoenix:
+        specifier: 'catalog:'
+        version: 1.8.9
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 'catalog:'
+        version: 2.5.1
+      '@railswitch/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/phoenix':
+        specifier: 'catalog:'
+        version: 1.6.7
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
 
 packages:
 
@@ -638,6 +669,9 @@ packages:
   '@types/node@24.13.2':
     resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
 
+  '@types/phoenix@1.6.7':
+    resolution: {integrity: sha512-oN9ive//QSBkf19rfDv45M7eZPi0eEXylht2OLEXicu5b4KoQ1OzXIw+xDSGWxSxe1JmepRR/ZH283vsu518/Q==}
+
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
@@ -1030,6 +1064,9 @@ packages:
 
   perfect-debounce@2.1.0:
     resolution: {integrity: sha512-LjgdTytVFXeUgtHZr9WYViYSM/g8MkcTPYDlPa3cDqMirHjKiSZPYd6DoL7pK8AJQr+uWkQvCjHNdiMqsrJs+g==}
+
+  phoenix@1.8.9:
+    resolution: {integrity: sha512-/2qzAZB3P2s08fFAYaG65lqaNFmVXUSlXdY4/JDdDKIC81y2cFWkPwI8gycy4VLpv197JwZ5PpBf3VhoG32yGA==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -1777,6 +1814,8 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
+  '@types/phoenix@1.6.7': {}
+
   '@types/react-dom@19.2.3(@types/react@19.2.17)':
     dependencies:
       '@types/react': 19.2.17
@@ -2077,6 +2116,8 @@ snapshots:
   pathe@2.0.3: {}
 
   perfect-debounce@2.1.0: {}
+
+  phoenix@1.8.9: {}
 
   picocolors@1.1.1: {}
 

@@ -1,0 +1,7 @@
+{
+	"extends": "@railswitch/config/tsconfig.lib.json",
+	"compilerOptions": {
+		"rootDir": "./src",
+		"outDir": "./dist"
+	}
+}
