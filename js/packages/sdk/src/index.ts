@@ -39,7 +39,9 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
 		console.warn("Railswitch SDK socket closed:", event);
 	});
 
-	const environmentChannel = socket.channel(environment);
+	socket.connect();
+
+	const environmentChannel = socket.channel(`environment:${environment}`);
 
 	const applyFlagChange = (payload: FlagChange) => {
 		if (environmentFlags === null) {
@@ -82,6 +84,9 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
 		teardown() {
 			environmentChannel.leave();
 			socket.disconnect();
+		},
+		setContextValue(key: string, value: unknown) {
+			globalContext[key] = value;
 		},
 		rsx(flagName: string, localContext: Context, defaultValue: unknown) {
 			if (!connectionEstablished) {
