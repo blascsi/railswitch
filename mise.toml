@@ -1,4 +1,4 @@
-experimental_monorepo_root = true
+monorepo_root = true
 
 [tools]
 elixir = "1.19.5-otp-28"
