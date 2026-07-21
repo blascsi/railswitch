@@ -125,6 +125,9 @@ importers:
       '@phosphor-icons/react':
         specifier: 'catalog:'
         version: 2.1.10(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@railswitch/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.101.1(react@19.2.7)

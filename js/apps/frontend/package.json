@@ -15,6 +15,7 @@
     "@mantine/form": "catalog:",
     "@mantine/hooks": "catalog:",
     "@phosphor-icons/react": "catalog:",
+    "@railswitch/sdk": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "mantine-form-zod-resolver": "catalog:",
     "react": "catalog:",
