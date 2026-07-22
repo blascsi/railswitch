@@ -62,6 +62,7 @@ defmodule RailswitchBackend.Flags do
     end
 
     resource RailswitchBackend.Flags.ProjectApiKey do
+      define :list_project_api_keys, action: :read
       define :get_api_key_by_id, action: :read, get_by: :id
       define :create_api_key, action: :create
       define :delete_api_key, action: :destroy
