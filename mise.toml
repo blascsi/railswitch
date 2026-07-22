@@ -5,5 +5,38 @@ elixir = "1.19.5-otp-28"
 erlang = "28"
 nodejs = "24.18.0"
 
-[env]
-MISE_EXPERIMENTAL = "true"
+[monorepo]
+config_roots = [
+    "elixir/*",
+    "js",
+    "js/apps/*",
+    "js/packages/*",
+]
+
+######################
+### Task templates ###
+######################
+
+[task_templates."js:install"]
+description = "Install package dependencies"
+run = "pnpm install"
+
+[task_templates."js:check"]
+description = "Lint and format the package"
+run = "pnpm check"
+
+[task_templates."js:check:ci"]
+description = "Check if the package is linted and formatted properly"
+run = "pnpm check:ci"
+
+[task_templates."js:typecheck"]
+description = "Check TS types in the project"
+run = ["pnpm typecheck"]
+
+[task_templates."js:test"]
+description = "Run the tests of the packages"
+run = ["pnpm test"]
+
+[task_templates."js:build"]
+description = "Build the package"
+run = ["pnpm build"]

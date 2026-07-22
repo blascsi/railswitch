@@ -1,0 +1,15 @@
+#############
+### Tasks ###
+#############
+
+[tasks.install]
+extends = "js:install"
+
+[tasks.check]
+extends = "js:check"
+
+[tasks."check:ci"]
+extends = "js:check:ci"
+
+[tasks.typecheck]
+extends = "js:typecheck"
