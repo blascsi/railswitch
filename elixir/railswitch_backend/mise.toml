@@ -1,0 +1,47 @@
+#############
+### Tasks ###
+#############
+
+[tasks.install]
+description = "Install dependencies"
+run = "mix deps.get && mix deps.compile && mix compile"
+
+[tasks."db:setup"]
+description = "Create database, run migrations, and seed database"
+run = ["mix ash.setup"]
+
+[tasks."db:reset"]
+description = "Drop database, and set it up again"
+run = ["mix ecto.drop", "mix ash.setup"]
+
+[tasks.compile]
+description = "Compile the project"
+run = ["mix compile --warnings-as-errors"]
+
+[tasks.format]
+description = "Format project code"
+run = ["mix format"]
+
+[tasks.check]
+description = "Check code formatting and linting"
+run = ["mix format --check-formatted", "mix credo --strict", "mix ash.codegen --check", "mix openapi.generate --check"]
+
+[tasks."generate:openapi"]
+description = "Regenerate the OpenAPI Spec of the API"
+run = ["mix openapi.generate"]
+
+[tasks.test]
+description = "Run the project's tests"
+run = ["mix test"]
+
+[tasks.shell]
+description = "Start an IEx shell with the project lodaded"
+run = ["iex -S mix"]
+
+[tasks.dev]
+description = "Start a development server"
+run = ["mix phx.server"]
+
+[tasks.dev_shell]
+description = "Start the development server, with an IEx session attached"
+run = ["iex -S phx.server"]
