@@ -6,63 +6,9 @@ on:
   pull_request:
 
 jobs:
-  warm-caches:
-    name: Warm caches
+  backend:
+    name: Backend
     runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install mise + tools
-        uses: jdx/mise-action@v2
-        with:
-          cache: true
-
-      - name: Cache railswitch backend deps & build
-        uses: actions/cache@v4
-        with:
-          path: |
-            elixir/railswitch_backend/deps
-            elixir/railswitch_backend/_build
-          key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/railswitch_backend/mix.lock') }}
-          restore-keys: ${{ runner.os }}-railswitch-backend-mix-
-
-      - name: Install Hex & Rebar
-        run: |
-          mix local.hex --force
-          mix local.rebar --force
-
-      - name: Fetch & compile railswitch backend deps
-        working-directory: elixir/railswitch_backend
-        env:
-          MIX_ENV: test
-        run: |
-          mix deps.get
-          mix deps.compile
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          package_json_file: js/package.json
-
-      - name: Get pnpm store path
-        id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
-          restore-keys: ${{ runner.os }}-pnpm-store-
-
-      - name: Install JS deps
-        working-directory: js
-        run: pnpm install --frozen-lockfile
-
-  railswitch-backend-test-and-lint:
-    name: Railswitch backend tests and format check
-    runs-on: ubuntu-24.04
-    needs: warm-caches
 
     services:
       postgres:
@@ -89,7 +35,7 @@ jobs:
         with:
           cache: true
 
-      - name: Restore railswitch backend deps cache
+      - name: Cache backend deps & build
         uses: actions/cache@v4
         with:
           path: |
@@ -103,34 +49,21 @@ jobs:
           mix local.hex --force
           mix local.rebar --force
 
-      - name: Check if project compiles
-        working-directory: elixir/railswitch_backend
-        run: mix compile --warnings-as-errors
+      - name: Install deps
+        run: mise run //elixir/railswitch_backend:install
 
-      - name: Check formatting
-        working-directory: elixir/railswitch_backend
-        run: mix format --check-formatted
+      - name: Compile
+        run: mise run //elixir/railswitch_backend:compile
 
-      - name: Run linter
-        working-directory: elixir/railswitch_backend
-        run: mix credo --strict
-
-      - name: Check for un-generated migrations
-        working-directory: elixir/railswitch_backend
-        run: mix ash.codegen --check
-
-      - name: "Check for stale openapi.json"
-        working-directory: elixir/railswitch_backend
-        run: mix openapi.generate --check
+      - name: Check formatting, linting & generated files
+        run: mise run //elixir/railswitch_backend:check
 
       - name: Run tests
-        working-directory: elixir/railswitch_backend
-        run: mix test
+        run: mise run //elixir/railswitch_backend:test
 
-  frontend-lint-and-build:
-    name: Frontend lint and build
+  js:
+    name: JS
     runs-on: ubuntu-24.04
-    needs: warm-caches
 
     steps:
       - uses: actions/checkout@v4
@@ -148,106 +81,24 @@ jobs:
         id: pnpm-cache
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
-      - name: Restore pnpm store cache
+      - name: Cache pnpm store
         uses: actions/cache@v4
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
 
-      - name: Install js deps
-        working-directory: js
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: mise run //js:install
 
-      - name: Lint
-        working-directory: js/apps/frontend
-        run: pnpm run check:ci
-
-      - name: Build
-        working-directory: js/apps/frontend
-        run: pnpm run build
-
-
-  schemas-lint-and-build:
-    name: Schemas lint and build
-    runs-on: ubuntu-24.04
-    needs: warm-caches
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: jdx/mise-action@v2
-        with:
-          cache: true
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          package_json_file: js/package.json
-
-      - name: Get pnpm store path
-        id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Restore pnpm store cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
-          restore-keys: ${{ runner.os }}-pnpm-store-
-
-      - name: Install js deps
-        working-directory: js
-        run: pnpm install --frozen-lockfile
+      - name: Check formatting & linting
+        run: mise run //js:check:ci
 
       - name: Typecheck
-        working-directory: js/packages/schemas
-        run: pnpm typecheck
-
-      - name: Lint
-        working-directory: js/packages/schemas
-        run: pnpm run check:ci
-
-  js-rule-evaluator-lint-and-build:
-    name: JS rule evaluator lint and build
-    runs-on: ubuntu-24.04
-    needs: warm-caches
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: jdx/mise-action@v2
-        with:
-          cache: true
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          package_json_file: js/package.json
-
-      - name: Get pnpm store path
-        id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Restore pnpm store cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('js/pnpm-lock.yaml') }}
-          restore-keys: ${{ runner.os }}-pnpm-store-
-
-      - name: Install js deps
-        working-directory: js
-        run: pnpm install --frozen-lockfile
-
-      - name: Typecheck
-        working-directory: js/packages/rule-evaluator
-        run: pnpm typecheck
-
-      - name: Lint
-        working-directory: js/packages/rule-evaluator
-        run: pnpm run check:ci
+        run: mise run //js:typecheck
 
       - name: Test
-        working-directory: js/packages/rule-evaluator
-        run: pnpm test
+        run: mise run //js:test
+
+      - name: Build
+        run: mise run //js:build
