@@ -39,9 +39,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            elixir/railswitch_backend/deps
-            elixir/railswitch_backend/_build
-          key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/railswitch_backend/mix.lock') }}
+            elixir/backend/deps
+            elixir/backend/_build
+          key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/backend/mix.lock') }}
           restore-keys: ${{ runner.os }}-railswitch-backend-mix-
 
       - name: Install Hex & Rebar
@@ -50,16 +50,16 @@ jobs:
           mix local.rebar --force
 
       - name: Install deps
-        run: mise run //elixir/railswitch_backend:install
+        run: mise run //elixir/backend:install
 
       - name: Compile
-        run: mise run //elixir/railswitch_backend:compile
+        run: mise run //elixir/backend:compile
 
       - name: Check formatting, linting & generated files
-        run: mise run //elixir/railswitch_backend:check
+        run: mise run //elixir/backend:check
 
       - name: Run tests
-        run: mise run //elixir/railswitch_backend:test
+        run: mise run //elixir/backend:test
 
   js:
     name: JS

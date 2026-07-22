@@ -2,7 +2,7 @@
   "lsp": {
     "expert": {
       "initialization_options": {
-        "mix_project_paths": ["elixir/railswitch_backend"],
+        "mix_project_paths": ["elixir/backend"],
       },
     },
     "typescript-language-server": {

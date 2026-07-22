@@ -13,7 +13,7 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     heyApiPlugin({
       config: {
-        input: "../../../elixir/railswitch_backend/generated/openapi.json",
+        input: "../../../elixir/backend/generated/openapi.json",
         output: "src/generated/client",
         plugins: [
           {
