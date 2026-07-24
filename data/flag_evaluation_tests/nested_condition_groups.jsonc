@@ -1,0 +1,239 @@
+{
+  "testCases": [
+    {
+      "description": "An 'and' group matches when a nested 'or' group is satisfied",
+      "context": {
+        "age": 30,
+        "country": "US",
+        "tier": "gold",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "gte",
+                "value": 18,
+              },
+              {
+                "combinator": "or",
+                "conditions": [
+                  {
+                    "type": "attribute",
+                    "attribute": "country",
+                    "operator": "eq",
+                    "value": "CA",
+                  },
+                  {
+                    "type": "attribute",
+                    "attribute": "tier",
+                    "operator": "eq",
+                    "value": "gold",
+                  },
+                ],
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "nested_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "nested_matched",
+    },
+    {
+      "description": "An 'and' group does not match when a nested 'or' group is not satisfied",
+      "context": {
+        "age": 30,
+        "country": "US",
+        "tier": "gold",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "gte",
+                "value": 18,
+              },
+              {
+                "combinator": "or",
+                "conditions": [
+                  {
+                    "type": "attribute",
+                    "attribute": "country",
+                    "operator": "eq",
+                    "value": "CA",
+                  },
+                  {
+                    "type": "attribute",
+                    "attribute": "tier",
+                    "operator": "eq",
+                    "value": "silver",
+                  },
+                ],
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "nested_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "An 'or' group matches when a nested 'and' group is satisfied",
+      "context": {
+        "age": 30,
+        "country": "US",
+        "tier": "gold",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "or",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "lt",
+                "value": 18,
+              },
+              {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "type": "attribute",
+                    "attribute": "country",
+                    "operator": "eq",
+                    "value": "US",
+                  },
+                  {
+                    "type": "attribute",
+                    "attribute": "tier",
+                    "operator": "eq",
+                    "value": "gold",
+                  },
+                ],
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "nested_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "nested_matched",
+    },
+    {
+      "description": "An 'and' group matches when a nested 'and' group is satisfied",
+      "context": {
+        "age": 30,
+        "country": "US",
+        "tier": "gold",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "gte",
+                "value": 18,
+              },
+              {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "type": "attribute",
+                    "attribute": "country",
+                    "operator": "eq",
+                    "value": "US",
+                  },
+                  {
+                    "type": "attribute",
+                    "attribute": "tier",
+                    "operator": "eq",
+                    "value": "gold",
+                  },
+                ],
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "nested_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "nested_matched",
+    },
+    {
+      "description": "An 'or' group matches when a nested 'or' group is satisfied",
+      "context": {
+        "age": 30,
+        "country": "US",
+        "tier": "gold",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "or",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "lt",
+                "value": 18,
+              },
+              {
+                "combinator": "or",
+                "conditions": [
+                  {
+                    "type": "attribute",
+                    "attribute": "country",
+                    "operator": "eq",
+                    "value": "CA",
+                  },
+                  {
+                    "type": "attribute",
+                    "attribute": "tier",
+                    "operator": "eq",
+                    "value": "gold",
+                  },
+                ],
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "nested_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "nested_matched",
+    },
+  ],
+}
