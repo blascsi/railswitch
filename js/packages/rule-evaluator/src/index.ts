@@ -100,6 +100,9 @@ function evaluateComparisionOperator(
 
       return valueFromContext === false;
     }
+    case "exists": {
+      return valueFromContext != null;
+    }
     default: {
       console.warn(`Unknown operator: ${operator}`);
       return false;
