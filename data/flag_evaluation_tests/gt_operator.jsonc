@@ -1,0 +1,116 @@
+{
+  "testCases": [
+    {
+      "description": "The greater than operator succeeds when the value in context greater than the value in the condition",
+      "context": {
+        "points": 101,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "gt",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "greater_than",
+    },
+    {
+      "description": "The greater than operator fails when the value in context equals the value in the condition",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "gt",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The greater than operator fails when the value in context is not a number",
+      "context": {
+        "points": "101",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "gt",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The greater than operator fails when the value in the rule is not a number",
+      "context": {
+        "points": 101,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "gt",
+                "value": "100",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+  ]
+}
