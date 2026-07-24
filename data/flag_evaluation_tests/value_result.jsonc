@@ -1,0 +1,172 @@
+{
+  "testCases": [
+    {
+      "description": "A matching rule returns a string result value",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "a_string",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "a_string",
+    },
+    {
+      "description": "A matching rule returns a number result value",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": 42,
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": 42,
+    },
+    {
+      "description": "A matching rule returns a zero number result value, which is not treated as no match",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": 0,
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": 0,
+    },
+    {
+      "description": "A matching rule returns a boolean true result value",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": true,
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": true,
+    },
+    {
+      "description": "A matching rule returns a boolean false result value, which is not treated as no match",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": false,
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": false,
+    },
+    {
+      "description": "A matching rule returns an empty string result value, which is not treated as no match",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "",
+    },
+  ],
+}
