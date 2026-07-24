@@ -1,0 +1,116 @@
+{
+  "testCases": [
+    {
+      "description": "Contains operator succeeds when the value in rule is within the value of the context",
+      "context": {
+        "name": "Tester Theo",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "contains",
+                "value": "Tester",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "contains",
+    },
+    {
+      "description": "Contains operator fails when the values are different in case",
+      "context": {
+        "name": "Tester Theo",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "contains",
+                "value": "tester",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Contains operator fails when the value in context is not a string",
+      "context": {
+        "name": 123,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "contains",
+                "value": "1",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Contains operator fails when the value in rule is not a string",
+      "context": {
+        "name": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "contains",
+                "value": 1,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+  ],
+}
