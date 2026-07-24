@@ -18,7 +18,7 @@ const NO_VALUE_COMPARISION_OPERATORS: ComparisionOperator[] = [
   "is_false",
   "exists",
   "not_exists",
-];
+] as const;
 
 function evaluateComparisionOperator(
   operator: ComparisionOperator,
@@ -31,6 +31,15 @@ function evaluateComparisionOperator(
     }
     case "neq": {
       return valueFromContext !== valueFromRule;
+    }
+    case "lt": {
+      if (
+        typeof valueFromContext !== "number" ||
+        typeof valueFromRule !== "number"
+      ) {
+        return false;
+      }
+      return valueFromContext < valueFromRule;
     }
     default: {
       console.warn(`Unknown operator: ${operator}`);
