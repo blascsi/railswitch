@@ -77,6 +77,15 @@ function evaluateComparisionOperator(
       }
       return valueFromContext.includes(valueFromRule);
     }
+    case "not_contains": {
+      if (
+        typeof valueFromContext !== "string" ||
+        typeof valueFromRule !== "string"
+      ) {
+        return false;
+      }
+      return !valueFromContext.includes(valueFromRule);
+    }
     default: {
       console.warn(`Unknown operator: ${operator}`);
       return false;

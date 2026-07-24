@@ -1,0 +1,116 @@
+{
+  "testCases": [
+    {
+      "description": "Not contains operator succeeds when the value in rule is not within the value of the context",
+      "context": {
+        "name": "Tester Theo",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "not_contains",
+                "value": "Alex",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_contains",
+    },
+    {
+      "description": "Not contains operator succeeds when the values are different in case",
+      "context": {
+        "name": "Tester Theo",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "not_contains",
+                "value": "tester",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_contains",
+    },
+    {
+      "description": "Not contains operator fails when the value in context is not a string",
+      "context": {
+        "name": 123,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "not_contains",
+                "value": "1",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Not contains operator fails when the value in rule is not a string",
+      "context": {
+        "name": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "not_contains",
+                "value": 1,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+  ],
+}
