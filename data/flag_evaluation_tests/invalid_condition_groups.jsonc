@@ -1,0 +1,53 @@
+{
+  "testCases": [
+    {
+      "description": "A condition group whose conditions is not an array does not match",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": "not-an-array",
+          },
+          "result": {
+            "type": "value",
+            "value": "matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "A condition group with an unknown combinator does not match, even when its condition would",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "xor",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+  ],
+}
