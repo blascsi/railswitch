@@ -29,6 +29,9 @@ function evaluateComparisionOperator(
     case "eq": {
       return valueFromContext === valueFromRule;
     }
+    case "neq": {
+      return valueFromContext !== valueFromRule;
+    }
     default: {
       console.warn(`Unknown operator: ${operator}`);
       return false;

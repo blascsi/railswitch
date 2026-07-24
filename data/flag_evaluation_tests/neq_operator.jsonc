@@ -1,0 +1,116 @@
+{
+  "testCases": [
+    {
+      "description": "The not equals operator succeeds when the values are not equal",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "neq",
+                "value": "1",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator fails when the values are equal",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "neq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator succeeds when the values are equal, and not the same type",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "neq",
+                "value": 123,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator succeeds when the values are not equal, and not the same type",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "neq",
+                "value": 1,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    }
+  ],
+}
