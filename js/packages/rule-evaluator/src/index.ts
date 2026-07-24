@@ -86,6 +86,13 @@ function evaluateComparisionOperator(
       }
       return !valueFromContext.includes(valueFromRule);
     }
+    case "is_true": {
+      if (typeof valueFromContext !== "boolean") {
+        return false;
+      }
+
+      return valueFromContext === true;
+    }
     default: {
       console.warn(`Unknown operator: ${operator}`);
       return false;

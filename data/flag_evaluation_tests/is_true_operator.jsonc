@@ -1,0 +1,112 @@
+{
+  "testCases": [
+    {
+      "description": "Is true operator succeeds when the value in context is true",
+      "context": {
+        "isAdmin": true
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "is_true",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "is_true",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "is_true",
+    },
+    {
+      "description": "Is true operator fails when the value in context is false",
+      "context": {
+        "isAdmin": false
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "is_true",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "is_true",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Is true operator fails when the value in context is thruthy but not true",
+      "context": {
+        "role": "admin"
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "role",
+                "operator": "is_true",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "is_true",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Is true operator fails when the value in context is falsy",
+      "context": {
+        "isAdmin": 0
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "is_true",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "is_true",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+  ]
+}
