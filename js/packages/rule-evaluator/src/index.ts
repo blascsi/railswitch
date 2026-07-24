@@ -93,6 +93,13 @@ function evaluateComparisionOperator(
 
       return valueFromContext === true;
     }
+    case "is_false": {
+      if (typeof valueFromContext !== "boolean") {
+        return false;
+      }
+
+      return valueFromContext === false;
+    }
     default: {
       console.warn(`Unknown operator: ${operator}`);
       return false;
