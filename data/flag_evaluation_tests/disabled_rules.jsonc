@@ -25,8 +25,8 @@
           },
         },
       ],
-      "defaultValue": "disabled",
-      "expected": "disabled",
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
     },
     {
       "description": "The same rule if enabled matches, and returns it's result",
@@ -53,7 +53,7 @@
           },
         },
       ],
-      "defaultValue": "disabled",
+      "defaultValue": "rule_did_not_match",
       "expected": "enabled",
     },
   ]

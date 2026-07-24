@@ -29,7 +29,7 @@
           },
         },
       ],
-      "defaultValue": "default",
+      "defaultValue": "rule_did_not_match",
       "expected": "works",
     },
     {
@@ -61,8 +61,8 @@
           },
         },
       ],
-      "defaultValue": "default",
-      "expected": "default",
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
     },
   ],
 }
