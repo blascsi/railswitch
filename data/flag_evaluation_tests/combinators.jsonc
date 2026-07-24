@@ -1,0 +1,214 @@
+{
+  "testCases": [
+    {
+      "description": "An 'and' group matches when all of its conditions are true",
+      "context": {
+        "age": 30,
+        "country": "US",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "gte",
+                "value": 18,
+              },
+              {
+                "type": "attribute",
+                "attribute": "country",
+                "operator": "eq",
+                "value": "US",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "and_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "and_matched",
+    },
+    {
+      "description": "An 'and' group does not match when one of its conditions is false",
+      "context": {
+        "age": 30,
+        "country": "US",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "gte",
+                "value": 18,
+              },
+              {
+                "type": "attribute",
+                "attribute": "country",
+                "operator": "eq",
+                "value": "CA",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "and_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "An 'or' group matches when at least one of its conditions is true",
+      "context": {
+        "age": 30,
+        "country": "US",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "or",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "lt",
+                "value": 18,
+              },
+              {
+                "type": "attribute",
+                "attribute": "country",
+                "operator": "eq",
+                "value": "US",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "or_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "or_matched",
+    },
+    {
+      "description": "An 'or' group does not match when all of its conditions are false",
+      "context": {
+        "age": 30,
+        "country": "US",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "or",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "lt",
+                "value": 18,
+              },
+              {
+                "type": "attribute",
+                "attribute": "country",
+                "operator": "eq",
+                "value": "CA",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "or_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "An 'and' group does not match when its first condition is false",
+      "context": {
+        "age": 30,
+        "country": "US",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "country",
+                "operator": "eq",
+                "value": "CA",
+              },
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "gte",
+                "value": 18,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "and_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "An 'or' group matches when its first condition is true",
+      "context": {
+        "age": 30,
+        "country": "US",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "or",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "country",
+                "operator": "eq",
+                "value": "US",
+              },
+              {
+                "type": "attribute",
+                "attribute": "age",
+                "operator": "lt",
+                "value": 18,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "or_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "or_matched",
+    },
+  ],
+}
