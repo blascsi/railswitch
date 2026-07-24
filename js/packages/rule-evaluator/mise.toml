@@ -16,3 +16,6 @@ extends = "js:typecheck"
 
 [tasks.test]
 extends = "js:test"
+
+[tasks."test:watch"]
+extends = "js:test:watch"

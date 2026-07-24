@@ -30,12 +30,16 @@ description = "Check if the package is linted and formatted properly"
 run = "pnpm check:ci"
 
 [task_templates."js:typecheck"]
-description = "Check TS types in the project"
+description = "Check TS types in the package"
 run = ["pnpm typecheck"]
 
 [task_templates."js:test"]
-description = "Run the tests of the packages"
+description = "Run the tests of the package"
 run = ["pnpm test"]
+
+[task_templates."js:test:watch"]
+description = "Run the tests of the package in watch mode"
+run = ["pnpm test:watch"]
 
 [task_templates."js:build"]
 description = "Build the package"
