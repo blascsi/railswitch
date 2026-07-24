@@ -41,6 +41,15 @@ function evaluateComparisionOperator(
       }
       return valueFromContext < valueFromRule;
     }
+    case "lte": {
+      if (
+        typeof valueFromContext !== "number" ||
+        typeof valueFromRule !== "number"
+      ) {
+        return false;
+      }
+      return valueFromContext <= valueFromRule;
+    }
     default: {
       console.warn(`Unknown operator: ${operator}`);
       return false;

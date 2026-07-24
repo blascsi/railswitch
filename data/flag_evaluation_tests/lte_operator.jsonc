@@ -1,0 +1,116 @@
+{
+  "testCases": [
+    {
+      "description": "The less than equals operator succeeds when the value in context less than the value in the condition",
+      "context": {
+        "points": 99,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "lte",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "less_than_equals",
+    },
+    {
+      "description": "The less than equals operator succeeds when the value in context equals the value in the condition",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "lte",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "less_than_equals",
+    },
+    {
+      "description": "The less than eequals operator fails when the value in context is not a number",
+      "context": {
+        "points": "99",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "lte",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The less than equals operator fails when the value in the rule is not a number",
+      "context": {
+        "points": 99,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "lte",
+                "value": "100",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+  ]
+}
