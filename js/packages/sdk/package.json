@@ -1,41 +1,41 @@
 {
-	"name": "@railswitch/sdk",
-	"version": "0.1.0",
-	"description": "The Javascript/Typescript SDK for Railswitch.",
-	"private": true,
-	"scripts": {
-		"build": "tsdown",
-		"check": "biome check --write",
-		"check:ci": "biome ci",
-		"typecheck": "tsc --noEmit"
-	},
-	"keywords": [
-		"sdk"
-	],
-	"author": "Attila Blascsak <attila@blascsak.com>",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.mts",
-			"default": "./dist/index.mjs"
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"publishConfig": {
-		"access": "public"
-	},
-	"dependencies": {
-		"phoenix": "catalog:"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "catalog:",
-		"@railswitch/config": "workspace:*",
-		"@railswitch/rule-evaluator": "workspace:*",
-		"@railswitch/schemas": "workspace:*",
-		"@types/phoenix": "catalog:",
-		"tsdown": "catalog:",
-		"typescript": "catalog:"
-	}
+  "name": "@railswitch/sdk",
+  "version": "0.1.0",
+  "description": "The Javascript/Typescript SDK for Railswitch.",
+  "private": true,
+  "scripts": {
+    "build": "tsdown",
+    "check": "biome check --write",
+    "check:ci": "biome ci",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "sdk"
+  ],
+  "author": "Attila Blascsak <attila@blascsak.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "phoenix": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@railswitch/config": "workspace:*",
+    "@railswitch/rule-evaluator": "workspace:*",
+    "@railswitch/schemas": "workspace:*",
+    "@types/phoenix": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  }
 }
