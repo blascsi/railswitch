@@ -84,5 +84,145 @@
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
+    {
+      "description": "The equals operator succeeds when the number values are equal",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "eq",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "equals",
+    },
+    {
+      "description": "The equals operator fails when the number values are not equal",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "eq",
+                "value": 200,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The equals operator succeeds when the boolean values are equal",
+      "context": {
+        "isAdmin": true,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "eq",
+                "value": true,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "equals",
+    },
+    {
+      "description": "The equals operator succeeds when both boolean values are false",
+      "context": {
+        "isAdmin": false,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "eq",
+                "value": false,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "equals",
+    },
+    {
+      "description": "The equals operator fails when the boolean values are not equal",
+      "context": {
+        "isAdmin": true,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "eq",
+                "value": false,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
   ],
 }

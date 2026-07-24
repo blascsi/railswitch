@@ -139,6 +139,118 @@
       ],
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator succeeds when the number values are not equal",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "neq",
+                "value": 200,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator fails when the number values are equal",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "neq",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator succeeds when the boolean values are not equal",
+      "context": {
+        "isAdmin": true,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "neq",
+                "value": false,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator fails when both boolean values are false",
+      "context": {
+        "isAdmin": false,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "neq",
+                "value": false,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
     }
   ],
 }
