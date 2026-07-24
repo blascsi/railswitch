@@ -111,6 +111,34 @@
       ],
       "defaultValue": "rule_did_not_match",
       "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator fails when the attribute is missing from the context",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "neq",
+                "value": "Tester",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
     }
   ],
 }

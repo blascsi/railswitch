@@ -30,7 +30,9 @@ function evaluateComparisionOperator(
       return valueFromContext === valueFromRule;
     }
     case "neq": {
-      return valueFromContext !== valueFromRule;
+      return (
+        valueFromContext !== undefined && valueFromContext !== valueFromRule
+      );
     }
     case "lt": {
       if (
