@@ -1,0 +1,76 @@
+{
+  "testCases": [
+    {
+      "description": "When no rule matches, the provided default value is returned",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "999",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "matched",
+          },
+        },
+      ],
+      "defaultValue": "fallback",
+      "expected": "fallback",
+    },
+    {
+      "description": "When no rule matches and no default value is provided, null is returned",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "999",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "matched",
+          },
+        },
+      ],
+      "expected": null,
+    },
+    {
+      "description": "When the rules list is empty, the provided default value is returned",
+      "context": {
+        "id": "123",
+      },
+      "rules": [],
+      "defaultValue": "fallback",
+      "expected": "fallback",
+    },
+    {
+      "description": "When the rules list is empty and no default value is provided, null is returned",
+      "context": {
+        "id": "123",
+      },
+      "rules": [],
+      "expected": null,
+    },
+  ],
+}
