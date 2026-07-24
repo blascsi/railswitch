@@ -7,6 +7,9 @@ const testFixtureDir = fileURLToPath(
 
 export default defineConfig({
   test: {
+    chaiConfig: {
+      truncateThreshold: 100_000_000,
+    },
     // Both of these are required for some reason?
     forceRerunTriggers: [testFixtureDir, `${testFixtureDir}/**/*.jsonc`],
   },
