@@ -1,0 +1,85 @@
+{
+  "testCases": [
+    {
+      "description": "Not exists operator succeeds when the attribute in context does not exists",
+      "context": {
+        "isAdmin": true
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "nonExisting",
+                "operator": "not_exists",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_exists",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_exists",
+    },
+    {
+      "description": "Not exists operator fails when the attribute in context exists",
+      "context": {
+        "isAdmin": true
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "not_exists",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_exists",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Not exists operator succeeds when the attribute in context exists, but is null",
+      "context": {
+        "isAdmin": null
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "not_exists",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_exists",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_exists",
+    },
+  ]
+}
