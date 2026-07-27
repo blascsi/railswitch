@@ -112,5 +112,33 @@
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
+    {
+      "description": "Not contains operator fails when the value in rule is an empty string",
+      "context": {
+        "name": "Tester Theo",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "not_contains",
+                "value": "",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_contains",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
   ],
 }
