@@ -44,7 +44,15 @@ jobs:
           key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/backend/mix.lock') }}
           restore-keys: ${{ runner.os }}-railswitch-backend-mix-
 
+      - name: Cache Hex & Rebar
+        id: mix-archives
+        uses: actions/cache@v4
+        with:
+          path: ~/.mix
+          key: ${{ runner.os }}-railswitch-mix-archives-${{ hashFiles('mise.toml') }}
+
       - name: Install Hex & Rebar
+        if: steps.mix-archives.outputs.cache-hit != 'true'
         run: |
           mix local.hex --force
           mix local.rebar --force
