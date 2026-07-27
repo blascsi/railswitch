@@ -29,7 +29,7 @@
       "expected": "rule_did_not_match",
     },
     {
-      "description": "The same rule if enabled matches, and returns it's result",
+      "description": "The same rule if enabled matches, and returns its result",
       "context": {
         "id": "123",
       },

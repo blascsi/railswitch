@@ -136,7 +136,7 @@
       "expected": "rule_did_not_match",
     },
     {
-      "description": "Exists operator fails when the attribute in context does not exists",
+      "description": "Exists operator fails when the attribute in context does not exist",
       "context": {
         "isAdmin": null
       },

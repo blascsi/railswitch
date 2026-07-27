@@ -33,7 +33,7 @@
       "expected": "works",
     },
     {
-      "description": "If an attribute does not exists for an attribute condition, it skips the evaluation",
+      "description": "If an attribute does not exist for an attribute condition, it skips the evaluation",
       "context": {
         "user": {
           "attributes": {

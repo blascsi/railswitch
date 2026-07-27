@@ -1,7 +1,7 @@
 {
   "testCases": [
     {
-      "description": "Not exists operator succeeds when the attribute in context does not exists",
+      "description": "Not exists operator succeeds when the attribute in context does not exist",
       "context": {
         "isAdmin": true
       },
