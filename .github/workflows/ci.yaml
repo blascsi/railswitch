@@ -41,8 +41,8 @@ jobs:
           path: |
             elixir/backend/deps
             elixir/backend/_build
-          key: ${{ runner.os }}-railswitch-backend-mix-${{ hashFiles('elixir/backend/mix.lock') }}
-          restore-keys: ${{ runner.os }}-railswitch-backend-mix-
+          key: ${{ runner.os }}-backend-mix-${{ hashFiles('elixir/backend/mix.lock') }}
+          restore-keys: ${{ runner.os }}-backend-mix-
 
       - name: Cache Hex & Rebar
         id: mix-archives
