@@ -1,7 +1,7 @@
 {
   "testCases": [
     {
-      "description": "The greater than operator succeeds when the value in context greater than the value in the condition",
+      "description": "The greater than operator succeeds when the integer value in context is greater than the value in the condition",
       "context": {
         "points": 101,
       },
@@ -29,7 +29,7 @@
       "expected": "greater_than",
     },
     {
-      "description": "The greater than operator fails when the value in context equals the value in the condition",
+      "description": "The greater than operator fails when the integer value in context equals the value in the condition",
       "context": {
         "points": 100,
       },
@@ -44,6 +44,146 @@
                 "attribute": "points",
                 "operator": "gt",
                 "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The greater than operator fails when the integer value in context is less than the value in the condition",
+      "context": {
+        "points": 99,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "gt",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The greater than operator succeeds when the float value in context is greater than the value in the condition",
+      "context": {
+        "score": 99.6,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "gt",
+                "value": 99.5,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "greater_than",
+    },
+    {
+      "description": "The greater than operator fails when the float value in context equals the value in the condition",
+      "context": {
+        "score": 99.5,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "gt",
+                "value": 99.5,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The greater than operator fails when the float value in context is less than the value in the condition",
+      "context": {
+        "score": 99.5,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "gt",
+                "value": 99.6,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "greater_than",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The greater than operator fails when the integer value in context equals the float value in the condition",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "gt",
+                "value": 100.0,
               },
             ],
           },

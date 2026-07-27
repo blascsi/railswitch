@@ -1,7 +1,7 @@
 {
   "testCases": [
     {
-      "description": "The less than equals operator succeeds when the value in context less than the value in the condition",
+      "description": "The less than equals operator succeeds when the integer value in context is less than the value in the condition",
       "context": {
         "points": 99,
       },
@@ -29,7 +29,7 @@
       "expected": "less_than_equals",
     },
     {
-      "description": "The less than equals operator succeeds when the value in context equals the value in the condition",
+      "description": "The less than equals operator succeeds when the integer value in context equals the value in the condition",
       "context": {
         "points": 100,
       },
@@ -57,7 +57,175 @@
       "expected": "less_than_equals",
     },
     {
-      "description": "The less than eequals operator fails when the value in context is not a number",
+      "description": "The less than equals operator fails when the integer value in context is greater than the value in the condition",
+      "context": {
+        "points": 101,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "lte",
+                "value": 100,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The less than equals operator succeeds when the float value in context is less than the value in the condition",
+      "context": {
+        "score": 99.5,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "lte",
+                "value": 99.6,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "less_than_equals",
+    },
+    {
+      "description": "The less than equals operator succeeds when the float value in context equals the value in the condition",
+      "context": {
+        "score": 99.5,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "lte",
+                "value": 99.5,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "less_than_equals",
+    },
+    {
+      "description": "The less than equals operator fails when the float value in context is greater than the value in the condition",
+      "context": {
+        "score": 99.6,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "lte",
+                "value": 99.5,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The less than equals operator succeeds when the negative float zero value in context equals the float zero value in the condition",
+      "context": {
+        "score": -0.0,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "lte",
+                "value": 0.0,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "less_than_equals",
+    },
+    {
+      "description": "The less than equals operator succeeds when the integer value in context equals the float value in the condition",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "lte",
+                "value": 100.0,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "less_than_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "less_than_equals",
+    },
+    {
+      "description": "The less than equals operator fails when the value in context is not a number",
       "context": {
         "points": "99",
       },

@@ -141,7 +141,7 @@
       "expected": "rule_did_not_match",
     },
     {
-      "description": "The not equals operator succeeds when the number values are not equal",
+      "description": "The not equals operator succeeds when the integer values are not equal",
       "context": {
         "points": 100,
       },
@@ -169,7 +169,7 @@
       "expected": "not_equals",
     },
     {
-      "description": "The not equals operator fails when the number values are equal",
+      "description": "The not equals operator fails when the integer values are equal",
       "context": {
         "points": 100,
       },
@@ -195,6 +195,174 @@
       ],
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator succeeds when the float values are not equal",
+      "context": {
+        "score": 99.5,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "neq",
+                "value": 99.6,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator fails when the float values are equal",
+      "context": {
+        "score": 99.5,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "neq",
+                "value": 99.5,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator succeeds when the float values differ by a single unit of precision",
+      "context": {
+        "score": 0.3,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "neq",
+                "value": 0.30000000000000004,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
+    },
+    {
+      "description": "The not equals operator fails when float zero is compared to negative float zero",
+      "context": {
+        "score": 0.0,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "score",
+                "operator": "neq",
+                "value": -0.0,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator fails when an integer in the context equals a float in the condition",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "neq",
+                "value": 100.0,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "The not equals operator succeeds when an integer in the context does not equal a float in the condition",
+      "context": {
+        "points": 100,
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "points",
+                "operator": "neq",
+                "value": 100.5,
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_equals",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "not_equals",
     },
     {
       "description": "The not equals operator succeeds when the boolean values are not equal",
