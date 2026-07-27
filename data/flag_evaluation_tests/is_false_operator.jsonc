@@ -82,7 +82,7 @@
       "expected": "rule_did_not_match",
     },
     {
-      "description": "Is false operator fails when the value in context is thruthy",
+      "description": "Is false operator fails when the value in context is truthy",
       "context": {
         "role": "admin"
       },

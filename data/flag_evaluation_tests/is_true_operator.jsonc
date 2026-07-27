@@ -55,7 +55,7 @@
       "expected": "rule_did_not_match",
     },
     {
-      "description": "Is true operator fails when the value in context is thruthy but not true",
+      "description": "Is true operator fails when the value in context is truthy but not true",
       "context": {
         "role": "admin"
       },
