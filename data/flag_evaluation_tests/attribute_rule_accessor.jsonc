@@ -64,5 +64,67 @@
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
+    {
+      "description": "If an accessor traverses through a primitive value, it skips the evaluation",
+      "context": {
+        "user": {
+          "attributes": {
+            "id": "123",
+          },
+        },
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "user.attributes.id.length",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "If an accessor traverses through a null value, it skips the evaluation",
+      "context": {
+        "user": {
+          "attributes": null,
+        },
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "user.attributes.id",
+                "operator": "eq",
+                "value": "123",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "works",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
   ],
 }
