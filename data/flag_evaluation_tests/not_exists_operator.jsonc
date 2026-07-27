@@ -55,6 +55,87 @@
       "expected": "rule_did_not_match",
     },
     {
+      "description": "Not exists operator fails when the attribute in context exists, but is false",
+      "context": {
+        "isAdmin": false
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "isAdmin",
+                "operator": "not_exists",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_exists",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Not exists operator fails when the attribute in context exists, but is zero",
+      "context": {
+        "count": 0
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "count",
+                "operator": "not_exists",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_exists",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "Not exists operator fails when the attribute in context exists, but is an empty string",
+      "context": {
+        "name": ""
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "name",
+                "operator": "not_exists",
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "not_exists",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
       "description": "Not exists operator succeeds when the attribute in context exists, but is null",
       "context": {
         "isAdmin": null
