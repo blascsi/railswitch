@@ -194,6 +194,10 @@ function evaluateConditionGroup(
     return false;
   }
 
+  if (conditionGroup.conditions.length === 0) {
+    return false;
+  }
+
   switch (conditionGroup.combinator) {
     case "and": {
       return conditionGroup.conditions.every((conditionOrGroup) =>

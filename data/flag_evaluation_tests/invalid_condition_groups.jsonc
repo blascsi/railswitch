@@ -49,5 +49,79 @@
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
+    {
+      "description": "An 'and' condition group with an empty conditions array does not match",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [],
+          },
+          "result": {
+            "type": "value",
+            "value": "and_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "An 'or' condition group with an empty conditions array does not match",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "or",
+            "conditions": [],
+          },
+          "result": {
+            "type": "value",
+            "value": "or_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
+    {
+      "description": "A condition group with an empty nested group does not match, even when its sibling condition would",
+      "context": {
+        "id": "123",
+      },
+      "rules": [
+        {
+          "enabled": true,
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "type": "attribute",
+                "attribute": "id",
+                "operator": "eq",
+                "value": "123",
+              },
+              {
+                "combinator": "and",
+                "conditions": [],
+              },
+            ],
+          },
+          "result": {
+            "type": "value",
+            "value": "nested_empty_matched",
+          },
+        },
+      ],
+      "defaultValue": "rule_did_not_match",
+      "expected": "rule_did_not_match",
+    },
   ],
 }
