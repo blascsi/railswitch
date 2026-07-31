@@ -48,7 +48,7 @@ jobs:
         id: mix-archives
         uses: actions/cache@v4
         with:
-          path: ~/.mix
+          path: ~/.local/share/mise/installs/elixir/*/.mix
           key: ${{ runner.os }}-railswitch-mix-archives-${{ hashFiles('mise.toml') }}
 
       - name: Install Hex & Rebar
