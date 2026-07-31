@@ -8,20 +8,20 @@ run = "pnpm install"
 
 [tasks.check]
 description = "Lint and format all JS packages"
-run = "mise run //js/...:check"
+depends = ["//js/...:check"]
 
 [tasks."check:ci"]
 description = "Check if all JS packages are linted and formatted properly"
-run = "mise run //js/...:check:ci"
+depends = ["//js/...:check:ci"]
 
 [tasks.typecheck]
 description = "Typecheck all JS packages"
-run = "mise run //js/...:typecheck"
+depends = ["//js/...:typecheck"]
 
 [tasks.test]
 description = "Test all JS packages"
-run = "mise run //js/...:test"
+depends = ["//js/...:test"]
 
 [tasks.build]
 description = "Build all JS packages"
-run = "mise run //js/...:build"
+depends = ["//js/...:build"]
