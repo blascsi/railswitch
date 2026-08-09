@@ -33,10 +33,9 @@ defmodule RailswitchBackendWeb.Plugs.RememberMe do
   @impl true
   def call(conn, opts) do
     strategy = Info.strategy!(User, :remember_me)
-    cookie_name = to_string(strategy.cookie_name)
     conn = fetch_cookies(conn)
 
-    with token when is_binary(token) <- conn.req_cookies[cookie_name],
+    with token when is_binary(token) <- conn.req_cookies[AuthCookies.remember_me_cookie_name()],
          {:ok, %{"exp" => exp}} <- Jwt.peek(token),
          rotate? = close_to_expiry?(exp, opts[:refresh_within]),
          true <- rotate? or is_nil(conn.assigns[:current_user]),
@@ -49,7 +48,7 @@ defmodule RailswitchBackendWeb.Plugs.RememberMe do
       {:error, _} ->
         # The token was rejected (revoked / expired / forged): drop the stale
         # cookie so we don't re-attempt the sign-in on every request.
-        AuthCookies.delete_cookie(conn, cookie_name)
+        AuthCookies.delete_remember_me_cookie(conn)
 
       _ ->
         # No cookie, or signed in and nothing to rotate — nothing to do.
@@ -77,13 +76,12 @@ defmodule RailswitchBackendWeb.Plugs.RememberMe do
   defp maybe_rotate(conn, _user, _old_token, false), do: conn
 
   defp maybe_rotate(conn, user, old_token, true) do
-    %{"cookie_name" => name, "token" => new_token, "max_age" => max_age} =
-      user.__metadata__.remember_me
+    %{token: new_token, max_age: max_age} = user.__metadata__.remember_me
 
     with {:error, reason} <- AshAuthentication.TokenResource.Actions.revoke(Token, old_token, []) do
       Logger.warning("Failed to revoke rotated remember-me token: #{inspect(reason)}")
     end
 
-    AuthCookies.put_remember_me_cookie(conn, name, new_token, max_age)
+    AuthCookies.put_remember_me_cookie(conn, new_token, max_age)
   end
 end

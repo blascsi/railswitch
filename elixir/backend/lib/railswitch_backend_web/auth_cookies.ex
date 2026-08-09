@@ -13,16 +13,30 @@ defmodule RailswitchBackendWeb.AuthCookies do
 
   import Plug.Conn
 
+  alias AshAuthentication.Info
+  alias RailswitchBackend.Accounts.User
+
   @auth_cookie "railswitch_token"
 
   def auth_cookie_name, do: @auth_cookie
 
-  def put_auth_cookie(conn, token), do: put_resp_cookie(conn, @auth_cookie, token, base_opts())
+  def remember_me_cookie_name do
+    User
+    |> Info.strategy!(:remember_me)
+    |> Map.fetch!(:cookie_name)
+    |> to_string()
+  end
 
-  def put_remember_me_cookie(conn, name, token, max_age),
-    do: put_resp_cookie(conn, to_string(name), token, [max_age: max_age] ++ base_opts())
+  def put_auth_cookie(conn, token), do: put_resp_cookie(conn, auth_cookie_name(), token, base_opts())
 
-  def delete_cookie(conn, name), do: delete_resp_cookie(conn, to_string(name), path: "/")
+  def delete_auth_cookie(conn), do: delete_cookie(conn, auth_cookie_name())
+
+  def put_remember_me_cookie(conn, token, max_age),
+    do: put_resp_cookie(conn, remember_me_cookie_name(), token, [max_age: max_age] ++ base_opts())
+
+  def delete_remember_me_cookie(conn), do: delete_cookie(conn, remember_me_cookie_name())
+
+  defp delete_cookie(conn, name), do: delete_resp_cookie(conn, name, path: "/")
 
   defp base_opts do
     [

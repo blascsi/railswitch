@@ -3,28 +3,30 @@ defmodule RailswitchBackendWeb.Router do
 
   import AshAuthentication.Plug.Helpers, only: [retrieve_from_bearer: 2, set_actor: 2]
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :graphql do
     plug RailswitchBackendWeb.Plugs.AuthCookieToBearer
     plug :bearer_to_user
     plug RailswitchBackendWeb.Plugs.RememberMe
     plug :user_to_actor
+    plug RailswitchBackendWeb.Plugs.RequireSession
     plug RailswitchBackendWeb.Plugs.SetTenant
-    plug RailswitchBackendWeb.Plugs.TokensToCookies
+    plug AshGraphql.Plug
   end
 
-  scope "/api/json" do
-    pipe_through [:api]
+  scope "/gql" do
+    pipe_through [:graphql]
 
-    forward "/swaggerui", OpenApiSpex.Plug.SwaggerUI,
-      path: "/api/json/open_api",
-      default_model_expand_depth: 4
+    if Application.compile_env(:railswitch_backend, :dev_routes) do
+      forward "/playground", Absinthe.Plug.GraphiQL,
+        schema: Module.concat(["RailswitchBackendWeb.GraphqlSchema"]),
+        socket: Module.concat(["RailswitchBackendWeb.GraphqlSocket"]),
+        interface: :simple,
+        before_send: {RailswitchBackendWeb.GraphqlAuth, :before_send}
+    end
 
-    forward "/", RailswitchBackendWeb.AshJsonApiRouter
-  end
-
-  scope "/api", RailswitchBackendWeb do
-    pipe_through :api
+    forward "/", Absinthe.Plug,
+      schema: Module.concat(["RailswitchBackendWeb.GraphqlSchema"]),
+      before_send: {RailswitchBackendWeb.GraphqlAuth, :before_send}
   end
 
   # Enable Swoosh mailbox preview in development

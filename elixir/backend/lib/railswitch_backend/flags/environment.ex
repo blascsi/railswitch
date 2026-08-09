@@ -3,13 +3,13 @@ defmodule RailswitchBackend.Flags.Environment do
   use Ash.Resource,
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
-    extensions: [AshJsonApi.Resource],
+    extensions: [AshGraphql.Resource],
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
-  json_api do
-    type "environment"
+  graphql do
+    type :environment
   end
 
   postgres do

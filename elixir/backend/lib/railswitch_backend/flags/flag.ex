@@ -3,13 +3,13 @@ defmodule RailswitchBackend.Flags.Flag do
   use Ash.Resource,
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
-    extensions: [AshJsonApi.Resource],
+    extensions: [AshGraphql.Resource],
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
-  json_api do
-    type "flag"
+  graphql do
+    type :flag
   end
 
   postgres do
@@ -74,6 +74,10 @@ defmodule RailswitchBackend.Flags.Flag do
 
     belongs_to :project, RailswitchBackend.Flags.Project do
       allow_nil? false
+      public? true
+    end
+
+    has_many :flag_environments, RailswitchBackend.Flags.FlagEnvironment do
       public? true
     end
   end

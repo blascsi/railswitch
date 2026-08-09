@@ -6,11 +6,18 @@ defmodule RailswitchBackend.Accounts.User do
     domain: RailswitchBackend.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshJsonApi.Resource, AshAuthentication]
+    extensions: [AshGraphql.Resource, AshAuthentication]
 
   alias AshAuthentication.Strategy.Password.HashPasswordChange
   alias AshAuthentication.Strategy.Password.PasswordConfirmationValidation
   alias AshAuthentication.Strategy.RememberMe.MaybeGenerateTokenPreparation
+
+  graphql do
+    type :user
+    # The User type is never list-queried, so deriving a filter only leaks a
+    # meaningless `filter:` argument onto signIn/currentUser.
+    derive_filter? false
+  end
 
   authentication do
     add_ons do
@@ -59,10 +66,6 @@ defmodule RailswitchBackend.Accounts.User do
     end
   end
 
-  json_api do
-    type "user"
-  end
-
   postgres do
     table "users"
     repo RailswitchBackend.Repo
@@ -74,6 +77,12 @@ defmodule RailswitchBackend.Accounts.User do
     read :current_user do
       description "The currently signed-in user."
       get? true
+    end
+
+    action :sign_out, RailswitchBackend.Accounts.User.Types.SignOutResult do
+      description "Ends the current session, revoking its tokens."
+
+      run fn _input, _context -> {:ok, :successful_signout} end
     end
 
     read :get_by_subject do
@@ -137,16 +146,6 @@ defmodule RailswitchBackend.Accounts.User do
       prepare AshAuthentication.Strategy.Password.SignInPreparation
 
       prepare {MaybeGenerateTokenPreparation, strategy_name: :remember_me}
-
-      metadata :token, :string do
-        description "A JWT that can be used to authenticate the user."
-        allow_nil? false
-      end
-
-      metadata :remember_me, :map do
-        description "Remember-me cookie name, token, and max-age on successful sign in."
-        allow_nil? true
-      end
     end
 
     create :register_with_password do
@@ -191,16 +190,6 @@ defmodule RailswitchBackend.Accounts.User do
 
       # validates that the password matches the confirmation
       validate PasswordConfirmationValidation
-
-      metadata :token, :string do
-        description "A JWT that can be used to authenticate the user."
-        allow_nil? false
-      end
-
-      metadata :remember_me, :map do
-        description "Remember-me cookie name, token, and max-age on successful sign in."
-        allow_nil? true
-      end
     end
 
     read :sign_in_with_remember_me do
@@ -222,16 +211,6 @@ defmodule RailswitchBackend.Accounts.User do
       prepare AshAuthentication.Strategy.RememberMe.SignInPreparation
 
       prepare {MaybeGenerateTokenPreparation, strategy_name: :remember_me, argument: :rotate_token}
-
-      metadata :token, :string do
-        description "A JWT that can be used to authenticate the user."
-        allow_nil? false
-      end
-
-      metadata :remember_me, :map do
-        description "Remember-me cookie name, token, and max-age on successful sign in."
-        allow_nil? true
-      end
     end
 
     action :request_password_reset_token do
@@ -304,6 +283,11 @@ defmodule RailswitchBackend.Accounts.User do
       description "Users can read themselves, and other members of their organizations"
       authorize_if expr(id == ^actor(:id))
       authorize_if accessing_from(RailswitchBackend.Orgs.Membership, :user)
+    end
+
+    policy action(:sign_out) do
+      description "Signing out requires a session to sign out of"
+      authorize_if actor_present()
     end
 
     policy action(:change_password) do

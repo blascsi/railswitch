@@ -1,5 +1,5 @@
-import { heyApiPlugin } from "@hey-api/vite-plugin";
 import babel from "@rolldown/plugin-babel";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -9,37 +9,12 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [
+    tanstackRouter({
+      target: "react",
+      autoCodeSplitting: true,
+    }),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
-    heyApiPlugin({
-      config: {
-        input: "../../../elixir/backend/generated/openapi.json",
-        output: "src/generated/client",
-        plugins: [
-          {
-            name: "@hey-api/client-fetch",
-            runtimeConfigPath: "./src/hey-api.ts",
-          },
-          "@hey-api/typescript",
-          {
-            name: "zod",
-            requests: true,
-            responses: true,
-            definitions: true,
-          },
-          {
-            name: "@hey-api/sdk",
-            validator: true,
-          },
-          {
-            name: "@tanstack/react-query",
-            queryOptions: true,
-            mutationOptions: true,
-            queryKeys: { tags: true },
-          },
-        ],
-      },
-    }),
   ],
   build: {
     sourcemap: true,
@@ -66,6 +41,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "wouter"],
+    include: ["react", "react-dom"],
   },
 });

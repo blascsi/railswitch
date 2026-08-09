@@ -21,7 +21,9 @@ defmodule RailswitchBackend.Application do
       # {RailswitchBackend.Worker, arg},
       # Start to serve requests, typically the last entry
       RailswitchBackendWeb.Endpoint,
-      {AshAuthentication.Supervisor, [otp_app: :railswitch_backend]}
+      {AshAuthentication.Supervisor, [otp_app: :railswitch_backend]},
+      {Absinthe.Subscription, RailswitchBackendWeb.Endpoint},
+      AshGraphql.Subscription.Batcher
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

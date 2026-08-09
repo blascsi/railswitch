@@ -23,12 +23,16 @@ description = "Format project code"
 run = ["mix format"]
 
 [tasks.check]
-description = "Check code formatting and linting"
-run = ["mix format --check-formatted", "mix credo --strict", "mix ash.codegen --check", "mix openapi.generate --check"]
-
-[tasks."generate:openapi"]
-description = "Regenerate the OpenAPI Spec of the API"
-run = ["mix openapi.generate"]
+description = "Check code formatting, linting, and generated schema freshness"
+run = [
+  "mix format --check-formatted",
+  "mix credo --strict",
+  "mix ash.codegen --check",
+  # Compiling rewrites generated/schema.graphql (auto_generate_sdl_file?), so
+  # a dirty file afterwards means the committed schema was stale.
+  "mix compile",
+  "git diff --exit-code -- generated/schema.graphql",
+]
 
 [tasks.test]
 description = "Run the project's tests"

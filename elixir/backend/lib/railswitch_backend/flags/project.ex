@@ -3,9 +3,13 @@ defmodule RailswitchBackend.Flags.Project do
   use Ash.Resource,
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
-    extensions: [AshJsonApi.Resource, AshAuthentication],
+    extensions: [AshGraphql.Resource, AshAuthentication],
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer]
+
+  graphql do
+    type :project
+  end
 
   authentication do
     strategies do
@@ -14,10 +18,6 @@ defmodule RailswitchBackend.Flags.Project do
         multitenancy_relationship :organization
       end
     end
-  end
-
-  json_api do
-    type "project"
   end
 
   postgres do
@@ -84,6 +84,10 @@ defmodule RailswitchBackend.Flags.Project do
   relationships do
     belongs_to :organization, RailswitchBackend.Orgs.Organization do
       allow_nil? false
+      public? true
+    end
+
+    has_many :environments, RailswitchBackend.Flags.Environment do
       public? true
     end
 

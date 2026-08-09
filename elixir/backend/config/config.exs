@@ -21,9 +21,7 @@ config :ash,
   redact_sensitive_values_in_errors?: true,
   known_types: [AshPostgres.Timestamptz, AshPostgres.TimestamptzUsec]
 
-config :ash_json_api,
-  show_public_calculations_when_loaded?: false,
-  authorize_update_destroy_with_error?: true
+config :ash_graphql, authorize_update_destroy_with_error?: true
 
 config :ash_oban, pro?: false
 
@@ -31,10 +29,6 @@ config :ash_oban, pro?: false
 config :logger, :default_formatter,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-config :mime,
-  extensions: %{"json" => "application/vnd.api+json"},
-  types: %{"application/vnd.api+json" => ["json"]}
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
@@ -80,10 +74,10 @@ config :spark,
     remove_parens?: true,
     "Ash.Resource": [
       section_order: [
+        :graphql,
         :authentication,
         :token,
         :user_identity,
-        :json_api,
         :postgres,
         :resource,
         :code_interface,
@@ -104,7 +98,7 @@ config :spark,
       ]
     ],
     "Ash.Domain": [
-      section_order: [:json_api, :resources, :policies, :authorization, :domain, :execution]
+      section_order: [:graphql, :resources, :policies, :authorization, :domain, :execution]
     ]
   ]
 

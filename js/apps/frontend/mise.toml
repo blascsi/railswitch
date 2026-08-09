@@ -10,6 +10,23 @@ extends = "js:check"
 
 [tasks."check:ci"]
 extends = "js:check:ci"
+depends = ["gql:check"]
+
+[tasks.codegen]
+description = "Generate GraphQL data derived from the backend schema"
+depends = ["//elixir/backend:compile"]
+run = ["pnpm codegen"]
+
+[tasks."codegen:check"]
+description = "Check if the generated GraphQL files are up to date"
+run = [
+  "pnpm codegen",
+  "git diff --exit-code -- src/graphql/graphql-env.d.ts src/graphql/introspection.ts",
+]
+
+[tasks."gql:check"]
+description = "Run GraphQLSP diagnostics on GraphQL documents"
+run = ["pnpm exec gql-tada check --tsconfig ./tsconfig.app.json"]
 
 [tasks.build]
 depends = ["//js/packages/sdk:build"]

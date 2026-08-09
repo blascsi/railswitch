@@ -1,5 +1,8 @@
 defmodule RailswitchBackendWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :railswitch_backend
+  use Absinthe.Phoenix.Endpoint
+
+  socket "/ws/gql", RailswitchBackendWeb.GraphqlSocket, websocket: true, longpoll: true
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -45,7 +48,7 @@ defmodule RailswitchBackendWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:json, AshJsonApi.Plug.Parser],
+    parsers: [:json, Absinthe.Plug.Parser],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
@@ -55,7 +58,7 @@ defmodule RailswitchBackendWeb.Endpoint do
   plug Corsica,
     origins: {RailswitchBackendWeb.Cors, :allowed_origin?, []},
     allow_credentials: true,
-    allow_headers: ["content-type", "x-organization-id"]
+    allow_headers: ["content-type", "x-organization-id", "x-session"]
 
   plug RailswitchBackendWeb.Router
 end

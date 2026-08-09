@@ -4,9 +4,14 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
   use Ash.Resource,
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
+    extensions: [AshGraphql.Resource],
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
+
+  graphql do
+    type :project_api_key
+  end
 
   postgres do
     table "project_api_keys"
@@ -25,6 +30,11 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
       accept [:project_id]
 
       change {AshAuthentication.Strategy.ApiKey.GenerateApiKey, prefix: :railswitch, hash: :api_key_hash}
+
+      metadata :plaintext_api_key, :string do
+        description "The API key in plaintext. Only available on creation."
+        allow_nil? false
+      end
     end
   end
 
@@ -72,6 +82,7 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
 
     belongs_to :project, RailswitchBackend.Flags.Project do
       allow_nil? false
+      public? true
     end
   end
 

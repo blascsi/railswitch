@@ -102,6 +102,9 @@ jobs:
       - name: Check formatting & linting
         run: mise run //js:check:ci
 
+      - name: Check generated files
+        run: mise run //js:codegen:check
+
       - name: Typecheck
         run: mise run //js:typecheck
 

@@ -14,6 +14,14 @@ depends = ["//js/...:check"]
 description = "Check if all JS packages are linted and formatted properly"
 depends = ["//js/...:check:ci"]
 
+[tasks.codegen]
+description = "Run all code generation scripts in JS projects"
+depends = ["//js/...:codegen"]
+
+[tasks."codegen:check"]
+description = "Check if the generated files of all JS packages are up to date"
+depends = ["//js/...:codegen:check"]
+
 [tasks.typecheck]
 description = "Typecheck all JS packages"
 depends = ["//js/...:typecheck"]

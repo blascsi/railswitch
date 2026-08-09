@@ -1,7 +1,7 @@
 defmodule RailswitchBackendWeb.OrganizationFlowTest do
   @moduledoc """
-  End-to-end organization & membership tests through the JSON:API, including
-  multitenancy via the `x-organization-id` header.
+  End-to-end organization & membership tests through the GraphQL API,
+  including multitenancy via the `x-organization-id` header.
   """
   use RailswitchBackendWeb.ConnCase, async: true
   use Ash.Generator
@@ -12,38 +12,113 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
 
   require Ash.Query
 
-  describe "POST /organizations" do
+  @create_organization """
+  mutation CreateOrganization($name: String!) {
+    createOrganization(input: {name: $name}) {
+      result { id name }
+      errors { code message }
+    }
+  }
+  """
+
+  @list_organizations """
+  query {
+    listOrganizations { results { id name } }
+  }
+  """
+
+  @get_organization """
+  query GetOrganization($id: ID!) {
+    getOrganization(id: $id) { id name }
+  }
+  """
+
+  @update_organization """
+  mutation UpdateOrganization($id: ID!, $name: String!) {
+    updateOrganization(id: $id, input: {name: $name}) {
+      result { id name }
+      errors { code message }
+    }
+  }
+  """
+
+  @delete_organization """
+  mutation DeleteOrganization($id: ID!) {
+    deleteOrganization(id: $id) {
+      result { id }
+      errors { code message }
+    }
+  }
+  """
+
+  @list_memberships """
+  query {
+    listMemberships {
+      results {
+        id
+        role
+        user { id email }
+      }
+    }
+  }
+  """
+
+  @list_environments """
+  query {
+    listEnvironments { results { id name } }
+  }
+  """
+
+  @add_member """
+  mutation AddMember($userId: ID!, $organizationId: ID!) {
+    addMember(input: {userId: $userId, organizationId: $organizationId, role: MEMBER}) {
+      result { id role }
+      errors { code message }
+    }
+  }
+  """
+
+  @change_member_role """
+  mutation ChangeMemberRole($id: ID!) {
+    changeMemberRole(id: $id, input: {role: OWNER}) {
+      result { id role }
+      errors { code message }
+    }
+  }
+  """
+
+  @remove_member """
+  mutation RemoveMember($id: ID!) {
+    removeMember(id: $id) {
+      result { id }
+      errors { code message }
+    }
+  }
+  """
+
+  describe "createOrganization mutation" do
     test "an authenticated user creates an organization and becomes its owner", %{conn: conn} do
       user = generate(AccountsGenerator.user())
 
-      body =
-        Jason.encode!(%{
-          "data" => %{"type" => "organization", "attributes" => %{"name" => "Acme"}}
-        })
+      conn = gql(authed(conn, user), @create_organization, %{"name" => "Acme"})
 
-      conn = post(authed(conn, user), "/api/json/organizations", body)
+      assert %{"data" => %{"createOrganization" => %{"result" => result, "errors" => []}}} =
+               json(conn)
 
-      assert conn.status == 201
-      assert data(conn)["attributes"]["name"] == "Acme"
+      assert result["name"] == "Acme"
     end
 
     test "an unauthenticated request cannot create an organization", %{conn: conn} do
-      body =
-        Jason.encode!(%{
-          "data" => %{"type" => "organization", "attributes" => %{"name" => "Nope"}}
-        })
+      conn = gql(conn, @create_organization, %{"name" => "Nope"})
 
-      conn =
-        conn
-        |> put_req_header("content-type", "application/vnd.api+json")
-        |> put_req_header("accept", "application/vnd.api+json")
-        |> post("/api/json/organizations", body)
+      assert %{"data" => %{"createOrganization" => %{"result" => nil, "errors" => errors}}} =
+               json(conn)
 
-      assert conn.status == 403
+      assert Enum.any?(errors, &(&1["code"] == "forbidden"))
     end
   end
 
-  describe "GET /organizations" do
+  describe "organization queries" do
     test "lists only organizations the actor belongs to", %{conn: conn} do
       user = generate(AccountsGenerator.user())
       mine = generate(OrgsGenerator.organization(name: "Mine", actor: user))
@@ -51,22 +126,20 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       other = generate(AccountsGenerator.user())
       _theirs = generate(OrgsGenerator.organization(name: "Theirs", actor: other))
 
-      conn = get(authed(conn, user), "/api/json/organizations")
+      conn = gql(authed(conn, user), @list_organizations)
 
-      assert conn.status == 200
-      ids = Enum.map(data(conn), & &1["id"])
-      assert mine.id in ids
-      refute Enum.any?(data(conn), &(&1["attributes"]["name"] == "Theirs"))
+      assert %{"data" => %{"listOrganizations" => %{"results" => results}}} = json(conn)
+      assert mine.id in Enum.map(results, & &1["id"])
+      refute Enum.any?(results, &(&1["name"] == "Theirs"))
     end
 
     test "a member can fetch an organization by id", %{conn: conn} do
       user = generate(AccountsGenerator.user())
       org = generate(OrgsGenerator.organization(name: "Readable", actor: user))
 
-      conn = get(authed(conn, user), "/api/json/organizations/#{org.id}")
+      conn = gql(authed(conn, user), @get_organization, %{"id" => org.id})
 
-      assert conn.status == 200
-      assert data(conn)["attributes"]["name"] == "Readable"
+      assert %{"data" => %{"getOrganization" => %{"name" => "Readable"}}} = json(conn)
     end
 
     test "a non-member cannot fetch an organization by id", %{conn: conn} do
@@ -74,41 +147,35 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       org = generate(OrgsGenerator.organization(actor: owner))
       outsider = generate(AccountsGenerator.user())
 
-      conn = get(authed(conn, outsider), "/api/json/organizations/#{org.id}")
+      conn = gql(authed(conn, outsider), @get_organization, %{"id" => org.id})
 
-      assert conn.status == 404
+      assert %{"data" => %{"getOrganization" => nil}} = json(conn)
     end
   end
 
-  describe "PATCH /organizations/:id" do
+  describe "updateOrganization mutation" do
     test "an owner can rename the organization", %{conn: conn} do
       user = generate(AccountsGenerator.user())
       org = generate(OrgsGenerator.organization(name: "Before", actor: user))
 
-      body =
-        Jason.encode!(%{
-          "data" => %{
-            "type" => "organization",
-            "id" => org.id,
-            "attributes" => %{"name" => "After"}
-          }
-        })
+      conn =
+        gql(authed(conn, user), @update_organization, %{"id" => org.id, "name" => "After"})
 
-      conn = patch(authed(conn, user), "/api/json/organizations/#{org.id}", body)
+      assert %{"data" => %{"updateOrganization" => %{"result" => result, "errors" => []}}} =
+               json(conn)
 
-      assert conn.status == 200
-      assert data(conn)["attributes"]["name"] == "After"
+      assert result["name"] == "After"
     end
   end
 
-  describe "DELETE /organizations/:id" do
+  describe "deleteOrganization mutation" do
     test "an owner can delete the organization", %{conn: conn} do
       user = generate(AccountsGenerator.user())
       org = generate(OrgsGenerator.organization(actor: user))
 
-      conn = delete(authed(conn, user), "/api/json/organizations/#{org.id}")
+      conn = gql(authed(conn, user), @delete_organization, %{"id" => org.id})
 
-      assert conn.status in [200, 204]
+      assert %{"data" => %{"deleteOrganization" => %{"errors" => []}}} = json(conn)
     end
   end
 
@@ -125,27 +192,42 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
         conn
         |> authed(user)
         |> put_req_header("x-organization-id", org_a.id)
-        |> get("/api/json/memberships")
+        |> gql(@list_memberships)
 
-      assert conn.status == 200
-      ids = Enum.map(data(conn), & &1["id"])
+      assert %{"data" => %{"listMemberships" => %{"results" => results}}} = json(conn)
+      ids = Enum.map(results, & &1["id"])
 
       # The user owns both orgs, but the tenant header scopes the read to org A.
       assert membership_a in ids
       refute membership_b in ids
     end
 
-    test "rejects an invalid x-organization-id header", %{conn: conn} do
+    test "ignores a malformed x-organization-id header", %{conn: conn} do
       user = generate(AccountsGenerator.user())
+      org_a = generate(OrgsGenerator.organization(name: "A", actor: user))
+      org_b = generate(OrgsGenerator.organization(name: "B", actor: user))
 
       conn =
         conn
         |> authed(user)
         |> put_req_header("x-organization-id", "not-a-uuid")
-        |> get("/api/json/memberships")
+        |> gql(@list_memberships)
 
-      assert conn.status == 400
-      assert %{"errors" => [%{"code" => "invalid_header"}]} = Jason.decode!(conn.resp_body)
+      # A malformed id cannot identify any organization, so it is treated the
+      # same as omitting the header: the (global) membership read is unscoped.
+      assert %{"data" => %{"listMemberships" => %{"results" => results}}} = json(conn)
+      ids = Enum.map(results, & &1["id"])
+      assert owner_membership_id(org_a) in ids
+      assert owner_membership_id(org_b) in ids
+    end
+
+    test "a tenant-requiring query without the header returns tenant_not_provided", %{conn: conn} do
+      user = generate(AccountsGenerator.user())
+
+      conn = gql(authed(conn, user), @list_environments)
+
+      assert %{"errors" => errors} = json(conn)
+      assert Enum.any?(errors, &(&1["code"] == "tenant_not_provided"))
     end
   end
 
@@ -156,9 +238,12 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       member = generate(AccountsGenerator.user())
 
       conn =
-        post(authed(conn, owner), "/api/json/memberships", membership_body(org, member, :member))
+        gql(authed(conn, owner), @add_member, %{
+          "userId" => member.id,
+          "organizationId" => org.id
+        })
 
-      assert conn.status == 201
+      assert %{"data" => %{"addMember" => %{"errors" => []}}} = json(conn)
 
       assert Membership
              |> Ash.Query.filter(organization_id == ^org.id and user_id == ^member.id)
@@ -173,15 +258,14 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
 
       generate(OrgsGenerator.membership(organization_id: org.id, user_id: member.id, actor: owner))
 
-      conn = get(authed(conn, owner), "/api/json/memberships?include=user")
+      conn = gql(authed(conn, owner), @list_memberships)
 
-      assert conn.status == 200
-      body = Jason.decode!(conn.resp_body)
+      assert %{"data" => %{"listMemberships" => %{"results" => results}}} = json(conn)
 
-      emails = Enum.map(body["included"], & &1["attributes"]["email"])
+      emails = Enum.map(results, &get_in(&1, ["user", "email"]))
       assert member_email in emails
 
-      user_ids = Enum.map(body["data"], &get_in(&1, ["relationships", "user", "data", "id"]))
+      user_ids = Enum.map(results, &get_in(&1, ["user", "id"]))
       assert member.id in user_ids
 
       refute conn.resp_body =~ "hashed_password"
@@ -197,13 +281,13 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       outsider = generate(AccountsGenerator.user())
 
       conn =
-        post(
-          authed(conn, member),
-          "/api/json/memberships",
-          membership_body(org, outsider, :member)
-        )
+        gql(authed(conn, member), @add_member, %{
+          "userId" => outsider.id,
+          "organizationId" => org.id
+        })
 
-      assert conn.status == 403
+      assert %{"data" => %{"addMember" => %{"result" => nil, "errors" => errors}}} = json(conn)
+      assert Enum.any?(errors, &(&1["code"] == "forbidden"))
     end
 
     test "an owner can change a member's role", %{conn: conn} do
@@ -214,19 +298,12 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       membership =
         generate(OrgsGenerator.membership(organization_id: org.id, user_id: member.id, actor: owner))
 
-      body =
-        Jason.encode!(%{
-          "data" => %{
-            "type" => "membership",
-            "id" => membership.id,
-            "attributes" => %{"role" => "owner"}
-          }
-        })
+      conn = gql(authed(conn, owner), @change_member_role, %{"id" => membership.id})
 
-      conn = patch(authed(conn, owner), "/api/json/memberships/#{membership.id}", body)
+      assert %{"data" => %{"changeMemberRole" => %{"result" => result, "errors" => []}}} =
+               json(conn)
 
-      assert conn.status == 200
-      assert data(conn)["attributes"]["role"] == "owner"
+      assert result["role"] == "OWNER"
     end
 
     test "a member can remove themselves", %{conn: conn} do
@@ -237,38 +314,31 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       membership =
         generate(OrgsGenerator.membership(organization_id: org.id, user_id: member.id, actor: owner))
 
-      conn = delete(authed(conn, member), "/api/json/memberships/#{membership.id}")
+      conn = gql(authed(conn, member), @remove_member, %{"id" => membership.id})
 
-      assert conn.status in [200, 204]
+      assert %{"data" => %{"removeMember" => %{"errors" => []}}} = json(conn)
     end
   end
 
   defp authed(conn, user) do
-    conn
-    |> put_req_header("content-type", "application/vnd.api+json")
-    |> put_req_header("accept", "application/vnd.api+json")
-    |> put_req_header("cookie", "railswitch_token=#{user.__metadata__.token}")
+    put_req_header(conn, "cookie", "railswitch_token=#{user.__metadata__.token}")
   end
 
-  defp data(conn), do: Jason.decode!(conn.resp_body)["data"]
+  defp gql(conn, query, variables \\ %{}) do
+    conn
+    |> put_req_header("content-type", "application/json")
+    |> post("/gql", Jason.encode!(%{"query" => query, "variables" => variables}))
+  end
+
+  defp json(conn) do
+    assert conn.status == 200
+    Jason.decode!(conn.resp_body)
+  end
 
   defp owner_membership_id(org) do
     Membership
     |> Ash.Query.filter(organization_id == ^org.id and role == :owner)
     |> Ash.read_one!(authorize?: false)
     |> Map.fetch!(:id)
-  end
-
-  defp membership_body(org, user, role) do
-    Jason.encode!(%{
-      "data" => %{
-        "type" => "membership",
-        "attributes" => %{
-          "role" => to_string(role),
-          "user_id" => user.id,
-          "organization_id" => org.id
-        }
-      }
-    })
   end
 end

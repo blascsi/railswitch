@@ -40,14 +40,14 @@ defmodule RailswitchBackend.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:absinthe_phoenix, "~> 2.0"},
+      {:ash_graphql, "~> 1.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:picosat_elixir, "~> 0.2"},
       {:sourceror, "~> 1.8", only: [:dev, :test]},
       {:oban, "~> 2.0"},
-      {:open_api_spex, "~> 3.0"},
       {:ash_oban, "~> 0.8"},
       {:ash_authentication, "~> 4.0"},
-      {:ash_json_api, "~> 1.0"},
       {:ash_postgres, "~> 2.0"},
       {:ash, "~> 3.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
@@ -80,9 +80,6 @@ defmodule RailswitchBackend.MixProject do
       setup: ["deps.get", "ash.setup", "run priv/repo/seeds.exs"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "openapi.generate": [
-        "openapi.spec.json --spec RailswitchBackendWeb.AshJsonApiRouter --vendor-extensions=false --start-app=false --pretty=true generated/openapi.json"
-      ],
       test: ["ash.setup --quiet", "test"],
       precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"]
     ]

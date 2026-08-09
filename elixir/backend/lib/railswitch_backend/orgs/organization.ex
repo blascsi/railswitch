@@ -5,13 +5,13 @@ defmodule RailswitchBackend.Orgs.Organization do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Orgs,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshJsonApi.Resource],
+    extensions: [AshGraphql.Resource],
     data_layer: AshPostgres.DataLayer
 
   alias RailswitchBackend.Orgs.Membership
 
-  json_api do
-    type "organization"
+  graphql do
+    type :organization
   end
 
   postgres do

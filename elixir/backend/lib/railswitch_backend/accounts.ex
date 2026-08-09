@@ -1,28 +1,33 @@
 defmodule RailswitchBackend.Accounts do
   @moduledoc false
 
-  use Ash.Domain,
-    otp_app: :railswitch_backend,
-    extensions: [AshJsonApi.Domain]
+  use Ash.Domain, otp_app: :railswitch_backend, extensions: [AshGraphql.Domain]
 
   alias RailswitchBackend.Accounts.User
+  alias RailswitchBackendWeb.GraphqlAuth
 
-  json_api do
-    routes do
-      base_route "/users", User do
-        post :register_with_password do
-          route "/register"
-          metadata &remember_me_metadata/3
-        end
+  graphql do
+    queries do
+      read_one User, :current_user, :current_user
 
-        post :sign_in_with_password do
-          route "/sign-in"
-          metadata &remember_me_metadata/3
-        end
-
-        get :current_user, route: "/me"
-        delete :destroy
+      # Sign-in is a read action, but it mints a token (a side effect), so it
+      # is exposed as a mutation. GraphqlAuth moves the token into cookies.
+      read_one User, :sign_in, :sign_in_with_password do
+        as_mutation? true
+        modify_resolution {GraphqlAuth, :store_tokens, []}
       end
+    end
+
+    mutations do
+      create User, :register, :register_with_password do
+        modify_resolution {GraphqlAuth, :store_tokens, []}
+      end
+
+      action User, :sign_out, :sign_out do
+        modify_resolution {GraphqlAuth, :mark_signed_out, []}
+      end
+
+      destroy User, :delete_user, :destroy
     end
   end
 
@@ -46,15 +51,6 @@ defmodule RailswitchBackend.Accounts do
         args: [:current_password, :password, :password_confirmation]
 
       define :delete_user, action: :destroy
-    end
-  end
-
-  defp remember_me_metadata(_subject, user, _request) do
-    meta = %{token: user.__metadata__.token}
-
-    case Map.get(user.__metadata__, :remember_me) do
-      nil -> meta
-      rm -> Map.put(meta, :remember_me, rm)
     end
   end
 end

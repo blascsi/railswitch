@@ -5,15 +5,13 @@ defmodule RailswitchBackend.Orgs.Membership do
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Orgs,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshJsonApi.Resource],
+    extensions: [AshGraphql.Resource],
     data_layer: AshPostgres.DataLayer
 
   alias RailswitchBackend.Orgs.Membership.Changes.EnsureRemainingOwner
 
-  json_api do
-    type "membership"
-
-    includes [:user]
+  graphql do
+    type :membership
   end
 
   postgres do
@@ -86,8 +84,7 @@ defmodule RailswitchBackend.Orgs.Membership do
   attributes do
     uuid_v7_primary_key :id
 
-    attribute :role, :atom do
-      constraints one_of: [:owner, :member]
+    attribute :role, RailswitchBackend.Orgs.Membership.Types.Role do
       default :member
       allow_nil? false
       public? true

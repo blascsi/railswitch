@@ -1,9 +1,10 @@
 [
   import_deps: [
+    :ash_graphql,
+    :absinthe,
     :ash_oban,
     :oban,
     :ash_authentication,
-    :ash_json_api,
     :ash_postgres,
     :ash,
     :reactor,
@@ -13,5 +14,5 @@
   ],
   subdirectories: ["priv/*/migrations"],
   inputs: ["*.{ex,exs}", "{config,lib,test}/**/*.{ex,exs}", "priv/*/seeds.exs"],
-  plugins: [Spark.Formatter, Styler]
+  plugins: [Absinthe.Formatter, Spark.Formatter, Styler]
 ]

@@ -1,106 +1,121 @@
 defmodule RailswitchBackendWeb.AuthFlowTest do
   @moduledoc """
-  End-to-end authentication tests through the JSON:API.
+  End-to-end authentication tests through the GraphQL API.
   """
   use RailswitchBackendWeb.ConnCase, async: true
   use Ash.Generator
 
+  alias AshAuthentication.TokenResource
   alias RailswitchBackend.Accounts
+  alias RailswitchBackend.Accounts.Token
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Orgs.Membership
   alias RailswitchBackend.Orgs.Organization
+  alias RailswitchBackendWeb.Plugs.RememberMe
 
   require Ash.Query
 
   @auth_cookie "railswitch_token"
   @remember_cookie "railswitch_remember_me"
 
-  describe "POST /users/register" do
-    test "registers, sets the auth cookie, and strips the token from the body", %{conn: conn} do
-      conn =
-        post(
-          with_json_api_headers(conn),
-          "/api/json/users/register",
-          register_body("reg@example.com")
-        )
+  @register_mutation """
+  mutation Register($input: RegisterInput!) {
+    register(input: $input) {
+      result { id email }
+      errors { code message }
+    }
+  }
+  """
 
-      assert conn.status == 201
+  @sign_in_mutation """
+  mutation SignIn($email: String!, $password: String!, $rememberMe: Boolean) {
+    signIn(email: $email, password: $password, rememberMe: $rememberMe) {
+      id
+      email
+    }
+  }
+  """
+
+  @sign_out_mutation """
+  mutation {
+    signOut
+  }
+  """
+
+  @current_user_query """
+  query {
+    currentUser { id email }
+  }
+  """
+
+  @delete_user_mutation """
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      result { id }
+      errors { code message }
+    }
+  }
+  """
+
+  describe "register mutation" do
+    test "registers, sets the auth cookie, and keeps the token out of the body", %{conn: conn} do
+      conn = gql(conn, @register_mutation, %{"input" => register_input("reg@example.com")})
+
+      assert %{"data" => %{"register" => %{"result" => result, "errors" => []}}} = json(conn)
+      assert result["email"] == "reg@example.com"
       assert is_binary(auth_cookie_value(conn))
-
-      body = Jason.decode!(conn.resp_body)
-      assert body["data"]["attributes"]["email"] == "reg@example.com"
       # The JWT must never reach the client through the response body.
-      assert body["meta"] in [nil, %{}]
-      refute conn.resp_body =~ "\"token\""
+      refute conn.resp_body =~ "token"
     end
 
-    test "sets a remember-me cookie when remember_me is requested", %{conn: conn} do
-      conn =
-        post(
-          with_json_api_headers(conn),
-          "/api/json/users/register",
-          register_body("rememberme@example.com", remember_me: true)
-        )
+    test "sets a remember-me cookie when rememberMe is requested", %{conn: conn} do
+      input = Map.put(register_input("rememberme@example.com"), "rememberMe", true)
+      conn = gql(conn, @register_mutation, %{"input" => input})
 
-      assert conn.status == 201
+      assert %{"data" => %{"register" => %{"errors" => []}}} = json(conn)
       assert is_binary(conn.resp_cookies[@remember_cookie][:value])
       assert conn.resp_cookies[@remember_cookie][:max_age] == 2_592_000
     end
   end
 
-  describe "POST /users/sign-in" do
+  describe "signIn mutation" do
     test "signs in an existing user and sets the auth cookie", %{conn: conn} do
       email = "si@example.com"
       password = "password1234"
       generate(AccountsGenerator.user(email: email, password: password))
 
-      conn =
-        post(
-          with_json_api_headers(conn),
-          "/api/json/users/sign-in",
-          signin_body(email, password)
-        )
+      conn = gql(conn, @sign_in_mutation, %{"email" => email, "password" => password})
 
-      assert conn.status == 201
+      assert %{"data" => %{"signIn" => %{"email" => ^email}}} = json(conn)
       assert is_binary(auth_cookie_value(conn))
-      refute conn.resp_body =~ "\"token\""
+      refute conn.resp_body =~ "token"
     end
 
     test "rejects an invalid password", %{conn: conn} do
       email = "si2@example.com"
       generate(AccountsGenerator.user(email: email, password: "password1234"))
 
-      conn =
-        post(
-          with_json_api_headers(conn),
-          "/api/json/users/sign-in",
-          signin_body(email, "wrongpassword")
-        )
+      conn = gql(conn, @sign_in_mutation, %{"email" => email, "password" => "wrongpassword"})
 
-      # A generic 401 (see lib/railswitch_backend_web/ash_json_api_errors.ex) that
-      # doesn't reveal whether the email or the password was wrong.
-      assert conn.status == 401
-
-      assert Jason.decode!(conn.resp_body)["errors"] |> hd() |> Map.get("code") ==
-               "authentication_failed"
-
+      # A generic error that doesn't reveal whether the email or the password
+      # was wrong.
+      assert %{"data" => %{"signIn" => nil}, "errors" => errors} = json(conn)
+      assert Enum.any?(errors, &(&1["code"] == "authentication_failed"))
       assert is_nil(auth_cookie_value(conn))
     end
   end
 
-  describe "GET /users/me" do
+  describe "currentUser query" do
     test "returns the current user when the auth cookie is present", %{conn: conn} do
       email = "me@example.com"
       user = generate(AccountsGenerator.user(email: email))
 
       conn =
         conn
-        |> with_json_api_headers()
         |> put_req_header("cookie", "#{@auth_cookie}=#{user.__metadata__.token}")
-        |> get("/api/json/users/me")
+        |> gql(@current_user_query)
 
-      assert conn.status == 200
-      assert Jason.decode!(conn.resp_body)["data"]["attributes"]["email"] == email
+      assert %{"data" => %{"currentUser" => %{"email" => ^email}}} = json(conn)
     end
 
     test "works with a bearer token for non-browser clients", %{conn: conn} do
@@ -109,26 +124,25 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
 
       conn =
         conn
-        |> with_json_api_headers()
         |> put_req_header("authorization", "Bearer #{user.__metadata__.token}")
-        |> get("/api/json/users/me")
+        |> gql(@current_user_query)
 
-      assert conn.status == 200
-      assert Jason.decode!(conn.resp_body)["data"]["attributes"]["email"] == email
+      assert %{"data" => %{"currentUser" => %{"email" => ^email}}} = json(conn)
     end
 
     test "does not return a user without authentication", %{conn: conn} do
       generate(AccountsGenerator.user(email: "wontsee@example.com"))
-      conn = get(with_json_api_headers(conn), "/api/json/users/me")
 
-      # `current_user` is a get-action filtered to the actor, so with no actor it
-      # resolves to nothing → 404 rather than a hard 403.
-      assert conn.status == 404
+      conn = gql(conn, @current_user_query)
+
+      # `current_user` is filtered to the actor, so with no actor it resolves
+      # to nothing.
+      assert %{"data" => %{"currentUser" => nil}} = json(conn)
       refute conn.resp_body =~ "@example.com"
     end
   end
 
-  describe "DELETE /users/:id" do
+  describe "deleteUser mutation" do
     test "a user can delete their own account once they own no organizations", %{conn: conn} do
       email = "del@example.com"
       user = generate(AccountsGenerator.user(email: email))
@@ -136,11 +150,10 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
 
       conn =
         conn
-        |> with_json_api_headers()
         |> put_req_header("cookie", "#{@auth_cookie}=#{user.__metadata__.token}")
-        |> delete("/api/json/users/#{user.id}")
+        |> gql(@delete_user_mutation, %{"id" => user.id})
 
-      assert conn.status in [200, 204]
+      assert %{"data" => %{"deleteUser" => %{"errors" => []}}} = json(conn)
       assert {:error, _} = Accounts.sign_in_user(email, "password1234")
     end
 
@@ -150,11 +163,9 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
 
       conn =
         conn
-        |> with_json_api_headers()
         |> put_req_header("cookie", "#{@auth_cookie}=#{user.__metadata__.token}")
-        |> delete("/api/json/users/#{user.id}")
+        |> gql(@delete_user_mutation, %{"id" => user.id})
 
-      assert conn.status >= 400
       assert conn.resp_body =~ "only owner"
       assert {:ok, _} = Accounts.sign_in_user(email, "password1234")
     end
@@ -170,43 +181,160 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
       # cookie had expired. The RememberMe plug should silently re-authenticate.
       conn =
         conn
-        |> with_json_api_headers()
         |> put_req_header("cookie", "#{@remember_cookie}=#{remember_token}")
-        |> get("/api/json/users/me")
+        |> gql(@current_user_query)
 
-      assert conn.status == 200
-      assert Jason.decode!(conn.resp_body)["data"]["attributes"]["email"] == email
+      assert %{"data" => %{"currentUser" => %{"email" => ^email}}} = json(conn)
       # A fresh session cookie should have been minted by the plug.
       assert is_binary(auth_cookie_value(conn))
     end
+
+    test "a token close to expiry is rotated and the old one revoked", %{conn: conn} do
+      email = "rotate@example.com"
+      user = generate(AccountsGenerator.user(email: email, remember_me: true))
+      old_token = user.__metadata__.remember_me.token
+
+      # A fresh 30-day token inside a 31-day refresh window counts as close to
+      # expiry, so this request must rotate.
+      opts = RememberMe.init(refresh_within: {31, :days})
+
+      conn =
+        conn
+        |> put_req_header("cookie", "#{@remember_cookie}=#{old_token}")
+        |> RememberMe.call(opts)
+
+      assert to_string(conn.assigns.current_user.email) == email
+      assert is_binary(auth_cookie_value(conn))
+
+      new_cookie = conn.resp_cookies[@remember_cookie]
+      assert is_binary(new_cookie[:value])
+      refute new_cookie[:value] == old_token
+      assert new_cookie[:max_age] == 2_592_000
+
+      assert TokenResource.Actions.token_revoked?(Token, old_token)
+    end
   end
 
-  defp with_json_api_headers(conn) do
+  describe "signOut mutation" do
+    test "revokes both tokens and clears both cookies", %{conn: conn} do
+      user = generate(AccountsGenerator.user(email: "out@example.com", remember_me: true))
+      token = user.__metadata__.token
+      remember_token = user.__metadata__.remember_me.token
+
+      conn =
+        conn
+        |> put_req_header(
+          "cookie",
+          "#{@auth_cookie}=#{token}; #{@remember_cookie}=#{remember_token}"
+        )
+        |> gql(@sign_out_mutation)
+
+      assert %{"data" => %{"signOut" => "SUCCESSFUL_SIGNOUT"}} = json(conn)
+
+      assert conn.resp_cookies[@auth_cookie][:max_age] == 0
+      assert conn.resp_cookies[@remember_cookie][:max_age] == 0
+
+      assert TokenResource.Actions.token_revoked?(Token, token)
+      assert TokenResource.Actions.token_revoked?(Token, remember_token)
+    end
+
+    test "the revoked token can no longer authenticate", %{conn: conn} do
+      user = generate(AccountsGenerator.user(email: "revoked@example.com"))
+      token = user.__metadata__.token
+
+      conn
+      |> put_req_header("cookie", "#{@auth_cookie}=#{token}")
+      |> gql(@sign_out_mutation)
+
+      replayed =
+        build_conn()
+        |> put_req_header("cookie", "#{@auth_cookie}=#{token}")
+        |> gql(@current_user_query)
+
+      assert %{"data" => %{"currentUser" => nil}} = json(replayed)
+    end
+
+    test "signing out without a session is refused", %{conn: conn} do
+      conn = gql(conn, @sign_out_mutation)
+
+      assert %{"errors" => [_ | _]} = json(conn)
+    end
+  end
+
+  describe "expired session rejection" do
+    test "a client claiming a session it no longer has is rejected", %{conn: conn} do
+      conn =
+        conn
+        |> put_req_header("x-session", "active")
+        |> put_req_header("cookie", "#{@auth_cookie}=not-a-real-token")
+        |> gql(@current_user_query)
+
+      assert conn.status == 401
+      # The stale cookie is cleared, so the client stops presenting it.
+      assert conn.resp_cookies[@auth_cookie][:max_age] == 0
+    end
+
+    test "a signed-out client is never rejected, even carrying a stale cookie", %{conn: conn} do
+      email = "stale@example.com"
+      generate(AccountsGenerator.user(email: email))
+
+      # No x-session header: this is the login page retrying after the session
+      # died, with the dead cookie still attached by the browser.
+      conn =
+        conn
+        |> put_req_header("cookie", "#{@auth_cookie}=not-a-real-token")
+        |> gql(@sign_in_mutation, %{"email" => email, "password" => "password1234"})
+
+      assert %{"data" => %{"signIn" => %{"email" => ^email}}} = json(conn)
+    end
+
+    test "a live session with the header passes through", %{conn: conn} do
+      email = "live@example.com"
+      user = generate(AccountsGenerator.user(email: email))
+
+      conn =
+        conn
+        |> put_req_header("x-session", "active")
+        |> put_req_header("cookie", "#{@auth_cookie}=#{user.__metadata__.token}")
+        |> gql(@current_user_query)
+
+      assert %{"data" => %{"currentUser" => %{"email" => ^email}}} = json(conn)
+    end
+
+    test "remember-me re-login wins over rejection", %{conn: conn} do
+      email = "remembered@example.com"
+      user = generate(AccountsGenerator.user(email: email, remember_me: true))
+      remember_token = user.__metadata__.remember_me.token
+
+      conn =
+        conn
+        |> put_req_header("x-session", "active")
+        |> put_req_header("cookie", "#{@remember_cookie}=#{remember_token}")
+        |> gql(@current_user_query)
+
+      assert %{"data" => %{"currentUser" => %{"email" => ^email}}} = json(conn)
+    end
+  end
+
+  defp gql(conn, query, variables \\ %{}) do
     conn
-    |> put_req_header("content-type", "application/vnd.api+json")
-    |> put_req_header("accept", "application/vnd.api+json")
+    |> put_req_header("content-type", "application/json")
+    |> post("/gql", Jason.encode!(%{"query" => query, "variables" => variables}))
   end
 
-  defp register_body(email, opts \\ []) do
+  defp json(conn) do
+    assert conn.status == 200
+    Jason.decode!(conn.resp_body)
+  end
+
+  defp register_input(email) do
     password = "password1234"
 
-    attrs =
-      Map.merge(
-        %{
-          "email" => email,
-          "password" => password,
-          "password_confirmation" => password
-        },
-        Map.new(opts, fn {k, v} -> {to_string(k), v} end)
-      )
-
-    Jason.encode!(%{"data" => %{"type" => "user", "attributes" => attrs}})
-  end
-
-  defp signin_body(email, password) do
-    Jason.encode!(%{
-      "data" => %{"type" => "user", "attributes" => %{"email" => email, "password" => password}}
-    })
+    %{
+      "email" => email,
+      "password" => password,
+      "passwordConfirmation" => password
+    }
   end
 
   defp auth_cookie_value(conn), do: conn.resp_cookies[@auth_cookie][:value]

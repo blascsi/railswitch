@@ -1,5 +1,11 @@
 {
+  "format_on_save": "on",
   "lsp": {
+    "biome": {
+      "settings": {
+        "config_path": "js/packages/config/biome.json",
+      },
+    },
     "expert": {
       "initialization_options": {
         "mix_project_paths": ["elixir/backend"],
@@ -25,14 +31,18 @@
     },
     "TypeScript": {
       "language_servers": ["typescript-language-server", "biome", "!eslint"],
-      "formatter": {
-        "language_server": { "name": "biome" },
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
       },
     },
     "TSX": {
       "language_servers": ["typescript-language-server", "biome", "!eslint"],
-      "formatter": {
-        "language_server": { "name": "biome" },
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true,
       },
     },
   },

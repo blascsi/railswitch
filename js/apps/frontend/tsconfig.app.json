@@ -2,6 +2,13 @@
   "extends": "@railswitch/config/tsconfig.app.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "plugins": [
+      {
+        "name": "gql.tada/ts-plugin",
+        "schema": "../../../elixir/backend/generated/schema.graphql",
+        "tadaOutputLocation": "./src/graphql/graphql-env.d.ts"
+      }
+    ]
   },
-  "include": ["src"],
+  "include": ["src"]
 }

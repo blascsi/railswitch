@@ -1,0 +1,84 @@
+import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
+import { FolderIcon } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "urql";
+import { FullPageLoader } from "../../../../components/feedback/FullPageLoader";
+import { CenteredContent } from "../../../../components/layout/CenteredContent";
+import {
+  ProjectsTable,
+  projectsTable_projects,
+} from "../../../../components/projects/ProjectsTable";
+import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
+import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
+import { graphql } from "../../../../graphql/graphql";
+import { loadQuery } from "../../../../utils/loadQuery";
+
+export const ProjectsPageQuery = graphql(
+  `
+  query ProjectsPage {
+    listProjects(sort: [{ field: NAME, order: ASC }]) {
+      count
+      results {
+        ...projectsTable_projects
+      }
+    }
+  }
+`,
+  [projectsTable_projects],
+);
+
+export const Route = createFileRoute(
+  "/_authenticated/_organizationRequired/projects/",
+)({
+  loader: async ({ context }) => {
+    await loadQuery(context.client, ProjectsPageQuery, {});
+  },
+  component: ProjectsPage,
+});
+
+function ProjectsPage() {
+  const [page] = useQuery({ query: ProjectsPageQuery });
+  const listProjects = page.data?.listProjects;
+  if (page.error && listProjects == null) {
+    throw page.error;
+  }
+
+  if (page.fetching && page.data == null) {
+    return <FullPageLoader />;
+  }
+
+  if (listProjects?.count === 0) {
+    return (
+      <CenteredContent>
+        <EmptyState
+          icon={<FolderIcon />}
+          title="No projects found"
+          description="Please double check if you are in the right organization, or start by creating some projects."
+          withIndicatorBackground
+        >
+          <EmptyState.Actions>
+            <LinkButton to="/projects/create">Create</LinkButton>
+          </EmptyState.Actions>
+        </EmptyState>
+      </CenteredContent>
+    );
+  }
+
+  return (
+    <Container>
+      <Stack>
+        <Group justify="space-between">
+          <Title>Projects</Title>
+          <LinkActionButton
+            to="/projects/create"
+            aria-label="Create new project"
+          >
+            <PlusIcon />
+          </LinkActionButton>
+        </Group>
+        <ProjectsTable projects={listProjects?.results ?? []} />
+      </Stack>
+    </Container>
+  );
+}
