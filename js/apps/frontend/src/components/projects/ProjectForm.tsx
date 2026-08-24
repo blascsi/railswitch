@@ -37,6 +37,7 @@ export function ProjectForm({
     mode: "uncontrolled",
     initialValues,
     validate: zod4Resolver(projectSchema),
+    validateInputOnChange: true,
   });
 
   const handleSubmit = form.onSubmit((values) =>

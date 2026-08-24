@@ -48,6 +48,7 @@ export function EnvironmentForm({
     mode: "uncontrolled",
     initialValues,
     validate: zod4Resolver(environmentSchema),
+    validateInputOnChange: true,
   });
 
   const handleSubmit = form.onSubmit((values) => {
