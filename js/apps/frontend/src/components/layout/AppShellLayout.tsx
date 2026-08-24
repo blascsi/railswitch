@@ -4,7 +4,7 @@ import { FolderIcon, HouseIcon } from "@phosphor-icons/react";
 import type { ReactNode } from "react";
 import { SignOutButton } from "../auth/SignOutButton";
 import { OrganizationSelector } from "../OrganizationSelector";
-import { NavbarLink } from "../routing/NavbarLink";
+import { NavbarLink } from "../routing/link-components/NavbarLink";
 
 type AppShellLayoutProps = {
   children: ReactNode;

@@ -6,7 +6,7 @@ import { onAuthenticationSuccess } from "../../auth/authenticationSuccess";
 import {
   AuthenticationForm,
   type AuthenticationFormValues,
-} from "../../components/forms/AuthenticationForm";
+} from "../../components/auth/AuthenticationForm";
 import { AuthLayout } from "../../components/layout/AuthLayout";
 import { LinkAnchor } from "../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../graphql/graphql";
