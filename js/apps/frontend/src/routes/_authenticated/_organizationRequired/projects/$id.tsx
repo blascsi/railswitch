@@ -55,7 +55,7 @@ function ProjectEditPage() {
   return (
     <Container>
       <Stack>
-        <Title>Create project</Title>
+        <Title>Update project</Title>
         <UpdateProjectForm project={page.data?.getProject} />
       </Stack>
     </Container>
