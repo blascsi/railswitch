@@ -1,7 +1,7 @@
 import { Alert, Button, Group, Stack, TextInput } from "@mantine/core";
 import { type UseFormReturnType, useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import * as z from "zod";
+import z from "zod";
 
 const projectSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),

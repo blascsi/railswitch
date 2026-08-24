@@ -9,7 +9,7 @@ import {
 import { type UseFormReturnType, useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import type { ReactNode } from "react";
-import * as z from "zod";
+import z from "zod";
 
 const authenticationSchema = z.object({
   email: z.string().trim().pipe(z.email("Enter a valid email address")),
