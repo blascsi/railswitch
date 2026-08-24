@@ -43,6 +43,8 @@ export function ProjectForm({
     onSubmit(projectSchema.parse(values), form),
   );
 
+  const isSubmitEnabled = form.isDirty() && form.isValid();
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack>
@@ -58,7 +60,7 @@ export function ProjectForm({
           {...form.getInputProps("name")}
         />
         <Group justify="flex-end">
-          <Button type="submit" loading={isPending}>
+          <Button type="submit" loading={isPending} disabled={!isSubmitEnabled}>
             {submitLabel}
           </Button>
         </Group>

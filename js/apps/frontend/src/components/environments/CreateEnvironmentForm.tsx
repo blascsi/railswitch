@@ -56,7 +56,10 @@ export function CreateEnvironmentForm({
     });
 
     if (data?.createEnvironment.result != null) {
-      navigate({ to: "/environments" });
+      navigate({
+        to: "/environments/$id",
+        params: { id: data.createEnvironment.result.id },
+      });
       return;
     }
 

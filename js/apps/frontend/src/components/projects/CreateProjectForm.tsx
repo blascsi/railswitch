@@ -40,7 +40,10 @@ export function CreateProjectForm() {
     });
 
     if (data?.createProject.result != null) {
-      navigate({ to: "/projects" });
+      navigate({
+        to: "/projects/$id",
+        params: { id: data.createProject.result.id },
+      });
       return;
     }
 
