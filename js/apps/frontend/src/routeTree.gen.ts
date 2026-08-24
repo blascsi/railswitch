@@ -16,6 +16,9 @@ import { Route as AnonymousLoginRouteImport } from './routes/_anonymous/login'
 import { Route as AnonymousSignupRouteImport } from './routes/_anonymous/signup'
 import { Route as AuthenticatedOrganizationRequiredRouteImport } from './routes/_authenticated/_organizationRequired'
 import { Route as AuthenticatedOrganizationRequiredHomeRouteImport } from './routes/_authenticated/_organizationRequired/home'
+import { Route as AuthenticatedOrganizationRequiredEnvironmentsIndexRouteImport } from './routes/_authenticated/_organizationRequired/environments/index'
+import { Route as AuthenticatedOrganizationRequiredEnvironmentsIdRouteImport } from './routes/_authenticated/_organizationRequired/environments/$id'
+import { Route as AuthenticatedOrganizationRequiredEnvironmentsCreateRouteImport } from './routes/_authenticated/_organizationRequired/environments/create'
 import { Route as AuthenticatedOrganizationRequiredProjectsIndexRouteImport } from './routes/_authenticated/_organizationRequired/projects/index'
 import { Route as AuthenticatedOrganizationRequiredProjectsIdRouteImport } from './routes/_authenticated/_organizationRequired/projects/$id'
 import { Route as AuthenticatedOrganizationRequiredProjectsCreateRouteImport } from './routes/_authenticated/_organizationRequired/projects/create'
@@ -54,6 +57,24 @@ const AuthenticatedOrganizationRequiredHomeRoute =
     path: '/home',
     getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
   } as any)
+const AuthenticatedOrganizationRequiredEnvironmentsIndexRoute =
+  AuthenticatedOrganizationRequiredEnvironmentsIndexRouteImport.update({
+    id: '/environments/',
+    path: '/environments/',
+    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
+  } as any)
+const AuthenticatedOrganizationRequiredEnvironmentsIdRoute =
+  AuthenticatedOrganizationRequiredEnvironmentsIdRouteImport.update({
+    id: '/environments/$id',
+    path: '/environments/$id',
+    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
+  } as any)
+const AuthenticatedOrganizationRequiredEnvironmentsCreateRoute =
+  AuthenticatedOrganizationRequiredEnvironmentsCreateRouteImport.update({
+    id: '/environments/create',
+    path: '/environments/create',
+    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
+  } as any)
 const AuthenticatedOrganizationRequiredProjectsIndexRoute =
   AuthenticatedOrganizationRequiredProjectsIndexRouteImport.update({
     id: '/projects/',
@@ -78,8 +99,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof AnonymousLoginRoute
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedOrganizationRequiredHomeRoute
+  '/environments/$id': typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
+  '/environments/create': typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
   '/projects/$id': typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   '/projects/create': typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
+  '/environments/': typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   '/projects/': typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -87,8 +111,11 @@ export interface FileRoutesByTo {
   '/login': typeof AnonymousLoginRoute
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedOrganizationRequiredHomeRoute
+  '/environments/$id': typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
+  '/environments/create': typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
   '/projects/$id': typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   '/projects/create': typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
+  '/environments': typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   '/projects': typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
 }
 export interface FileRoutesById {
@@ -100,8 +127,11 @@ export interface FileRoutesById {
   '/_anonymous/signup': typeof AnonymousSignupRoute
   '/_authenticated/_organizationRequired': typeof AuthenticatedOrganizationRequiredRouteWithChildren
   '/_authenticated/_organizationRequired/home': typeof AuthenticatedOrganizationRequiredHomeRoute
+  '/_authenticated/_organizationRequired/environments/$id': typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
+  '/_authenticated/_organizationRequired/environments/create': typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
   '/_authenticated/_organizationRequired/projects/$id': typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   '/_authenticated/_organizationRequired/projects/create': typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
+  '/_authenticated/_organizationRequired/environments/': typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   '/_authenticated/_organizationRequired/projects/': typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
 }
 export interface FileRouteTypes {
@@ -111,8 +141,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/home'
+    | '/environments/$id'
+    | '/environments/create'
     | '/projects/$id'
     | '/projects/create'
+    | '/environments/'
     | '/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -120,8 +153,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/home'
+    | '/environments/$id'
+    | '/environments/create'
     | '/projects/$id'
     | '/projects/create'
+    | '/environments'
     | '/projects'
   id:
     | '__root__'
@@ -132,8 +168,11 @@ export interface FileRouteTypes {
     | '/_anonymous/signup'
     | '/_authenticated/_organizationRequired'
     | '/_authenticated/_organizationRequired/home'
+    | '/_authenticated/_organizationRequired/environments/$id'
+    | '/_authenticated/_organizationRequired/environments/create'
     | '/_authenticated/_organizationRequired/projects/$id'
     | '/_authenticated/_organizationRequired/projects/create'
+    | '/_authenticated/_organizationRequired/environments/'
     | '/_authenticated/_organizationRequired/projects/'
   fileRoutesById: FileRoutesById
 }
@@ -194,6 +233,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationRequiredHomeRouteImport
       parentRoute: typeof AuthenticatedOrganizationRequiredRoute
     }
+    '/_authenticated/_organizationRequired/environments/': {
+      id: '/_authenticated/_organizationRequired/environments/'
+      path: '/environments'
+      fullPath: '/environments/'
+      preLoaderRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRouteImport
+      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
+    }
+    '/_authenticated/_organizationRequired/environments/$id': {
+      id: '/_authenticated/_organizationRequired/environments/$id'
+      path: '/environments/$id'
+      fullPath: '/environments/$id'
+      preLoaderRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIdRouteImport
+      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
+    }
+    '/_authenticated/_organizationRequired/environments/create': {
+      id: '/_authenticated/_organizationRequired/environments/create'
+      path: '/environments/create'
+      fullPath: '/environments/create'
+      preLoaderRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRouteImport
+      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
+    }
     '/_authenticated/_organizationRequired/projects/': {
       id: '/_authenticated/_organizationRequired/projects/'
       path: '/projects'
@@ -234,8 +294,11 @@ const AnonymousRouteWithChildren = AnonymousRoute._addFileChildren(
 
 interface AuthenticatedOrganizationRequiredRouteChildren {
   AuthenticatedOrganizationRequiredHomeRoute: typeof AuthenticatedOrganizationRequiredHomeRoute
+  AuthenticatedOrganizationRequiredEnvironmentsIdRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
+  AuthenticatedOrganizationRequiredEnvironmentsCreateRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
   AuthenticatedOrganizationRequiredProjectsIdRoute: typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   AuthenticatedOrganizationRequiredProjectsCreateRoute: typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
+  AuthenticatedOrganizationRequiredEnvironmentsIndexRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   AuthenticatedOrganizationRequiredProjectsIndexRoute: typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
 }
 
@@ -243,10 +306,16 @@ const AuthenticatedOrganizationRequiredRouteChildren: AuthenticatedOrganizationR
   {
     AuthenticatedOrganizationRequiredHomeRoute:
       AuthenticatedOrganizationRequiredHomeRoute,
+    AuthenticatedOrganizationRequiredEnvironmentsIdRoute:
+      AuthenticatedOrganizationRequiredEnvironmentsIdRoute,
+    AuthenticatedOrganizationRequiredEnvironmentsCreateRoute:
+      AuthenticatedOrganizationRequiredEnvironmentsCreateRoute,
     AuthenticatedOrganizationRequiredProjectsIdRoute:
       AuthenticatedOrganizationRequiredProjectsIdRoute,
     AuthenticatedOrganizationRequiredProjectsCreateRoute:
       AuthenticatedOrganizationRequiredProjectsCreateRoute,
+    AuthenticatedOrganizationRequiredEnvironmentsIndexRoute:
+      AuthenticatedOrganizationRequiredEnvironmentsIndexRoute,
     AuthenticatedOrganizationRequiredProjectsIndexRoute:
       AuthenticatedOrganizationRequiredProjectsIndexRoute,
   }
