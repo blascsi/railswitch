@@ -5,26 +5,28 @@
       "context": {
         "points": 101,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "points",
-                "operator": "gte",
-                "value": 100,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "points",
+                  "operator": "gte",
+                  "value": 100,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "greater_than_equals",
     },
@@ -33,26 +35,28 @@
       "context": {
         "points": 100,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "points",
-                "operator": "gte",
-                "value": 100,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "points",
+                  "operator": "gte",
+                  "value": 100,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "greater_than_equals",
     },
@@ -61,26 +65,28 @@
       "context": {
         "points": 99,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "points",
-                "operator": "gte",
-                "value": 100,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "points",
+                  "operator": "gte",
+                  "value": 100,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -89,26 +95,28 @@
       "context": {
         "score": 99.6,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "score",
-                "operator": "gte",
-                "value": 99.5,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "score",
+                  "operator": "gte",
+                  "value": 99.5,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "greater_than_equals",
     },
@@ -117,26 +125,28 @@
       "context": {
         "score": 99.5,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "score",
-                "operator": "gte",
-                "value": 99.5,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "score",
+                  "operator": "gte",
+                  "value": 99.5,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "greater_than_equals",
     },
@@ -145,26 +155,28 @@
       "context": {
         "score": 99.5,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "score",
-                "operator": "gte",
-                "value": 99.6,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "score",
+                  "operator": "gte",
+                  "value": 99.6,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -173,26 +185,28 @@
       "context": {
         "score": 0.0,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "score",
-                "operator": "gte",
-                "value": -0.0,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "score",
+                  "operator": "gte",
+                  "value": -0.0,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "greater_than_equals",
     },
@@ -201,26 +215,28 @@
       "context": {
         "points": 100,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "points",
-                "operator": "gte",
-                "value": 100.0,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "points",
+                  "operator": "gte",
+                  "value": 100.0,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "greater_than_equals",
     },
@@ -229,26 +245,28 @@
       "context": {
         "points": "101",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "points",
-                "operator": "gte",
-                "value": 100,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "points",
+                  "operator": "gte",
+                  "value": 100,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -257,26 +275,28 @@
       "context": {
         "points": 101,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "points",
-                "operator": "gte",
-                "value": "100",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "points",
+                  "operator": "gte",
+                  "value": "100",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "greater_than_equals",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "greater_than_equals",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },

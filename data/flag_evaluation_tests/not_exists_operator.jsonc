@@ -5,25 +5,27 @@
       "context": {
         "isAdmin": true
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "nonExisting",
-                "operator": "not_exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "nonExisting",
+                  "operator": "not_exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_exists",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_exists",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "not_exists",
     },
@@ -32,25 +34,27 @@
       "context": {
         "isAdmin": true
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "isAdmin",
-                "operator": "not_exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "isAdmin",
+                  "operator": "not_exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_exists",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_exists",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -59,25 +63,27 @@
       "context": {
         "isAdmin": false
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "isAdmin",
-                "operator": "not_exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "isAdmin",
+                  "operator": "not_exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_exists",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_exists",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -86,25 +92,27 @@
       "context": {
         "count": 0
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "count",
-                "operator": "not_exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "count",
+                  "operator": "not_exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_exists",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_exists",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -113,25 +121,27 @@
       "context": {
         "name": ""
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "name",
-                "operator": "not_exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "name",
+                  "operator": "not_exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_exists",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_exists",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -140,25 +150,27 @@
       "context": {
         "isAdmin": null
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "isAdmin",
-                "operator": "not_exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "isAdmin",
+                  "operator": "not_exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_exists",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_exists",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "not_exists",
     },

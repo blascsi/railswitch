@@ -70,7 +70,7 @@ const ruleSchema = z.strictObject({
   result: resultSchema,
 });
 
-export const rulesSchema = z.array(ruleSchema);
+export const rulesSchema = z.strictObject({ rules: z.array(ruleSchema) });
 
 export type Rules = z.infer<typeof rulesSchema>;
 export type Rule = z.infer<typeof ruleSchema>;

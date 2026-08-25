@@ -5,26 +5,28 @@
       "context": {
         "name": "Tester Theo",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "name",
-                "operator": "not_contains",
-                "value": "Alex",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "name",
+                  "operator": "not_contains",
+                  "value": "Alex",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_contains",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_contains",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "not_contains",
     },
@@ -33,26 +35,28 @@
       "context": {
         "name": "Tester Theo",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "name",
-                "operator": "not_contains",
-                "value": "tester",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "name",
+                  "operator": "not_contains",
+                  "value": "tester",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_contains",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_contains",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "not_contains",
     },
@@ -61,26 +65,28 @@
       "context": {
         "name": 123,
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "name",
-                "operator": "not_contains",
-                "value": "1",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "name",
+                  "operator": "not_contains",
+                  "value": "1",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_contains",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_contains",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -89,26 +95,28 @@
       "context": {
         "name": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "name",
-                "operator": "not_contains",
-                "value": 1,
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "name",
+                  "operator": "not_contains",
+                  "value": 1,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_contains",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_contains",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -117,26 +125,28 @@
       "context": {
         "name": "Tester Theo",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "name",
-                "operator": "not_contains",
-                "value": "",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "name",
+                  "operator": "not_contains",
+                  "value": "",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "not_contains",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "not_contains",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },

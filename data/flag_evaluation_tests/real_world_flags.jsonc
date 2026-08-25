@@ -19,55 +19,57 @@
           "version": "4.12.0",
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.flags.isInternalTester",
-                "operator": "is_true",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.flags.isInternalTester",
+                  "operator": "is_true",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "checkout_v2",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "checkout_v2",
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.account.plan",
+                  "operator": "eq",
+                  "value": "ENTERPRISE",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "user.account.region",
+                  "operator": "eq",
+                  "value": "EU",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "user.account.seats",
+                  "operator": "gte",
+                  "value": 100,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "checkout_v2_canary",
+            },
           },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.account.plan",
-                "operator": "eq",
-                "value": "ENTERPRISE",
-              },
-              {
-                "type": "attribute",
-                "attribute": "user.account.region",
-                "operator": "eq",
-                "value": "EU",
-              },
-              {
-                "type": "attribute",
-                "attribute": "user.account.seats",
-                "operator": "gte",
-                "value": 100,
-              },
-            ],
-          },
-          "result": {
-            "type": "value",
-            "value": "checkout_v2_canary",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "checkout_v1",
       "expected": "checkout_v2",
     },
@@ -88,72 +90,74 @@
           "role": "MEMBER",
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "account.subscription.tier",
-                "operator": "neq",
-                "value": "TRIAL",
-              },
-              {
-                "type": "attribute",
-                "attribute": "account.subscription.paymentMethodOnFile",
-                "operator": "is_true",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "account.subscription.tier",
+                  "operator": "neq",
+                  "value": "TRIAL",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "account.subscription.paymentMethodOnFile",
+                  "operator": "is_true",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "exports_unlimited",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "exports_unlimited",
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "account.subscription.tier",
+                  "operator": "eq",
+                  "value": "TRIAL",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "account.subscription.paymentMethodOnFile",
+                  "operator": "is_true",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "exports_preview",
+            },
           },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "account.subscription.tier",
-                "operator": "eq",
-                "value": "TRIAL",
-              },
-              {
-                "type": "attribute",
-                "attribute": "account.subscription.paymentMethodOnFile",
-                "operator": "is_true",
-              },
-            ],
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.role",
+                  "operator": "eq",
+                  "value": "ADMIN",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "exports_unlimited",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "exports_preview",
-          },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.role",
-                "operator": "eq",
-                "value": "ADMIN",
-              },
-            ],
-          },
-          "result": {
-            "type": "value",
-            "value": "exports_unlimited",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "exports_blocked",
       "expected": "exports_blocked",
     },
@@ -174,76 +178,78 @@
           },
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.preferences.optedOutOfBeta",
-                "operator": "is_true",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.preferences.optedOutOfBeta",
+                  "operator": "is_true",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "video_player_legacy",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "video_player_legacy",
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.preferences.optedOutOfBeta",
+                  "operator": "is_false",
+                },
+                {
+                  "combinator": "or",
+                  "conditions": [
+                    {
+                      "combinator": "and",
+                      "conditions": [
+                        {
+                          "type": "attribute",
+                          "attribute": "device.platform",
+                          "operator": "eq",
+                          "value": "IOS",
+                        },
+                        {
+                          "type": "attribute",
+                          "attribute": "device.osVersion",
+                          "operator": "gte",
+                          "value": 17,
+                        },
+                        {
+                          "type": "attribute",
+                          "attribute": "app.buildNumber",
+                          "operator": "gte",
+                          "value": 1400,
+                        },
+                      ],
+                    },
+                    {
+                      "type": "attribute",
+                      "attribute": "app.channel",
+                      "operator": "eq",
+                      "value": "BETA",
+                    },
+                  ],
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "video_player_v3",
+            },
           },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.preferences.optedOutOfBeta",
-                "operator": "is_false",
-              },
-              {
-                "combinator": "or",
-                "conditions": [
-                  {
-                    "combinator": "and",
-                    "conditions": [
-                      {
-                        "type": "attribute",
-                        "attribute": "device.platform",
-                        "operator": "eq",
-                        "value": "IOS",
-                      },
-                      {
-                        "type": "attribute",
-                        "attribute": "device.osVersion",
-                        "operator": "gte",
-                        "value": 17,
-                      },
-                      {
-                        "type": "attribute",
-                        "attribute": "app.buildNumber",
-                        "operator": "gte",
-                        "value": 1400,
-                      },
-                    ],
-                  },
-                  {
-                    "type": "attribute",
-                    "attribute": "app.channel",
-                    "operator": "eq",
-                    "value": "BETA",
-                  },
-                ],
-              },
-            ],
-          },
-          "result": {
-            "type": "value",
-            "value": "video_player_v3",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "video_player_legacy",
       "expected": "video_player_v3",
     },
@@ -262,74 +268,76 @@
           "groups": "engineering,platform",
         },
       },
-      "rules": [
-        {
-          "enabled": false,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "org.id",
-                "operator": "eq",
-                "value": "org_5521",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": false,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "org.id",
+                  "operator": "eq",
+                  "value": "org_5521",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "ai_assistant_disabled_for_org",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "ai_assistant_disabled_for_org",
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "org.features",
+                  "operator": "contains",
+                  "value": "audit_log",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "org.compliance.dataResidency",
+                  "operator": "eq",
+                  "value": "US",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "user.groups",
+                  "operator": "not_contains",
+                  "value": "restricted",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "ai_assistant_enabled",
+            },
           },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "org.features",
-                "operator": "contains",
-                "value": "audit_log",
-              },
-              {
-                "type": "attribute",
-                "attribute": "org.compliance.dataResidency",
-                "operator": "eq",
-                "value": "US",
-              },
-              {
-                "type": "attribute",
-                "attribute": "user.groups",
-                "operator": "not_contains",
-                "value": "restricted",
-              },
-            ],
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "org.compliance.dataResidency",
+                  "operator": "neq",
+                  "value": "US",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "ai_assistant_regional_review",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "ai_assistant_enabled",
-          },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "org.compliance.dataResidency",
-                "operator": "neq",
-                "value": "US",
-              },
-            ],
-          },
-          "result": {
-            "type": "value",
-            "value": "ai_assistant_regional_review",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "ai_assistant_disabled",
       "expected": "ai_assistant_enabled",
     },
@@ -349,73 +357,75 @@
           "endpoint": "/v1/messages",
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "client.apiKey.overrideLimit",
-                "operator": "exists",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "client.apiKey.overrideLimit",
+                  "operator": "exists",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": 100000,
+            },
           },
-          "result": {
-            "type": "value",
-            "value": 100000,
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "client.reputation.abuseScore",
+                  "operator": "gte",
+                  "value": 50,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": 10,
+            },
           },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "client.reputation.abuseScore",
-                "operator": "gte",
-                "value": 50,
-              },
-            ],
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "client.apiKey.tier",
+                  "operator": "eq",
+                  "value": "GROWTH",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "client.apiKey.scope",
+                  "operator": "eq",
+                  "value": "SERVER",
+                },
+                {
+                  "type": "attribute",
+                  "attribute": "client.reputation.abuseScore",
+                  "operator": "lt",
+                  "value": 50,
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": 5000,
+            },
           },
-          "result": {
-            "type": "value",
-            "value": 10,
-          },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "client.apiKey.tier",
-                "operator": "eq",
-                "value": "GROWTH",
-              },
-              {
-                "type": "attribute",
-                "attribute": "client.apiKey.scope",
-                "operator": "eq",
-                "value": "SERVER",
-              },
-              {
-                "type": "attribute",
-                "attribute": "client.reputation.abuseScore",
-                "operator": "lt",
-                "value": 50,
-              },
-            ],
-          },
-          "result": {
-            "type": "value",
-            "value": 5000,
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": 1000,
       "expected": 5000,
     },

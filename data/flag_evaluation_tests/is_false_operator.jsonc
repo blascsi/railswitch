@@ -5,25 +5,27 @@
       "context": {
         "isAdmin": false
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "isAdmin",
-                "operator": "is_false",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "isAdmin",
+                  "operator": "is_false",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "is_false",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "is_false",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "is_false",
     },
@@ -32,25 +34,27 @@
       "context": {
         "isAdmin": true
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "isAdmin",
-                "operator": "is_false",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "isAdmin",
+                  "operator": "is_false",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "is_false",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "is_false",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -59,25 +63,27 @@
       "context": {
         "isAdmin": 0
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "isAdmin",
-                "operator": "is_false",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "isAdmin",
+                  "operator": "is_false",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "is_false",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "is_false",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -86,25 +92,27 @@
       "context": {
         "role": "admin"
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "role",
-                "operator": "is_false",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "role",
+                  "operator": "is_false",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "is_false",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "is_false",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },

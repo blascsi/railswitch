@@ -5,25 +5,27 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "plan",
-                "operator": "eq",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "plan",
+                  "operator": "eq",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "missing_value_matched",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "missing_value_matched",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -32,26 +34,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "unknown_operator",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "unknown_operator",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "unknown_operator_matched",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "unknown_operator_matched",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -60,23 +64,25 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "unknown_type",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "unknown_type",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "unknown_type_matched",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "unknown_type_matched",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },

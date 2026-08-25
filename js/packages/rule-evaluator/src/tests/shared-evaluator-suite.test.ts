@@ -9,7 +9,7 @@ import { type Context, evaluateRules } from "../index.js";
 interface TestCase {
   description: string;
   context: Context;
-  rules: Rules;
+  configuration: Rules;
   defaultValue: unknown;
   expected: unknown;
 }
@@ -33,11 +33,13 @@ for (const { file, testCases } of fixtures) {
   describe(file, () => {
     it.each(testCases)("$description", ({
       context,
-      rules,
+      configuration,
       defaultValue,
       expected,
     }) => {
-      expect(evaluateRules(context, rules, defaultValue)).toEqual(expected);
+      expect(evaluateRules(context, configuration, defaultValue)).toEqual(
+        expected,
+      );
     });
   });
 }

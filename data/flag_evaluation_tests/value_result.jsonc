@@ -5,26 +5,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "a_string",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "a_string",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "a_string",
     },
@@ -33,26 +35,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": 42,
+            },
           },
-          "result": {
-            "type": "value",
-            "value": 42,
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": 42,
     },
@@ -61,26 +65,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": 0,
+            },
           },
-          "result": {
-            "type": "value",
-            "value": 0,
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": 0,
     },
@@ -89,26 +95,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": true,
+            },
           },
-          "result": {
-            "type": "value",
-            "value": true,
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": true,
     },
@@ -117,26 +125,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": false,
+            },
           },
-          "result": {
-            "type": "value",
-            "value": false,
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": false,
     },
@@ -145,26 +155,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "",
     },

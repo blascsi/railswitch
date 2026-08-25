@@ -74,13 +74,13 @@ defmodule RailswitchBackend.Flags.Changes.CreateFlagEnvironments do
     [query: [filter: [project_id: flag.project_id]]]
     |> Keyword.merge(scope_opts)
     |> RailswitchBackend.Flags.list_environments!()
-    |> Enum.map(fn env -> %{flag_id: flag.id, environment_id: env.id, rules: %{}} end)
+    |> Enum.map(fn env -> %{flag_id: flag.id, environment_id: env.id} end)
   end
 
   defp build_inputs(:environment, environment, scope_opts) do
     [query: [filter: [project_id: environment.project_id]]]
     |> Keyword.merge(scope_opts)
     |> RailswitchBackend.Flags.list_flags!()
-    |> Enum.map(fn flag -> %{flag_id: flag.id, environment_id: environment.id, rules: %{}} end)
+    |> Enum.map(fn flag -> %{flag_id: flag.id, environment_id: environment.id} end)
   end
 end

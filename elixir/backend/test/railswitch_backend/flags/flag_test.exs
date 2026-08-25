@@ -9,6 +9,7 @@ defmodule RailswitchBackend.Flags.FlagTest do
   alias Ash.Error.Forbidden
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
+  alias RailswitchBackend.Flags.FlagEnvironment.Defaults
   alias RailswitchBackend.FlagsGenerator
   alias RailswitchBackend.OrgsGenerator
 
@@ -39,7 +40,7 @@ defmodule RailswitchBackend.Flags.FlagTest do
                  actor: ctx.user
                )
 
-      assert flag_environment.rules == %{}
+      assert flag_environment.rules == Defaults.rules()
     end
 
     test "an outsider cannot create a flag", ctx do

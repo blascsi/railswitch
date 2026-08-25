@@ -249,7 +249,7 @@ export function evaluateRules<T>(
   rules: Rules,
   defaultValue: T | null = null,
 ) {
-  for (const rule of rules) {
+  for (const rule of rules.rules) {
     const ruleResult = evaluateRule(context, rule);
     if (ruleResult !== undefined) {
       return ruleResult;

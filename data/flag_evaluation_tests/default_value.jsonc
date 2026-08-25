@@ -5,26 +5,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "999",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "999",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "matched",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "matched",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "fallback",
       "expected": "fallback",
     },
@@ -33,26 +35,28 @@
       "context": {
         "id": "123",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "id",
-                "operator": "eq",
-                "value": "999",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "id",
+                  "operator": "eq",
+                  "value": "999",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "matched",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "matched",
-          },
-        },
-      ],
+        ],
+      },
       "expected": null,
     },
     {
@@ -60,7 +64,9 @@
       "context": {
         "id": "123",
       },
-      "rules": [],
+      "configuration": {
+        "rules": [],
+      },
       "defaultValue": "fallback",
       "expected": "fallback",
     },
@@ -69,7 +75,9 @@
       "context": {
         "id": "123",
       },
-      "rules": [],
+      "configuration": {
+        "rules": [],
+      },
       "expected": null,
     },
   ],

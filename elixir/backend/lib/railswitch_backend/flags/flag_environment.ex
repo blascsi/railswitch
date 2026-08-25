@@ -8,6 +8,8 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
+  alias RailswitchBackend.Flags.FlagEnvironment.Defaults
+
   graphql do
     type :flag_environment
   end
@@ -68,6 +70,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
     attribute :rules, :map do
       allow_nil? false
       public? true
+      default &Defaults.rules/0
     end
   end
 

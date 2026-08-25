@@ -6,7 +6,22 @@ defmodule RailswitchBackend.FlagsGenerator do
 
   use Ash.Generator
 
+  alias RailswitchBackend.Flags.FlagEnvironment.Defaults
+
   @action_opts [:actor, :tenant, :authorize?, :context, :scope]
+
+  @doc """
+  The default rules with every rule switched off: a second valid rules
+  document, for tests that need one that differs from the default.
+  """
+  def disabled_rules do
+    default = Defaults.rules()
+
+    %{
+      default
+      | "rules" => Enum.map(default["rules"], fn rule -> %{rule | "enabled" => false} end)
+    }
+  end
 
   @doc """
   Builds a `:create` changeset for a project. Requires `:tenant` (the

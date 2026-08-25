@@ -76,19 +76,19 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
       assert {:ok, updated} =
                Flags.update_flag_environment(
                  ctx.flag_environment,
-                 %{rules: %{"enabled" => true}},
+                 %{rules: FlagsGenerator.disabled_rules()},
                  tenant: ctx.org.id,
                  actor: ctx.user
                )
 
-      assert updated.rules == %{"enabled" => true}
+      assert updated.rules == FlagsGenerator.disabled_rules()
     end
 
     test "an outsider cannot update the rules", ctx do
       assert {:error, %Forbidden{}} =
                Flags.update_flag_environment(
                  ctx.flag_environment,
-                 %{rules: %{"enabled" => true}},
+                 %{rules: FlagsGenerator.disabled_rules()},
                  tenant: ctx.org.id,
                  actor: ctx.outsider
                )
@@ -98,7 +98,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
       assert {:error, %Forbidden{}} =
                Flags.update_flag_environment(
                  ctx.flag_environment,
-                 %{rules: %{"enabled" => true}},
+                 %{rules: FlagsGenerator.disabled_rules()},
                  tenant: ctx.org.id
                )
     end

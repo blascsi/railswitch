@@ -9,26 +9,28 @@
           },
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.attributes.id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.attributes.id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "works",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "works",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "works",
     },
@@ -41,26 +43,28 @@
           },
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.attributes.name",
-                "operator": "eq",
-                "value": "Tester",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.attributes.name",
+                  "operator": "eq",
+                  "value": "Tester",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "works",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "works",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -73,26 +77,28 @@
           },
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.attributes.id.length",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.attributes.id.length",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "works",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "works",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
@@ -103,26 +109,28 @@
           "attributes": null,
         },
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "user.attributes.id",
-                "operator": "eq",
-                "value": "123",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "user.attributes.id",
+                  "operator": "eq",
+                  "value": "123",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "works",
+            },
           },
-          "result": {
-            "type": "value",
-            "value": "works",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },

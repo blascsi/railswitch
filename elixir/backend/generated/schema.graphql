@@ -428,7 +428,7 @@ type CreateFlagEnvironmentResult {
 }
 
 input CreateFlagEnvironmentInput {
-  rules: JsonString!
+  rules: JsonString
   flagId: ID!
   environmentId: ID!
 }

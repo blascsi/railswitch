@@ -5,6 +5,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
+  alias RailswitchBackend.Flags.FlagEnvironment.Defaults
   alias RailswitchBackend.FlagsGenerator
   alias RailswitchBackend.OrgsGenerator
   alias RailswitchBackendWeb.SdkSocket
@@ -47,7 +48,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       flag = create_flag!(ctx, "checkout")
       flag_environment = flag_environment!(ctx, flag)
 
-      Flags.update_flag_environment!(flag_environment, %{rules: %{"enabled" => true}},
+      Flags.update_flag_environment!(flag_environment, %{rules: FlagsGenerator.disabled_rules()},
         tenant: ctx.org.id,
         actor: ctx.user
       )
@@ -56,7 +57,12 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       assert {:ok, reply, _socket} = subscribe_and_join(ctx.socket, "environment:production")
 
-      assert reply == %{flags: %{"checkout" => %{"enabled" => true}, "search" => %{}}}
+      assert reply == %{
+               flags: %{
+                 "checkout" => FlagsGenerator.disabled_rules(),
+                 "search" => Defaults.rules()
+               }
+             }
     end
 
     test "replies with an empty flag map when the project has no flags", ctx do
@@ -111,19 +117,21 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
     test "pushes flag_created when a flag is created", ctx do
       create_flag!(ctx, "checkout")
 
-      assert_push "flag_created", %{flag: "checkout", rules: %{}}
+      default_rules = Defaults.rules()
+      assert_push "flag_created", %{flag: "checkout", rules: ^default_rules}
     end
 
     test "pushes flag_updated when a flag environment's rules change", ctx do
       flag = create_flag!(ctx, "checkout")
       flag_environment = flag_environment!(ctx, flag)
 
-      Flags.update_flag_environment!(flag_environment, %{rules: %{"enabled" => true}},
+      Flags.update_flag_environment!(flag_environment, %{rules: FlagsGenerator.disabled_rules()},
         tenant: ctx.org.id,
         actor: ctx.user
       )
 
-      assert_push "flag_updated", %{flag: "checkout", rules: %{"enabled" => true}}
+      disabled_rules = FlagsGenerator.disabled_rules()
+      assert_push "flag_updated", %{flag: "checkout", rules: ^disabled_rules}
     end
 
     test "pushes flag_deleted when a flag environment is destroyed", ctx do
@@ -160,7 +168,9 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
         |> Flags.list_flag_environments!()
         |> Enum.reject(&(&1.environment_id == ctx.environment.id))
 
-      Flags.update_flag_environment!(staging_flag_environment, %{rules: %{"enabled" => true}},
+      Flags.update_flag_environment!(
+        staging_flag_environment,
+        %{rules: FlagsGenerator.disabled_rules()},
         tenant: ctx.org.id,
         actor: ctx.user
       )

@@ -14,6 +14,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
   alias Phoenix.Socket.Broadcast
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
+  alias RailswitchBackend.Flags.FlagEnvironment.Defaults
   alias RailswitchBackend.FlagsGenerator
   alias RailswitchBackend.OrgsGenerator
 
@@ -59,7 +60,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       assert data.id == flag_environment.id
       assert data.flag_id == flag.id
       assert data.environment_id == ctx.environment.id
-      assert data.rules == %{}
+      assert data.rules == Defaults.rules()
     end
 
     test "updating rules publishes update on the environment topic", ctx do
@@ -67,14 +68,14 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       flag_environment = flag_environment!(ctx)
       subscribe("flag_environments:#{ctx.environment.id}")
 
-      Flags.update_flag_environment!(flag_environment, %{rules: %{"enabled" => true}},
+      Flags.update_flag_environment!(flag_environment, %{rules: FlagsGenerator.disabled_rules()},
         tenant: ctx.org.id,
         actor: ctx.user
       )
 
       assert_receive %Broadcast{event: "update", payload: %Notification{data: data}}
       assert data.id == flag_environment.id
-      assert data.rules == %{"enabled" => true}
+      assert data.rules == FlagsGenerator.disabled_rules()
     end
 
     test "destroying a flag environment publishes destroy on the environment topic", ctx do

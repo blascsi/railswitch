@@ -6,44 +6,46 @@
         "tier": "gold",
         "region": "EU",
       },
-      "rules": [
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "tier",
-                "operator": "eq",
-                "value": "gold",
-              },
-            ],
+      "configuration": {
+        "rules": [
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "tier",
+                  "operator": "eq",
+                  "value": "gold",
+                },
+              ],
+            },
+            "result": {
+              "type": "unknown_result_type",
+              "value": "unknown_result_matched",
+            },
           },
-          "result": {
-            "type": "unknown_result_type",
-            "value": "unknown_result_matched",
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "region",
+                  "operator": "eq",
+                  "value": "EU",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": "second_rule",
+            },
           },
-        },
-        {
-          "enabled": true,
-          "conditions": {
-            "combinator": "and",
-            "conditions": [
-              {
-                "type": "attribute",
-                "attribute": "region",
-                "operator": "eq",
-                "value": "EU",
-              },
-            ],
-          },
-          "result": {
-            "type": "value",
-            "value": "second_rule",
-          },
-        },
-      ],
+        ],
+      },
       "defaultValue": "rule_did_not_match",
       "expected": "second_rule",
     },
