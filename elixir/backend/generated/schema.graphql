@@ -46,6 +46,19 @@ input RegisterInput {
 type User {
   id: ID!
   email: String!
+  organizations(
+    "How to sort the records in the response"
+    sort: [OrganizationSortInput]
+
+    "A filter to limit the results"
+    filter: OrganizationFilterInput
+
+    "The number of records to return."
+    limit: Int
+
+    "The number of records to skip."
+    offset: Int
+  ): [Organization!]!
 }
 
 enum SortOrder {

@@ -23,6 +23,7 @@ export function OrganizationSelector(props: OrganizationSelectorProps) {
       value={currentOrganizationId}
       onChange={onSelectOrganization}
       checkIconPosition="right"
+      allowDeselect={false}
       {...props}
     />
   );

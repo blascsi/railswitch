@@ -11,6 +11,7 @@ defmodule RailswitchBackend.Accounts.User do
   alias AshAuthentication.Strategy.Password.HashPasswordChange
   alias AshAuthentication.Strategy.Password.PasswordConfirmationValidation
   alias AshAuthentication.Strategy.RememberMe.MaybeGenerateTokenPreparation
+  alias RailswitchBackend.Orgs.Membership
 
   graphql do
     type :user
@@ -282,7 +283,7 @@ defmodule RailswitchBackend.Accounts.User do
     policy action_type(:read) do
       description "Users can read themselves, and other members of their organizations"
       authorize_if expr(id == ^actor(:id))
-      authorize_if accessing_from(RailswitchBackend.Orgs.Membership, :user)
+      authorize_if accessing_from(Membership, :user)
     end
 
     policy action(:sign_out) do
@@ -317,6 +318,15 @@ defmodule RailswitchBackend.Accounts.User do
     attribute :confirmed_at, :utc_datetime_usec
 
     timestamps()
+  end
+
+  relationships do
+    many_to_many :organizations, RailswitchBackend.Orgs.Organization do
+      public? true
+      through Membership
+      source_attribute_on_join_resource :user_id
+      destination_attribute_on_join_resource :organization_id
+    end
   end
 
   identities do

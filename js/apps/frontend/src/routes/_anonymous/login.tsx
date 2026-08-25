@@ -28,6 +28,7 @@ export const Route = createFileRoute("/_anonymous/login")({
 function LoginPage() {
   const [{ fetching }, signIn] = useMutation(SignInMutation);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isEnteringApp, setIsEnteringApp] = useState(false);
 
   const handleSubmit = async (values: AuthenticationFormValues) => {
     setErrorMessage(null);
@@ -40,7 +41,8 @@ function LoginPage() {
 
     const user = result.data?.signIn;
     if (user != null) {
-      onAuthenticationSuccess(user);
+      setIsEnteringApp(true);
+      await onAuthenticationSuccess(user);
       return;
     }
 
@@ -57,7 +59,7 @@ function LoginPage() {
         submitLabel="Log in"
         errorTitle="Authentication failed"
         errorMessage={errorMessage}
-        isPending={fetching}
+        isPending={fetching || isEnteringApp}
         onSubmit={handleSubmit}
       >
         <Text size="sm" c="dimmed">

@@ -14,3 +14,16 @@ export const graphqlClientAtom = atom((get) =>
     userId: get(currentUserAtom)?.id ?? null,
   }),
 );
+
+/**
+ * A client that sends no organization scope, for the queries that decide
+ * what the scope should be. The backend filters by the `x-organization-id`
+ * tenant, so asking which organizations a user belongs to through the
+ * tenanted client answers nothing once the stored organization is stale.
+ */
+export const crossOrganizationClientAtom = atom((get) =>
+  makeClient({
+    organizationId: null,
+    userId: get(currentUserAtom)?.id ?? null,
+  }),
+);

@@ -35,6 +35,7 @@ export const Route = createFileRoute("/_anonymous/signup")({
 function SignupPage() {
   const [{ fetching }, register] = useMutation(RegisterMutation);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isEnteringApp, setIsEnteringApp] = useState(false);
 
   const handleSubmit = async (
     values: AuthenticationFormValues,
@@ -58,7 +59,8 @@ function SignupPage() {
 
     const registeredUser = result.data?.register.result;
     if (registeredUser != null) {
-      onAuthenticationSuccess(registeredUser);
+      setIsEnteringApp(true);
+      await onAuthenticationSuccess(registeredUser);
       return;
     }
 
@@ -82,7 +84,7 @@ function SignupPage() {
         submitLabel="Register"
         errorTitle="Registration failed"
         errorMessage={errorMessage}
-        isPending={fetching}
+        isPending={fetching || isEnteringApp}
         withPasswordConfirmation
         onSubmit={handleSubmit}
       >
