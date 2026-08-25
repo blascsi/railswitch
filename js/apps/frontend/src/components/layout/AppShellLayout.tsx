@@ -1,6 +1,11 @@
 import { AppShell, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { FolderIcon, HouseIcon, TerminalIcon } from "@phosphor-icons/react";
+import {
+  FlagIcon,
+  FolderIcon,
+  HouseIcon,
+  TerminalIcon,
+} from "@phosphor-icons/react";
 import type { ReactNode } from "react";
 import { SignOutButton } from "../auth/SignOutButton";
 import { OrganizationSelector } from "../OrganizationSelector";
@@ -45,6 +50,7 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
             label="Environments"
             leftSection={<TerminalIcon />}
           />
+          <NavbarLink to="/flags" label="Flags" leftSection={<FlagIcon />} />
         </AppShell.Section>
         <AppShell.Section>
           <SignOutButton />

@@ -16,6 +16,7 @@
     "@mantine/form": "catalog:",
     "@mantine/hooks": "catalog:",
     "@phosphor-icons/react": "catalog:",
+    "@railswitch/schemas": "workspace:*",
     "@railswitch/sdk": "workspace:*",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
