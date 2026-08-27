@@ -56,26 +56,56 @@ const conditionGroupSchema: z.ZodType<{
   conditions: conditionsSchema,
 });
 
-const valueResultSchema = z.strictObject({
-  type: z.literal("value"),
-  value: z.union([z.string(), z.number(), z.boolean()]),
-});
+const resultValueSchemas = {
+  string: z.string(),
+  number: z.number(),
+  boolean: z.boolean(),
+};
 
-const resultSchema = z.discriminatedUnion("type", [valueResultSchema]);
+function createValueResultSchemaForType<T extends ResultType>(type: T) {
+  return z.strictObject({
+    type: z.literal("value"),
+    value: resultValueSchemas[type],
+  });
+}
 
-const ruleSchema = z.strictObject({
-  description: z.string().optional(),
-  enabled: z.boolean(),
-  conditions: conditionGroupSchema,
-  result: resultSchema,
-});
+function createResultSchemaForType<T extends ResultType>(type: T) {
+  return z.discriminatedUnion("type", [createValueResultSchemaForType(type)]);
+}
 
-export const rulesSchema = z.strictObject({ rules: z.array(ruleSchema) });
+function createRuleSchemaForType<T extends ResultType>(type: T) {
+  return z.strictObject({
+    description: z.string().optional(),
+    enabled: z.boolean(),
+    conditions: conditionGroupSchema,
+    result: createResultSchemaForType(type),
+  });
+}
 
+function createRulesSchemaForType<T extends ResultType>(type: T) {
+  return z.strictObject({
+    resultType: z.literal(type),
+    rules: z.array(createRuleSchemaForType(type)),
+  });
+}
+
+export const rulesSchema = z.discriminatedUnion("resultType", [
+  createRulesSchemaForType("boolean"),
+  createRulesSchemaForType("number"),
+  createRulesSchemaForType("string"),
+]);
+
+type ResultType = keyof typeof resultValueSchemas;
 export type Rules = z.infer<typeof rulesSchema>;
-export type Rule = z.infer<typeof ruleSchema>;
-export type RuleResult = z.infer<typeof resultSchema>;
-export type RuleValueResult = z.infer<typeof valueResultSchema>;
+export type Rule = z.infer<
+  ReturnType<typeof createRuleSchemaForType<ResultType>>
+>;
+export type RuleResult = z.infer<
+  ReturnType<typeof createResultSchemaForType<ResultType>>
+>;
+export type RuleValueResult = z.infer<
+  ReturnType<typeof createValueResultSchemaForType<ResultType>>
+>;
 export type ConditionGroup = z.infer<typeof conditionGroupSchema>;
 export type Conditions = z.infer<typeof conditionsSchema>;
 export type Condition = z.infer<typeof conditionSchema>;

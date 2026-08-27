@@ -27,7 +27,8 @@
     "access": "public"
   },
   "dependencies": {
-    "phoenix": "catalog:"
+    "phoenix": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

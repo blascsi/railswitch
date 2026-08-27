@@ -6,6 +6,7 @@
         "isAdmin": true
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -35,6 +36,7 @@
         "isAdmin": false
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -64,6 +66,7 @@
         "count": 0
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -93,6 +96,7 @@
         "name": ""
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -122,6 +126,7 @@
         "isAdmin": null
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -151,6 +156,7 @@
         "isAdmin": null
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,

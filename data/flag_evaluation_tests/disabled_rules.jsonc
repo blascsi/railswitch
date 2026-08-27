@@ -6,6 +6,7 @@
         "id": "123",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": false,
@@ -36,6 +37,7 @@
         "id": "123",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -67,6 +69,7 @@
         "role": "admin",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": false,

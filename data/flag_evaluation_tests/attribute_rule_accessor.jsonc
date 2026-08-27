@@ -10,6 +10,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -44,6 +45,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -78,6 +80,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -110,6 +113,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,

@@ -4,6 +4,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironment.Defaults do
   """
 
   @rules %{
+    "resultType" => "boolean",
     "rules" => [
       %{
         "description" => "Example configuration",

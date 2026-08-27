@@ -8,6 +8,8 @@ import type {
   Rules,
 } from "@railswitch/schemas";
 
+type ResultType = Rules["resultType"];
+
 export interface Context {
   id?: string;
   [key: string]: unknown;
@@ -218,9 +220,16 @@ function evaluateConditionGroup(
   }
 }
 
-function resolveResult(result: RuleResult) {
+function resolveResult(resultType: ResultType, result: RuleResult) {
   switch (result.type) {
     case "value": {
+      if (typeof result.value !== resultType) {
+        console.warn(
+          `Rule result value does not match the '${resultType}' result type: ${result.value}`,
+        );
+        return undefined;
+      }
+
       return result.value;
     }
     default: {
@@ -230,7 +239,7 @@ function resolveResult(result: RuleResult) {
   }
 }
 
-function evaluateRule(context: Context, rule: Rule) {
+function evaluateRule(context: Context, resultType: ResultType, rule: Rule) {
   if (!rule.enabled) {
     return undefined;
   }
@@ -238,7 +247,7 @@ function evaluateRule(context: Context, rule: Rule) {
   const doesRuleMatch = evaluateConditionGroup(context, rule.conditions);
 
   if (doesRuleMatch) {
-    return resolveResult(rule.result);
+    return resolveResult(resultType, rule.result);
   } else {
     return undefined;
   }
@@ -250,7 +259,7 @@ export function evaluateRules<T>(
   defaultValue: T | null = null,
 ) {
   for (const rule of rules.rules) {
-    const ruleResult = evaluateRule(context, rule);
+    const ruleResult = evaluateRule(context, rules.resultType, rule);
     if (ruleResult !== undefined) {
       return ruleResult;
     }

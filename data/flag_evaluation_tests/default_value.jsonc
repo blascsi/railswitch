@@ -6,6 +6,7 @@
         "id": "123",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -36,6 +37,7 @@
         "id": "123",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -65,6 +67,7 @@
         "id": "123",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [],
       },
       "defaultValue": "fallback",
@@ -76,6 +79,7 @@
         "id": "123",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [],
       },
       "expected": null,

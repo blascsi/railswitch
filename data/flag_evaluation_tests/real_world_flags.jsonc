@@ -20,6 +20,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -91,6 +92,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -179,6 +181,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -269,6 +272,7 @@
         },
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": false,
@@ -358,6 +362,7 @@
         },
       },
       "configuration": {
+        "resultType": "number",
         "rules": [
           {
             "enabled": true,

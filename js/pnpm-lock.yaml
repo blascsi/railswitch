@@ -307,6 +307,9 @@ importers:
       phoenix:
         specifier: 'catalog:'
         version: 1.8.9
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
     devDependencies:
       '@biomejs/biome':
         specifier: 'catalog:'

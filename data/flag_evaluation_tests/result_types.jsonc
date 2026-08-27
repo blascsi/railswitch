@@ -1,7 +1,7 @@
 {
   "testCases": [
     {
-      "description": "The equals operator succeeds when the values are equal",
+      "description": "A matching rule whose result value is a number is skipped for the 'string' result type, and the default value is returned",
       "context": {
         "id": "123",
       },
@@ -23,16 +23,16 @@
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": 42,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
+      "defaultValue": "fallback",
+      "expected": "fallback",
     },
     {
-      "description": "The equals operator fails when the values are not equal",
+      "description": "A matching rule whose result value is a boolean is skipped for the 'string' result type, and the default value is returned",
       "context": {
         "id": "123",
       },
@@ -48,22 +48,22 @@
                   "type": "attribute",
                   "attribute": "id",
                   "operator": "eq",
-                  "value": "1234",
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": true,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
+      "defaultValue": "fallback",
+      "expected": "fallback",
     },
     {
-      "description": "The equals operator fails when the values are equal, but not the same type",
+      "description": "A matching rule whose result value is null is skipped for the 'string' result type, and the default value is returned",
       "context": {
         "id": "123",
       },
@@ -79,27 +79,27 @@
                   "type": "attribute",
                   "attribute": "id",
                   "operator": "eq",
-                  "value": 123,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": null,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
+      "defaultValue": "fallback",
+      "expected": "fallback",
     },
     {
-      "description": "The equals operator succeeds when the integer values are equal",
+      "description": "A matching rule whose result value is a string is skipped for the 'number' result type, and the default value is returned",
       "context": {
-        "points": 100,
+        "id": "123",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "number",
         "rules": [
           {
             "enabled": true,
@@ -108,29 +108,29 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "points",
+                  "attribute": "id",
                   "operator": "eq",
-                  "value": 100,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": "a_string",
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
+      "defaultValue": 0,
+      "expected": 0,
     },
     {
-      "description": "The equals operator fails when the integer values are not equal",
+      "description": "A matching rule whose result value is a numeric string is not coerced for the 'number' result type, and the default value is returned",
       "context": {
-        "points": 100,
+        "id": "123",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "number",
         "rules": [
           {
             "enabled": true,
@@ -139,29 +139,29 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "points",
+                  "attribute": "id",
                   "operator": "eq",
-                  "value": 200,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": "42",
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
+      "defaultValue": 0,
+      "expected": 0,
     },
     {
-      "description": "The equals operator succeeds when the float values are equal",
+      "description": "A matching rule whose result value is a boolean is skipped for the 'number' result type, and the default value is returned",
       "context": {
-        "score": 99.5,
+        "id": "123",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "number",
         "rules": [
           {
             "enabled": true,
@@ -170,29 +170,29 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "score",
+                  "attribute": "id",
                   "operator": "eq",
-                  "value": 99.5,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": true,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
+      "defaultValue": 0,
+      "expected": 0,
     },
     {
-      "description": "The equals operator fails when the float values are not equal",
+      "description": "A matching rule whose result value is a string is skipped for the 'boolean' result type, and the default value is returned",
       "context": {
-        "score": 99.5,
+        "id": "123",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "boolean",
         "rules": [
           {
             "enabled": true,
@@ -201,29 +201,29 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "score",
+                  "attribute": "id",
                   "operator": "eq",
-                  "value": 99.6,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": "true",
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
+      "defaultValue": false,
+      "expected": false,
     },
     {
-      "description": "The equals operator fails when the float values differ by a single unit of precision",
+      "description": "A matching rule whose result value is a number is skipped for the 'boolean' result type, and the default value is returned",
       "context": {
-        "score": 0.3,
+        "id": "123",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "boolean",
         "rules": [
           {
             "enabled": true,
@@ -232,29 +232,30 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "score",
+                  "attribute": "id",
                   "operator": "eq",
-                  "value": 0.30000000000000004,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": 1,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
+      "defaultValue": false,
+      "expected": false,
     },
     {
-      "description": "The equals operator succeeds when float zero is compared to negative float zero",
+      "description": "A matching rule with a mismatched result value type is skipped, and evaluation falls through to a later matching rule of the correct type",
       "context": {
-        "score": 0.0,
+        "tier": "gold",
+        "region": "EU",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "number",
         "rules": [
           {
             "enabled": true,
@@ -263,29 +264,48 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "score",
+                  "attribute": "tier",
                   "operator": "eq",
-                  "value": -0.0,
+                  "value": "gold",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": "not_a_number",
+            },
+          },
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "region",
+                  "operator": "eq",
+                  "value": "EU",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": 10,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
+      "defaultValue": 0,
+      "expected": 10,
     },
     {
-      "description": "The equals operator succeeds when an integer in the context equals a float in the condition",
+      "description": "Every matching rule having a mismatched result value type returns the default value",
       "context": {
-        "points": 100,
+        "tier": "gold",
+        "region": "EU",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "number",
         "rules": [
           {
             "enabled": true,
@@ -294,29 +314,47 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "points",
+                  "attribute": "tier",
                   "operator": "eq",
-                  "value": 100.0,
+                  "value": "gold",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": "not_a_number",
+            },
+          },
+          {
+            "enabled": true,
+            "conditions": {
+              "combinator": "and",
+              "conditions": [
+                {
+                  "type": "attribute",
+                  "attribute": "region",
+                  "operator": "eq",
+                  "value": "EU",
+                },
+              ],
+            },
+            "result": {
+              "type": "value",
+              "value": true,
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
+      "defaultValue": 0,
+      "expected": 0,
     },
     {
-      "description": "The equals operator fails when an integer in the context does not equal a float in the condition",
+      "description": "A matching rule with a mismatched result value type returns null when no default value is configured",
       "context": {
-        "points": 100,
+        "id": "123",
       },
       "configuration": {
-        "resultType": "string",
+        "resultType": "boolean",
         "rules": [
           {
             "enabled": true,
@@ -325,114 +363,20 @@
               "conditions": [
                 {
                   "type": "attribute",
-                  "attribute": "points",
+                  "attribute": "id",
                   "operator": "eq",
-                  "value": 100.5,
+                  "value": "123",
                 },
               ],
             },
             "result": {
               "type": "value",
-              "value": "equals",
+              "value": "true",
             },
           },
         ],
       },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
-    },
-    {
-      "description": "The equals operator succeeds when the boolean values are equal",
-      "context": {
-        "isAdmin": true,
-      },
-      "configuration": {
-        "resultType": "string",
-        "rules": [
-          {
-            "enabled": true,
-            "conditions": {
-              "combinator": "and",
-              "conditions": [
-                {
-                  "type": "attribute",
-                  "attribute": "isAdmin",
-                  "operator": "eq",
-                  "value": true,
-                },
-              ],
-            },
-            "result": {
-              "type": "value",
-              "value": "equals",
-            },
-          },
-        ],
-      },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
-    },
-    {
-      "description": "The equals operator succeeds when both boolean values are false",
-      "context": {
-        "isAdmin": false,
-      },
-      "configuration": {
-        "resultType": "string",
-        "rules": [
-          {
-            "enabled": true,
-            "conditions": {
-              "combinator": "and",
-              "conditions": [
-                {
-                  "type": "attribute",
-                  "attribute": "isAdmin",
-                  "operator": "eq",
-                  "value": false,
-                },
-              ],
-            },
-            "result": {
-              "type": "value",
-              "value": "equals",
-            },
-          },
-        ],
-      },
-      "defaultValue": "rule_did_not_match",
-      "expected": "equals",
-    },
-    {
-      "description": "The equals operator fails when the boolean values are not equal",
-      "context": {
-        "isAdmin": true,
-      },
-      "configuration": {
-        "resultType": "string",
-        "rules": [
-          {
-            "enabled": true,
-            "conditions": {
-              "combinator": "and",
-              "conditions": [
-                {
-                  "type": "attribute",
-                  "attribute": "isAdmin",
-                  "operator": "eq",
-                  "value": false,
-                },
-              ],
-            },
-            "result": {
-              "type": "value",
-              "value": "equals",
-            },
-          },
-        ],
-      },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
+      "expected": null,
     },
   ],
 }

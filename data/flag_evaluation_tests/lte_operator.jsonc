@@ -6,6 +6,7 @@
         "points": 99,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -36,6 +37,7 @@
         "points": 100,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -66,6 +68,7 @@
         "points": 101,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -96,6 +99,7 @@
         "score": 99.5,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -126,6 +130,7 @@
         "score": 99.5,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -156,6 +161,7 @@
         "score": 99.6,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -186,6 +192,7 @@
         "score": -0.0,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -216,6 +223,7 @@
         "points": 100,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -246,6 +254,7 @@
         "points": "99",
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,
@@ -276,6 +285,7 @@
         "points": 99,
       },
       "configuration": {
+        "resultType": "string",
         "rules": [
           {
             "enabled": true,

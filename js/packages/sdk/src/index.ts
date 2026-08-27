@@ -1,8 +1,14 @@
 import { type Context, evaluateRules } from "@railswitch/rule-evaluator";
-import type { Rules } from "@railswitch/schemas";
+import {
+  type Rules,
+  type RuleValueResult,
+  rulesSchema,
+} from "@railswitch/schemas";
 import { Socket } from "phoenix";
 
 export type { Context };
+
+export type FlagValue = RuleValueResult["value"];
 
 export interface SDKOptions {
   url: string;
@@ -11,16 +17,30 @@ export interface SDKOptions {
 }
 
 interface FlagSnapshot {
-  flags: Record<string, Rules>;
+  flags: Record<string, unknown>;
 }
 
 interface FlagChange {
   flag: string;
-  rules: Rules;
+  rules: unknown;
 }
 
 interface FlagRemoval {
   flag: string;
+}
+
+function parseRules(flagName: string, rules: unknown) {
+  const result = rulesSchema.safeParse(rules);
+
+  if (!result.success) {
+    console.error(
+      `Railswitch SDK received invalid rules for flag ${flagName}:`,
+      result.error.issues,
+    );
+    return null;
+  }
+
+  return result.data;
 }
 
 export function setupSdk(options: SDKOptions, globalContext: Context) {
@@ -47,7 +67,14 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
     if (environmentFlags === null) {
       return;
     }
-    environmentFlags[payload.flag] = payload.rules;
+
+    const rules = parseRules(payload.flag, payload.rules);
+
+    if (rules === null) {
+      return;
+    }
+
+    environmentFlags[payload.flag] = rules;
   };
 
   environmentChannel.on("flag_created", applyFlagChange);
@@ -68,8 +95,18 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
   environmentChannel
     .join()
     .receive("ok", (reply: FlagSnapshot) => {
+      const flags: Record<string, Rules> = {};
+
+      for (const [flagName, rules] of Object.entries(reply.flags)) {
+        const parsedRules = parseRules(flagName, rules);
+
+        if (parsedRules !== null) {
+          flags[flagName] = parsedRules;
+        }
+      }
+
       connectionEstablished = true;
-      environmentFlags = reply.flags;
+      environmentFlags = flags;
     })
     .receive("error", (reason) => {
       connectionEstablished = false;
@@ -88,7 +125,11 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
     setContextValue(key: string, value: unknown) {
       globalContext[key] = value;
     },
-    rsx(flagName: string, localContext: Context, defaultValue: unknown) {
+    rsx<T extends FlagValue>(
+      flagName: string,
+      localContext: Context,
+      defaultValue: T,
+    ): T {
       if (!connectionEstablished) {
         console.error(
           "Connection with the Railswitch SDK has not been established yet.",
@@ -103,16 +144,25 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
         return defaultValue;
       }
 
-      if (environmentFlags[flagName] == null) {
+      const rules = environmentFlags[flagName];
+
+      if (rules == null) {
         console.warn(`Invalid flag name during flag evaluation: ${flagName}`);
+        return defaultValue;
+      }
+
+      if (typeof defaultValue !== rules.resultType) {
+        console.warn(
+          `Default value for flag ${flagName} does not match its '${rules.resultType}' result type: ${defaultValue}`,
+        );
         return defaultValue;
       }
 
       return evaluateRules(
         { ...globalContext, ...localContext },
-        environmentFlags[flagName],
+        rules,
         defaultValue,
-      );
+      ) as T;
     },
   };
 }
