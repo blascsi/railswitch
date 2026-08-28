@@ -35,11 +35,8 @@ defmodule RailswitchBackend.Flags.Project do
     create :create do
       primary? true
       accept [:name]
-    end
 
-    update :update do
-      primary? true
-      accept [:name]
+      validate {RailswitchBackend.Validations.LowercaseLettersAndUnderscoresAttribute, field: :name}
     end
 
     read :sign_in_with_project_api_key do
@@ -92,5 +89,9 @@ defmodule RailswitchBackend.Flags.Project do
     end
 
     has_many :valid_api_keys, RailswitchBackend.Flags.ProjectApiKey
+  end
+
+  identities do
+    identity :unique_name, :name
   end
 end

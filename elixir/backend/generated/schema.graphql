@@ -789,19 +789,6 @@ type DeleteProjectResult {
   errors: [MutationError!]!
 }
 
-"The result of the :update_project mutation"
-type UpdateProjectResult {
-  "The successful result of the mutation"
-  result: Project
-
-  "Any errors generated, if the mutation failed"
-  errors: [MutationError!]!
-}
-
-input UpdateProjectInput {
-  name: String
-}
-
 "The result of the :create_project mutation"
 type CreateProjectResult {
   "The successful result of the mutation"
@@ -1093,8 +1080,6 @@ type RootQueryType {
 
 type RootMutationType {
   createProject(input: CreateProjectInput!): CreateProjectResult!
-
-  updateProject(id: ID!, input: UpdateProjectInput): UpdateProjectResult!
 
   deleteProject(id: ID!): DeleteProjectResult!
 

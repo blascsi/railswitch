@@ -28,7 +28,6 @@ defmodule RailswitchBackend.Flags do
 
     mutations do
       create Project, :create_project, :create
-      update Project, :update_project, :update
       destroy Project, :delete_project, :destroy
 
       create Flag, :create_flag, :create
@@ -50,7 +49,6 @@ defmodule RailswitchBackend.Flags do
     resource Project do
       define :list_projects, action: :read
       define :create_project, action: :create
-      define :update_project, action: :update
       define :delete_project, action: :destroy
     end
 

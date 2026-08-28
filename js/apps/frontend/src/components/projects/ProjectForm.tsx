@@ -2,9 +2,10 @@ import { Alert, Button, Group, Stack, TextInput } from "@mantine/core";
 import { type UseFormReturnType, useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import z from "zod";
+import { lowercaseLettersAndUnderscoresSchema } from "../../schemas/lowercaseLettersAndUnderscoresSchema";
 
 const projectSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
+  name: lowercaseLettersAndUnderscoresSchema,
 });
 
 type ProjectFormInput = z.input<typeof projectSchema>;
