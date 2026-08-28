@@ -34,7 +34,7 @@ defmodule RailswitchBackend.FlagsGenerator do
       RailswitchBackend.Flags.Project,
       :create,
       [
-        defaults: [name: sequence(:project_name, &"Project #{&1}")],
+        defaults: [name: sequence(:project_name, fn n -> "project_" <> letter_suffix(n) end)],
         overrides: overrides
       ] ++ Keyword.put_new(action_opts, :authorize?, false)
     )

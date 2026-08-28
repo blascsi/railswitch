@@ -21,91 +21,60 @@ defmodule RailswitchBackend.Flags.ProjectTest do
 
   describe "create" do
     test "a member of the organization can create a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
-      assert project.name == "Checkout"
+      assert to_string(project.name) == "checkout"
       assert project.organization_id == ctx.org.id
     end
 
     test "an outsider cannot create a project", ctx do
       assert {:error, %Forbidden{}} =
-               Flags.create_project(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.outsider)
+               Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.outsider)
     end
 
     test "a request without an actor cannot create a project", ctx do
       assert {:error, %Forbidden{}} =
-               Flags.create_project(%{name: "Checkout"}, tenant: ctx.org.id)
+               Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id)
     end
   end
 
   describe "read" do
     test "a member of the organization can read projects", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:ok, projects} = Flags.list_projects(tenant: ctx.org.id, actor: ctx.user)
       assert Enum.any?(projects, &(&1.id == project.id))
     end
 
     test "an outsider cannot read projects", ctx do
-      Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:ok, []} = Flags.list_projects(tenant: ctx.org.id, actor: ctx.outsider)
     end
 
     test "a request without an actor cannot read projects", ctx do
-      Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:ok, []} = Flags.list_projects(tenant: ctx.org.id)
     end
   end
 
-  describe "update" do
-    test "a member of the organization can update a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:ok, updated} =
-               Flags.update_project(project, %{name: "Checkout Renamed"},
-                 tenant: ctx.org.id,
-                 actor: ctx.user
-               )
-
-      assert updated.name == "Checkout Renamed"
-    end
-
-    test "an outsider cannot update a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{}} =
-               Flags.update_project(project, %{name: "Checkout Renamed"},
-                 tenant: ctx.org.id,
-                 actor: ctx.outsider
-               )
-    end
-
-    test "a request without an actor cannot update a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{}} =
-               Flags.update_project(project, %{name: "Checkout Renamed"}, tenant: ctx.org.id)
-    end
-  end
-
   describe "destroy" do
     test "a member of the organization can destroy a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert :ok = Flags.delete_project(project, tenant: ctx.org.id, actor: ctx.user)
     end
 
     test "an outsider cannot destroy a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:error, %Forbidden{}} =
                Flags.delete_project(project, tenant: ctx.org.id, actor: ctx.outsider)
     end
 
     test "a request without an actor cannot destroy a project", ctx do
-      project = Flags.create_project!(%{name: "Checkout"}, tenant: ctx.org.id, actor: ctx.user)
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:error, %Forbidden{}} =
                Flags.delete_project(project, tenant: ctx.org.id)

@@ -57,11 +57,11 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       assert {:ok, reply, _socket} = subscribe_and_join(ctx.socket, "environment:production")
 
-      assert reply == %{
-               flags: %{
-                 "checkout" => FlagsGenerator.disabled_rules(),
-                 "search" => Defaults.rules()
-               }
+      assert %{flags: flags} = reply
+
+      assert Map.new(flags, fn {name, rules} -> {to_string(name), rules} end) == %{
+               "checkout" => FlagsGenerator.disabled_rules(),
+               "search" => Defaults.rules()
              }
     end
 
@@ -118,7 +118,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       create_flag!(ctx, "checkout")
 
       default_rules = Defaults.rules()
-      assert_push "flag_created", %{flag: "checkout", rules: ^default_rules}
+      assert_push "flag_created", %{flag: name, rules: ^default_rules}
+      assert to_string(name) == "checkout"
     end
 
     test "pushes flag_updated when a flag environment's rules change", ctx do
@@ -131,7 +132,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       )
 
       disabled_rules = FlagsGenerator.disabled_rules()
-      assert_push "flag_updated", %{flag: "checkout", rules: ^disabled_rules}
+      assert_push "flag_updated", %{flag: name, rules: ^disabled_rules}
+      assert to_string(name) == "checkout"
     end
 
     test "pushes flag_deleted when a flag environment is destroyed", ctx do
@@ -140,7 +142,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       Flags.delete_flag_environment!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
 
-      assert_push "flag_deleted", %{flag: "checkout"}
+      assert_push "flag_deleted", %{flag: name}
+      assert to_string(name) == "checkout"
     end
 
     test "pushes flag_deleted when the flag itself is destroyed", ctx do
@@ -148,7 +151,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       Flags.delete_flag!(flag, tenant: ctx.org.id, actor: ctx.user)
 
-      assert_push "flag_deleted", %{flag: "checkout"}
+      assert_push "flag_deleted", %{flag: name}
+      assert to_string(name) == "checkout"
     end
 
     test "does not push events from other environments", ctx do
@@ -161,7 +165,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       )
 
       flag = create_flag!(ctx, "checkout")
-      assert_push "flag_created", %{flag: "checkout"}
+      assert_push "flag_created", %{flag: name}
+      assert to_string(name) == "checkout"
 
       [staging_flag_environment] =
         [query: [filter: [flag_id: flag.id]], tenant: ctx.org.id, actor: ctx.user]
@@ -175,7 +180,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
         actor: ctx.user
       )
 
-      refute_push "flag_updated", %{flag: "checkout"}
+      refute_push "flag_updated", %{}
     end
 
     test "pushes environment_deleted and stops when the environment is destroyed", ctx do
@@ -200,7 +205,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       create_flag!(ctx, "checkout")
 
-      assert_push "flag_created", %{flag: "checkout"}
+      assert_push "flag_created", %{flag: name}
+      assert to_string(name) == "checkout"
     end
 
     test "ignores internal events it does not forward", ctx do
@@ -211,7 +217,8 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       create_flag!(ctx, "checkout")
 
-      assert_push "flag_created", %{flag: "checkout"}
+      assert_push "flag_created", %{flag: name}
+      assert to_string(name) == "checkout"
     end
   end
 end

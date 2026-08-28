@@ -35,8 +35,6 @@ defmodule RailswitchBackend.Flags.Project do
     create :create do
       primary? true
       accept [:name]
-
-      validate {RailswitchBackend.Validations.LowercaseLettersAndUnderscoresAttribute, field: :name}
     end
 
     read :sign_in_with_project_api_key do
@@ -70,8 +68,13 @@ defmodule RailswitchBackend.Flags.Project do
   attributes do
     uuid_v7_primary_key :id
 
-    attribute :name, :string do
+    attribute :name, :ci_string do
       allow_nil? false
+
+      constraints casing: :lower,
+                  trim?: true,
+                  match: RailswitchBackend.AttributeRegexes.lowercase_letters_and_underscores()
+
       public? true
     end
 

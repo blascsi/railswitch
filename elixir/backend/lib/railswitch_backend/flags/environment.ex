@@ -30,8 +30,6 @@ defmodule RailswitchBackend.Flags.Environment do
 
       argument :project_id, :uuid, allow_nil?: false
 
-      validate {RailswitchBackend.Validations.LowercaseLettersAndUnderscoresAttribute, field: :name}
-
       change set_attribute(:project_id, arg(:project_id))
       change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :environment}
     end
@@ -59,8 +57,13 @@ defmodule RailswitchBackend.Flags.Environment do
   attributes do
     uuid_v7_primary_key :id
 
-    attribute :name, :string do
+    attribute :name, :ci_string do
       allow_nil? false
+
+      constraints casing: :lower,
+                  trim?: true,
+                  match: RailswitchBackend.AttributeRegexes.lowercase_letters_and_underscores()
+
       public? true
     end
 

@@ -31,7 +31,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
           actor: ctx.user
         )
 
-      assert env.name == "production"
+      assert to_string(env.name) == "production"
     end
 
     test "an outsider cannot create an environment", ctx do

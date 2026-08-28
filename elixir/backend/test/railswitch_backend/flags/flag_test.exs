@@ -31,7 +31,7 @@ defmodule RailswitchBackend.Flags.FlagTest do
           actor: ctx.user
         )
 
-      assert flag.name == "checkout"
+      assert to_string(flag.name) == "checkout"
 
       assert [flag_environment] =
                Flags.list_flag_environments!(

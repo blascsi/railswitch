@@ -617,8 +617,6 @@ input EnvironmentFilterName {
   isNotDistinctFrom: String
   stringEndsWith: String
   stringStartsWith: String
-  like: String
-  ilike: String
 }
 
 input EnvironmentFilterId {
@@ -727,8 +725,6 @@ input FlagFilterName {
   isNotDistinctFrom: String
   stringEndsWith: String
   stringStartsWith: String
-  like: String
-  ilike: String
 }
 
 input FlagFilterId {
@@ -850,8 +846,6 @@ input ProjectFilterName {
   isNotDistinctFrom: String
   stringEndsWith: String
   stringStartsWith: String
-  like: String
-  ilike: String
 }
 
 input ProjectFilterId {

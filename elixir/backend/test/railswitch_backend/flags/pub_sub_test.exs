@@ -98,7 +98,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       Flags.delete_flag!(flag, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "destroy", payload: %Notification{data: data}}
-      assert data.name == "checkout"
+      assert to_string(data.name) == "checkout"
     end
   end
 
