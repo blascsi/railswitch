@@ -28,9 +28,11 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
     %{project_id: project_id, organization_id: organization_id} = socket.assigns
     lookup_opts = [tenant: organization_id, authorize?: false]
 
-    with {:ok, environment} <- Flags.get_environment_by_name(project_id, name, lookup_opts),
+    with {:ok, environment} <-
+           Flags.get_environment_by_project_id_and_name(project_id, name, lookup_opts),
          subscribe_to_internal_topics(environment, project_id),
-         {:ok, environment} <- Flags.get_environment_by_name(project_id, name, lookup_opts) do
+         {:ok, environment} <-
+           Flags.get_environment_by_project_id_and_name(project_id, name, lookup_opts) do
       {:ok, %{flags: initial_state(environment, organization_id)}, socket}
     else
       {:error, _not_found} -> {:error, %{reason: "environment not found"}}

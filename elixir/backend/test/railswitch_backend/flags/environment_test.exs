@@ -53,7 +53,8 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
   end
 
   describe "read" do
-    test "get_environment_by_name finds the environment by name within the project", ctx do
+    test "get_environment_by_project_id_and_name finds the environment by name within the project",
+         ctx do
       env =
         Flags.create_environment!(
           %{name: "production", project_id: ctx.project.id},
@@ -62,7 +63,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
         )
 
       assert {:ok, found} =
-               Flags.get_environment_by_name(ctx.project.id, "production",
+               Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
                  tenant: ctx.org.id,
                  actor: ctx.user
                )
@@ -70,7 +71,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
       assert found.id == env.id
     end
 
-    test "get_environment_by_name does not find an environment belonging to another project",
+    test "get_environment_by_project_id_and_name does not find an environment belonging to another project",
          ctx do
       other_project = generate(FlagsGenerator.project(tenant: ctx.org.id))
 
@@ -81,13 +82,14 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
       )
 
       assert {:error, %Invalid{}} =
-               Flags.get_environment_by_name(ctx.project.id, "staging",
+               Flags.get_environment_by_project_id_and_name(ctx.project.id, "staging",
                  tenant: ctx.org.id,
                  actor: ctx.user
                )
     end
 
-    test "an outsider cannot find an environment", ctx do
+    test "with get_environment_by_project_id_and_name an outsider cannot find an environment",
+         ctx do
       Flags.create_environment!(
         %{name: "production", project_id: ctx.project.id},
         tenant: ctx.org.id,
@@ -95,13 +97,14 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
       )
 
       assert {:error, %Invalid{}} =
-               Flags.get_environment_by_name(ctx.project.id, "production",
+               Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
                  tenant: ctx.org.id,
                  actor: ctx.outsider
                )
     end
 
-    test "a request without an actor cannot find an environment", ctx do
+    test "a get_environment_by_project_id_and_name request without an actor cannot find an environment",
+         ctx do
       Flags.create_environment!(
         %{name: "production", project_id: ctx.project.id},
         tenant: ctx.org.id,
@@ -109,7 +112,75 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
       )
 
       assert {:error, %Invalid{}} =
-               Flags.get_environment_by_name(ctx.project.id, "production", tenant: ctx.org.id)
+               Flags.get_environment_by_project_id_and_name(ctx.project.id, "production", tenant: ctx.org.id)
+    end
+
+    test "get_environment_by_project_and_environment_name finds the environment by name within the project",
+         ctx do
+      env =
+        Flags.create_environment!(
+          %{name: "production", project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:ok, found} =
+               Flags.get_environment_by_project_and_environment_name(
+                 %{project_name: ctx.project.name, environment_name: "production"},
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+
+      assert found.id == env.id
+    end
+
+    test "get_environment_by_project_and_environment_name does not find an environment belonging to another project",
+         ctx do
+      other_project = generate(FlagsGenerator.project(tenant: ctx.org.id))
+
+      Flags.create_environment!(
+        %{name: "staging", project_id: other_project.id},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
+
+      assert {:error, %Invalid{}} =
+               Flags.get_environment_by_project_and_environment_name(
+                 %{project_name: ctx.project.name, environment_name: "staging"},
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+    end
+
+    test "with get_environment_by_project_and_environment_name an outsider cannot find an environment",
+         ctx do
+      Flags.create_environment!(
+        %{name: "production", project_id: ctx.project.id},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
+
+      assert {:error, %Invalid{}} =
+               Flags.get_environment_by_project_and_environment_name(
+                 %{project_name: ctx.project.id, environment_name: "production"},
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
+
+    test "a get_environment_by_project_and_environment_name request without an actor cannot find an environment",
+         ctx do
+      Flags.create_environment!(
+        %{name: "production", project_id: ctx.project.id},
+        tenant: ctx.org.id,
+        actor: ctx.user
+      )
+
+      assert {:error, %Invalid{}} =
+               Flags.get_environment_by_project_and_environment_name(
+                 %{project_name: ctx.project.id, environment_name: "production"},
+                 tenant: ctx.org.id
+               )
     end
   end
 

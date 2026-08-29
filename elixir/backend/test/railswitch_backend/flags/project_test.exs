@@ -7,6 +7,8 @@ defmodule RailswitchBackend.Flags.ProjectTest do
   import Ash.Generator
 
   alias Ash.Error.Forbidden
+  alias Ash.Error.Invalid
+  alias Ash.Error.Query.NotFound
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.OrgsGenerator
@@ -56,6 +58,38 @@ defmodule RailswitchBackend.Flags.ProjectTest do
       Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:ok, []} = Flags.list_projects(tenant: ctx.org.id)
+    end
+
+    test "get_project_by_org_id_and_name returns the correct project", ctx do
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+
+      assert {:ok, found_project} =
+               Flags.get_project_by_org_id_and_name(project.name,
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+
+      assert found_project.id == project.id
+    end
+
+    test "get_project_by_org_id_and_name does not return the project to an outsider", ctx do
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+
+      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+               Flags.get_project_by_org_id_and_name(project.name,
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
+
+    test "get_project_by_org_id_and_name does not return the project to a query without an actor",
+         ctx do
+      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+
+      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+               Flags.get_project_by_org_id_and_name(project.name,
+                 tenant: ctx.org.id
+               )
     end
   end
 

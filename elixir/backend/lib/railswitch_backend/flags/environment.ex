@@ -25,6 +25,18 @@ defmodule RailswitchBackend.Flags.Environment do
   actions do
     defaults [:read, :destroy]
 
+    read :get_by_name do
+      get? true
+
+      argument :project_name, :string, allow_nil?: false
+      argument :environment_name, :string, allow_nil?: false
+
+      filter expr(
+               name == ^arg(:environment_name) and
+                 project.name == ^arg(:project_name)
+             )
+    end
+
     create :create do
       accept [:name]
 

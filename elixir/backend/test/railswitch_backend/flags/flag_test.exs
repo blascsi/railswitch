@@ -7,6 +7,7 @@ defmodule RailswitchBackend.Flags.FlagTest do
   import Ash.Generator
 
   alias Ash.Error.Forbidden
+  alias Ash.Error.Invalid
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.Flags.FlagEnvironment.Defaults
@@ -89,6 +90,52 @@ defmodule RailswitchBackend.Flags.FlagTest do
       )
 
       assert {:ok, []} = Flags.list_flags(tenant: ctx.org.id)
+    end
+
+    test "get_flag_by_project_and_flag_name returns the correct flag", ctx do
+      flag =
+        Flags.create_flag!(%{name: "checkout", project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:ok, found_flag} =
+               Flags.get_flag_by_project_and_flag_name(
+                 %{project_name: ctx.project.name, flag_name: flag.name},
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+
+      assert found_flag.id == flag.id
+    end
+
+    test "get_flag_by_project_and_flag_name does not return the flag for an outsider", ctx do
+      flag =
+        Flags.create_flag!(%{name: "checkout", project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:error, %Invalid{}} =
+               Flags.get_flag_by_project_and_flag_name(
+                 %{project_name: ctx.project.name, flag_name: flag.name},
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
+
+    test "get_flag_by_project_and_flag_name does not return the flag without an actor", ctx do
+      flag =
+        Flags.create_flag!(%{name: "checkout", project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert {:error, %Invalid{}} =
+               Flags.get_flag_by_project_and_flag_name(
+                 %{project_name: ctx.project.name, flag_name: flag.name},
+                 tenant: ctx.org.id
+               )
     end
   end
 

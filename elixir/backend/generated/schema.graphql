@@ -903,6 +903,11 @@ type RootQueryType {
     id: ID!
   ): Project
 
+  getProjectByName(
+    ""
+    name: String!
+  ): Project
+
   listProjects(
     "How to sort the records in the response"
     sort: [ProjectSortInput]
@@ -928,6 +933,8 @@ type RootQueryType {
     id: ID!
   ): Flag
 
+  getFlagByName(projectName: String!, flagName: String!): Flag
+
   listFlags(
     "How to sort the records in the response"
     sort: [FlagSortInput]
@@ -952,6 +959,8 @@ type RootQueryType {
     "The id of the record"
     id: ID!
   ): Environment
+
+  getEnvironmentByName(projectName: String!, environmentName: String!): Environment
 
   listEnvironments(
     "How to sort the records in the response"
