@@ -28,7 +28,10 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
           {rows.map((project) => (
             <Table.Tr key={project.id}>
               <Table.Td>
-                <LinkAnchor to="/projects/$id" params={{ id: project.id }}>
+                <LinkAnchor
+                  to="/project/$projectName"
+                  params={{ projectName: project.name }}
+                >
                   {project.name}
                 </LinkAnchor>
               </Table.Td>

@@ -33,12 +33,21 @@ export function FlagsTable({ flags }: FlagsTableProps) {
           {rows.map((flag) => (
             <Table.Tr key={flag.id}>
               <Table.Td>
-                <LinkAnchor to="/flags/$id" params={{ id: flag.id }}>
+                <LinkAnchor
+                  to="/project/$projectName/flag/$flagName"
+                  params={{
+                    projectName: flag.project.name,
+                    flagName: flag.name,
+                  }}
+                >
                   {flag.name}
                 </LinkAnchor>
               </Table.Td>
               <Table.Td>
-                <LinkAnchor to="/projects/$id" params={{ id: flag.project.id }}>
+                <LinkAnchor
+                  to="/project/$projectName"
+                  params={{ projectName: flag.project.name }}
+                >
                   {flag.project.name}
                 </LinkAnchor>
               </Table.Td>

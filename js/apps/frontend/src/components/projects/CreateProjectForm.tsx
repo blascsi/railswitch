@@ -17,6 +17,7 @@ const CreateProjectMutation = graphql(`
     createProject(input: $input) {
       result {
         id
+        name
       }
       errors {
         message
@@ -41,8 +42,8 @@ export function CreateProjectForm() {
 
     if (data?.createProject.result != null) {
       navigate({
-        to: "/projects/$id",
-        params: { id: data.createProject.result.id },
+        to: "/project/$projectName",
+        params: { projectName: data.createProject.result.name },
       });
       return;
     }

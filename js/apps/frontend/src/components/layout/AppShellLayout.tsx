@@ -6,6 +6,7 @@ import {
   HouseIcon,
   TerminalIcon,
 } from "@phosphor-icons/react";
+import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { SignOutButton } from "../auth/SignOutButton";
 import { OrganizationSelector } from "../OrganizationSelector";
@@ -17,6 +18,9 @@ type AppShellLayoutProps = {
 
 export function AppShellLayout({ children }: AppShellLayoutProps) {
   const [opened, { toggle }] = useDisclosure(true);
+  const activePath = useRouterState({
+    select: (state) => state.matches[state.matches.length - 1]?.fullPath,
+  });
 
   return (
     <AppShell
@@ -44,13 +48,23 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
             to="/projects"
             label="Projects"
             leftSection={<FolderIcon />}
+            active={activePath === "/project/$projectName/"}
           />
           <NavbarLink
             to="/environments"
             label="Environments"
             leftSection={<TerminalIcon />}
+            active={
+              activePath ===
+              "/project/$projectName/environment/$environmentName"
+            }
           />
-          <NavbarLink to="/flags" label="Flags" leftSection={<FlagIcon />} />
+          <NavbarLink
+            to="/flags"
+            label="Flags"
+            leftSection={<FlagIcon />}
+            active={activePath === "/project/$projectName/flag/$flagName"}
+          />
         </AppShell.Section>
         <AppShell.Section>
           <SignOutButton />

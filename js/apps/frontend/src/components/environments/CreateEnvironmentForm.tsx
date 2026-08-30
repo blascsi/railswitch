@@ -19,6 +19,11 @@ const CreateEnvironmentMutation = graphql(
     createEnvironment(input: $input) {
       result {
         id
+        name
+        project {
+          id
+          name
+        }
       }
       errors {
         message
@@ -57,8 +62,11 @@ export function CreateEnvironmentForm({
 
     if (data?.createEnvironment.result != null) {
       navigate({
-        to: "/environments/$id",
-        params: { id: data.createEnvironment.result.id },
+        to: "/project/$projectName/environment/$environmentName",
+        params: {
+          projectName: data.createEnvironment.result.project.name,
+          environmentName: data.createEnvironment.result.name,
+        },
       });
       return;
     }

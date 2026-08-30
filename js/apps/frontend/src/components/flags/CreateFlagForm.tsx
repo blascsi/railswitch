@@ -18,6 +18,11 @@ const CreateFlagMutation = graphql(`
     createFlag(input: $input) {
       result {
         id
+        name
+        project {
+          id
+          name
+        }
       }
       errors {
         message
@@ -52,7 +57,13 @@ export function CreateFlagForm({
     });
 
     if (data?.createFlag.result != null) {
-      navigate({ to: "/flags/$id", params: { id: data.createFlag.result.id } });
+      navigate({
+        to: "/project/$projectName/flag/$flagName",
+        params: {
+          projectName: data.createFlag.result.project.name,
+          flagName: data.createFlag.result.name,
+        },
+      });
       return;
     }
 

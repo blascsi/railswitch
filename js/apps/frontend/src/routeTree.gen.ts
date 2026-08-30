@@ -17,14 +17,14 @@ import { Route as AnonymousSignupRouteImport } from './routes/_anonymous/signup'
 import { Route as AuthenticatedOrganizationRequiredRouteImport } from './routes/_authenticated/_organizationRequired'
 import { Route as AuthenticatedOrganizationRequiredHomeRouteImport } from './routes/_authenticated/_organizationRequired/home'
 import { Route as AuthenticatedOrganizationRequiredEnvironmentsIndexRouteImport } from './routes/_authenticated/_organizationRequired/environments/index'
-import { Route as AuthenticatedOrganizationRequiredEnvironmentsIdRouteImport } from './routes/_authenticated/_organizationRequired/environments/$id'
 import { Route as AuthenticatedOrganizationRequiredEnvironmentsCreateRouteImport } from './routes/_authenticated/_organizationRequired/environments/create'
 import { Route as AuthenticatedOrganizationRequiredFlagsIndexRouteImport } from './routes/_authenticated/_organizationRequired/flags/index'
-import { Route as AuthenticatedOrganizationRequiredFlagsIdRouteImport } from './routes/_authenticated/_organizationRequired/flags/$id'
 import { Route as AuthenticatedOrganizationRequiredFlagsCreateRouteImport } from './routes/_authenticated/_organizationRequired/flags/create'
 import { Route as AuthenticatedOrganizationRequiredProjectsIndexRouteImport } from './routes/_authenticated/_organizationRequired/projects/index'
-import { Route as AuthenticatedOrganizationRequiredProjectsIdRouteImport } from './routes/_authenticated/_organizationRequired/projects/$id'
 import { Route as AuthenticatedOrganizationRequiredProjectsCreateRouteImport } from './routes/_authenticated/_organizationRequired/projects/create'
+import { Route as AuthenticatedOrganizationRequiredProjectProjectNameIndexRouteImport } from './routes/_authenticated/_organizationRequired/project/$projectName/index'
+import { Route as AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRouteImport } from './routes/_authenticated/_organizationRequired/project/$projectName/environment/$environmentName'
+import { Route as AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRouteImport } from './routes/_authenticated/_organizationRequired/project/$projectName/flag/$flagName'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -66,12 +66,6 @@ const AuthenticatedOrganizationRequiredEnvironmentsIndexRoute =
     path: '/environments/',
     getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
   } as any)
-const AuthenticatedOrganizationRequiredEnvironmentsIdRoute =
-  AuthenticatedOrganizationRequiredEnvironmentsIdRouteImport.update({
-    id: '/environments/$id',
-    path: '/environments/$id',
-    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
-  } as any)
 const AuthenticatedOrganizationRequiredEnvironmentsCreateRoute =
   AuthenticatedOrganizationRequiredEnvironmentsCreateRouteImport.update({
     id: '/environments/create',
@@ -82,12 +76,6 @@ const AuthenticatedOrganizationRequiredFlagsIndexRoute =
   AuthenticatedOrganizationRequiredFlagsIndexRouteImport.update({
     id: '/flags/',
     path: '/flags/',
-    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
-  } as any)
-const AuthenticatedOrganizationRequiredFlagsIdRoute =
-  AuthenticatedOrganizationRequiredFlagsIdRouteImport.update({
-    id: '/flags/$id',
-    path: '/flags/$id',
     getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
   } as any)
 const AuthenticatedOrganizationRequiredFlagsCreateRoute =
@@ -102,48 +90,64 @@ const AuthenticatedOrganizationRequiredProjectsIndexRoute =
     path: '/projects/',
     getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
   } as any)
-const AuthenticatedOrganizationRequiredProjectsIdRoute =
-  AuthenticatedOrganizationRequiredProjectsIdRouteImport.update({
-    id: '/projects/$id',
-    path: '/projects/$id',
-    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
-  } as any)
 const AuthenticatedOrganizationRequiredProjectsCreateRoute =
   AuthenticatedOrganizationRequiredProjectsCreateRouteImport.update({
     id: '/projects/create',
     path: '/projects/create',
     getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
   } as any)
+const AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute =
+  AuthenticatedOrganizationRequiredProjectProjectNameIndexRouteImport.update({
+    id: '/project/$projectName/',
+    path: '/project/$projectName/',
+    getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
+  } as any)
+const AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute =
+  AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRouteImport.update(
+    {
+      id: '/project/$projectName/environment/$environmentName',
+      path: '/project/$projectName/environment/$environmentName',
+      getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
+    } as any,
+  )
+const AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute =
+  AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRouteImport.update(
+    {
+      id: '/project/$projectName/flag/$flagName',
+      path: '/project/$projectName/flag/$flagName',
+      getParentRoute: () => AuthenticatedOrganizationRequiredRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof AnonymousLoginRoute
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedOrganizationRequiredHomeRoute
-  '/environments/$id': typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
   '/environments/create': typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
-  '/flags/$id': typeof AuthenticatedOrganizationRequiredFlagsIdRoute
   '/flags/create': typeof AuthenticatedOrganizationRequiredFlagsCreateRoute
-  '/projects/$id': typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   '/projects/create': typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
   '/environments/': typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   '/flags/': typeof AuthenticatedOrganizationRequiredFlagsIndexRoute
   '/projects/': typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
+  '/project/$projectName/': typeof AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute
+  '/project/$projectName/environment/$environmentName': typeof AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute
+  '/project/$projectName/flag/$flagName': typeof AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof AnonymousLoginRoute
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedOrganizationRequiredHomeRoute
-  '/environments/$id': typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
   '/environments/create': typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
-  '/flags/$id': typeof AuthenticatedOrganizationRequiredFlagsIdRoute
   '/flags/create': typeof AuthenticatedOrganizationRequiredFlagsCreateRoute
-  '/projects/$id': typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   '/projects/create': typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
   '/environments': typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   '/flags': typeof AuthenticatedOrganizationRequiredFlagsIndexRoute
   '/projects': typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
+  '/project/$projectName': typeof AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute
+  '/project/$projectName/environment/$environmentName': typeof AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute
+  '/project/$projectName/flag/$flagName': typeof AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -154,15 +158,15 @@ export interface FileRoutesById {
   '/_anonymous/signup': typeof AnonymousSignupRoute
   '/_authenticated/_organizationRequired': typeof AuthenticatedOrganizationRequiredRouteWithChildren
   '/_authenticated/_organizationRequired/home': typeof AuthenticatedOrganizationRequiredHomeRoute
-  '/_authenticated/_organizationRequired/environments/$id': typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
   '/_authenticated/_organizationRequired/environments/create': typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
-  '/_authenticated/_organizationRequired/flags/$id': typeof AuthenticatedOrganizationRequiredFlagsIdRoute
   '/_authenticated/_organizationRequired/flags/create': typeof AuthenticatedOrganizationRequiredFlagsCreateRoute
-  '/_authenticated/_organizationRequired/projects/$id': typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   '/_authenticated/_organizationRequired/projects/create': typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
   '/_authenticated/_organizationRequired/environments/': typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   '/_authenticated/_organizationRequired/flags/': typeof AuthenticatedOrganizationRequiredFlagsIndexRoute
   '/_authenticated/_organizationRequired/projects/': typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
+  '/_authenticated/_organizationRequired/project/$projectName/': typeof AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute
+  '/_authenticated/_organizationRequired/project/$projectName/environment/$environmentName': typeof AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute
+  '/_authenticated/_organizationRequired/project/$projectName/flag/$flagName': typeof AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,30 +175,30 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/home'
-    | '/environments/$id'
     | '/environments/create'
-    | '/flags/$id'
     | '/flags/create'
-    | '/projects/$id'
     | '/projects/create'
     | '/environments/'
     | '/flags/'
     | '/projects/'
+    | '/project/$projectName/'
+    | '/project/$projectName/environment/$environmentName'
+    | '/project/$projectName/flag/$flagName'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
     | '/home'
-    | '/environments/$id'
     | '/environments/create'
-    | '/flags/$id'
     | '/flags/create'
-    | '/projects/$id'
     | '/projects/create'
     | '/environments'
     | '/flags'
     | '/projects'
+    | '/project/$projectName'
+    | '/project/$projectName/environment/$environmentName'
+    | '/project/$projectName/flag/$flagName'
   id:
     | '__root__'
     | '/'
@@ -204,15 +208,15 @@ export interface FileRouteTypes {
     | '/_anonymous/signup'
     | '/_authenticated/_organizationRequired'
     | '/_authenticated/_organizationRequired/home'
-    | '/_authenticated/_organizationRequired/environments/$id'
     | '/_authenticated/_organizationRequired/environments/create'
-    | '/_authenticated/_organizationRequired/flags/$id'
     | '/_authenticated/_organizationRequired/flags/create'
-    | '/_authenticated/_organizationRequired/projects/$id'
     | '/_authenticated/_organizationRequired/projects/create'
     | '/_authenticated/_organizationRequired/environments/'
     | '/_authenticated/_organizationRequired/flags/'
     | '/_authenticated/_organizationRequired/projects/'
+    | '/_authenticated/_organizationRequired/project/$projectName/'
+    | '/_authenticated/_organizationRequired/project/$projectName/environment/$environmentName'
+    | '/_authenticated/_organizationRequired/project/$projectName/flag/$flagName'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -279,13 +283,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRouteImport
       parentRoute: typeof AuthenticatedOrganizationRequiredRoute
     }
-    '/_authenticated/_organizationRequired/environments/$id': {
-      id: '/_authenticated/_organizationRequired/environments/$id'
-      path: '/environments/$id'
-      fullPath: '/environments/$id'
-      preLoaderRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIdRouteImport
-      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
-    }
     '/_authenticated/_organizationRequired/environments/create': {
       id: '/_authenticated/_organizationRequired/environments/create'
       path: '/environments/create'
@@ -298,13 +295,6 @@ declare module '@tanstack/react-router' {
       path: '/flags'
       fullPath: '/flags/'
       preLoaderRoute: typeof AuthenticatedOrganizationRequiredFlagsIndexRouteImport
-      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
-    }
-    '/_authenticated/_organizationRequired/flags/$id': {
-      id: '/_authenticated/_organizationRequired/flags/$id'
-      path: '/flags/$id'
-      fullPath: '/flags/$id'
-      preLoaderRoute: typeof AuthenticatedOrganizationRequiredFlagsIdRouteImport
       parentRoute: typeof AuthenticatedOrganizationRequiredRoute
     }
     '/_authenticated/_organizationRequired/flags/create': {
@@ -321,18 +311,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationRequiredProjectsIndexRouteImport
       parentRoute: typeof AuthenticatedOrganizationRequiredRoute
     }
-    '/_authenticated/_organizationRequired/projects/$id': {
-      id: '/_authenticated/_organizationRequired/projects/$id'
-      path: '/projects/$id'
-      fullPath: '/projects/$id'
-      preLoaderRoute: typeof AuthenticatedOrganizationRequiredProjectsIdRouteImport
-      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
-    }
     '/_authenticated/_organizationRequired/projects/create': {
       id: '/_authenticated/_organizationRequired/projects/create'
       path: '/projects/create'
       fullPath: '/projects/create'
       preLoaderRoute: typeof AuthenticatedOrganizationRequiredProjectsCreateRouteImport
+      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
+    }
+    '/_authenticated/_organizationRequired/project/$projectName/': {
+      id: '/_authenticated/_organizationRequired/project/$projectName/'
+      path: '/project/$projectName'
+      fullPath: '/project/$projectName/'
+      preLoaderRoute: typeof AuthenticatedOrganizationRequiredProjectProjectNameIndexRouteImport
+      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
+    }
+    '/_authenticated/_organizationRequired/project/$projectName/environment/$environmentName': {
+      id: '/_authenticated/_organizationRequired/project/$projectName/environment/$environmentName'
+      path: '/project/$projectName/environment/$environmentName'
+      fullPath: '/project/$projectName/environment/$environmentName'
+      preLoaderRoute: typeof AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRouteImport
+      parentRoute: typeof AuthenticatedOrganizationRequiredRoute
+    }
+    '/_authenticated/_organizationRequired/project/$projectName/flag/$flagName': {
+      id: '/_authenticated/_organizationRequired/project/$projectName/flag/$flagName'
+      path: '/project/$projectName/flag/$flagName'
+      fullPath: '/project/$projectName/flag/$flagName'
+      preLoaderRoute: typeof AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRouteImport
       parentRoute: typeof AuthenticatedOrganizationRequiredRoute
     }
   }
@@ -354,31 +358,25 @@ const AnonymousRouteWithChildren = AnonymousRoute._addFileChildren(
 
 interface AuthenticatedOrganizationRequiredRouteChildren {
   AuthenticatedOrganizationRequiredHomeRoute: typeof AuthenticatedOrganizationRequiredHomeRoute
-  AuthenticatedOrganizationRequiredEnvironmentsIdRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIdRoute
   AuthenticatedOrganizationRequiredEnvironmentsCreateRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsCreateRoute
-  AuthenticatedOrganizationRequiredFlagsIdRoute: typeof AuthenticatedOrganizationRequiredFlagsIdRoute
   AuthenticatedOrganizationRequiredFlagsCreateRoute: typeof AuthenticatedOrganizationRequiredFlagsCreateRoute
-  AuthenticatedOrganizationRequiredProjectsIdRoute: typeof AuthenticatedOrganizationRequiredProjectsIdRoute
   AuthenticatedOrganizationRequiredProjectsCreateRoute: typeof AuthenticatedOrganizationRequiredProjectsCreateRoute
   AuthenticatedOrganizationRequiredEnvironmentsIndexRoute: typeof AuthenticatedOrganizationRequiredEnvironmentsIndexRoute
   AuthenticatedOrganizationRequiredFlagsIndexRoute: typeof AuthenticatedOrganizationRequiredFlagsIndexRoute
   AuthenticatedOrganizationRequiredProjectsIndexRoute: typeof AuthenticatedOrganizationRequiredProjectsIndexRoute
+  AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute: typeof AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute
+  AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute: typeof AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute
+  AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute: typeof AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute
 }
 
 const AuthenticatedOrganizationRequiredRouteChildren: AuthenticatedOrganizationRequiredRouteChildren =
   {
     AuthenticatedOrganizationRequiredHomeRoute:
       AuthenticatedOrganizationRequiredHomeRoute,
-    AuthenticatedOrganizationRequiredEnvironmentsIdRoute:
-      AuthenticatedOrganizationRequiredEnvironmentsIdRoute,
     AuthenticatedOrganizationRequiredEnvironmentsCreateRoute:
       AuthenticatedOrganizationRequiredEnvironmentsCreateRoute,
-    AuthenticatedOrganizationRequiredFlagsIdRoute:
-      AuthenticatedOrganizationRequiredFlagsIdRoute,
     AuthenticatedOrganizationRequiredFlagsCreateRoute:
       AuthenticatedOrganizationRequiredFlagsCreateRoute,
-    AuthenticatedOrganizationRequiredProjectsIdRoute:
-      AuthenticatedOrganizationRequiredProjectsIdRoute,
     AuthenticatedOrganizationRequiredProjectsCreateRoute:
       AuthenticatedOrganizationRequiredProjectsCreateRoute,
     AuthenticatedOrganizationRequiredEnvironmentsIndexRoute:
@@ -387,6 +385,12 @@ const AuthenticatedOrganizationRequiredRouteChildren: AuthenticatedOrganizationR
       AuthenticatedOrganizationRequiredFlagsIndexRoute,
     AuthenticatedOrganizationRequiredProjectsIndexRoute:
       AuthenticatedOrganizationRequiredProjectsIndexRoute,
+    AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute:
+      AuthenticatedOrganizationRequiredProjectProjectNameIndexRoute,
+    AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute:
+      AuthenticatedOrganizationRequiredProjectProjectNameEnvironmentEnvironmentNameRoute,
+    AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute:
+      AuthenticatedOrganizationRequiredProjectProjectNameFlagFlagNameRoute,
   }
 
 const AuthenticatedOrganizationRequiredRouteWithChildren =

@@ -2,15 +2,15 @@ import { Container, EmptyState, Stack, Text, Title } from "@mantine/core";
 import { FolderIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "urql";
-import { FullPageLoader } from "../../../../components/feedback/FullPageLoader";
-import { CenteredContent } from "../../../../components/layout/CenteredContent";
-import { graphql } from "../../../../graphql/graphql";
-import { loadQuery } from "../../../../utils/loadQuery";
+import { FullPageLoader } from "../../../../../components/feedback/FullPageLoader";
+import { CenteredContent } from "../../../../../components/layout/CenteredContent";
+import { graphql } from "../../../../../graphql/graphql";
+import { loadQuery } from "../../../../../utils/loadQuery";
 
 export const ProjectPageQuery = graphql(
   `
-  query ProjectPageQuery($id: ID!) {
-    getProject(id: $id) {
+  query ProjectPageQuery($name: String!) {
+    getProjectByName(name: $name) {
       id
       name
     }
@@ -19,23 +19,28 @@ export const ProjectPageQuery = graphql(
 );
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/projects/$id",
+  "/_authenticated/_organizationRequired/project/$projectName/",
 )({
   loader: async ({ context, params }) => {
-    await loadQuery(context.client, ProjectPageQuery, { id: params.id });
+    await loadQuery(context.client, ProjectPageQuery, {
+      name: params.projectName,
+    });
   },
   component: ProjectEditPage,
 });
 
 function ProjectEditPage() {
-  const { id } = Route.useParams();
-  const [page] = useQuery({ query: ProjectPageQuery, variables: { id } });
+  const { projectName } = Route.useParams();
+  const [page] = useQuery({
+    query: ProjectPageQuery,
+    variables: { name: projectName },
+  });
 
   if (page.fetching && page.data == null) {
     return <FullPageLoader />;
   }
 
-  if (page.data?.getProject == null) {
+  if (page.data?.getProjectByName == null) {
     return (
       <CenteredContent>
         <EmptyState
@@ -48,7 +53,7 @@ function ProjectEditPage() {
     );
   }
 
-  const project = page.data.getProject;
+  const project = page.data.getProjectByName;
 
   return (
     <Container>

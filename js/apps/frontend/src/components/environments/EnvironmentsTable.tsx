@@ -34,16 +34,19 @@ export function EnvironmentsTable({ environments }: EnvironmentsTableProps) {
             <Table.Tr key={environment.id}>
               <Table.Td>
                 <LinkAnchor
-                  to="/environments/$id"
-                  params={{ id: environment.id }}
+                  to="/project/$projectName/environment/$environmentName"
+                  params={{
+                    projectName: environment.project.name,
+                    environmentName: environment.name,
+                  }}
                 >
                   {environment.name}
                 </LinkAnchor>
               </Table.Td>
               <Table.Td>
                 <LinkAnchor
-                  to="/projects/$id"
-                  params={{ id: environment.project.id }}
+                  to="/project/$projectName"
+                  params={{ projectName: environment.project.name }}
                 >
                   {environment.project.name}
                 </LinkAnchor>

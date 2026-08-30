@@ -17,18 +17,18 @@ import { useMutation, useQuery } from "urql";
 import {
   EnvironmentSelector,
   environmentSelector_environments,
-} from "../../../../components/environments/EnvironmentSelector";
-import { FullPageLoader } from "../../../../components/feedback/FullPageLoader";
-import { CenteredContent } from "../../../../components/layout/CenteredContent";
-import { LinkAnchor } from "../../../../components/routing/link-components/LinkAnchor";
-import { graphql } from "../../../../graphql/graphql";
-import { getMutationFieldErrors } from "../../../../utils/apiErrorMessage";
-import { loadQuery } from "../../../../utils/loadQuery";
+} from "../../../../../../components/environments/EnvironmentSelector";
+import { FullPageLoader } from "../../../../../../components/feedback/FullPageLoader";
+import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
+import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
+import { graphql } from "../../../../../../graphql/graphql";
+import { getMutationFieldErrors } from "../../../../../../utils/apiErrorMessage";
+import { loadQuery } from "../../../../../../utils/loadQuery";
 
 export const FlagUpdatePageQuery = graphql(
   `
-  query FlagUpdatePageQuery($id: ID!) {
-    getFlag(id: $id) {
+  query FlagUpdatePageQuery($projectName: String!, $flagName: String!) {
+    getFlagByName(projectName: $projectName, flagName: $flagName) {
       id
       name
       project {
@@ -98,24 +98,33 @@ function validateRules(rules: string) {
 }
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/flags/$id",
+  "/_authenticated/_organizationRequired/project/$projectName/flag/$flagName",
 )({
   loader: async ({ context, params }) => {
-    await loadQuery(context.client, FlagUpdatePageQuery, { id: params.id });
+    await loadQuery(context.client, FlagUpdatePageQuery, {
+      projectName: params.projectName,
+      flagName: params.flagName,
+    });
   },
   component: FlagUpdatePage,
 });
 
 function FlagUpdatePage() {
-  const { id } = Route.useParams();
+  const { projectName, flagName } = Route.useParams();
   const [selectedEnvironment, setSelectedEnvironment] = useState<string | null>(
     null,
   );
-  const [page] = useQuery({ query: FlagUpdatePageQuery, variables: { id } });
+  const [page] = useQuery({
+    query: FlagUpdatePageQuery,
+    variables: { projectName, flagName },
+  });
   const [flagEnvironments] = useQuery({
     query: FlagEnvironmentQuery,
-    variables: { flag: { eq: id }, environment: { eq: selectedEnvironment } },
-    pause: selectedEnvironment == null,
+    variables: {
+      flag: { eq: page.data?.getFlagByName?.id },
+      environment: { eq: selectedEnvironment },
+    },
+    pause: selectedEnvironment == null || page.data?.getFlagByName?.id == null,
   });
   const [{ fetching }, updateRule] = useMutation(UpdateFlagEnvironmentMutation);
   const form = useForm<RuleUpdateInput>({
@@ -131,18 +140,18 @@ function FlagUpdatePage() {
   useEffect(() => {
     if (
       page.fetching ||
-      page.data?.getFlag?.project.environments.length === 0 ||
+      page.data?.getFlagByName?.project.environments.length === 0 ||
       selectedEnvironment != null
     ) {
       return;
     }
 
     setSelectedEnvironment(
-      page.data?.getFlag?.project.environments?.[0]?.id ?? null,
+      page.data?.getFlagByName?.project.environments?.[0]?.id ?? null,
     );
   }, [
     page.fetching,
-    page.data?.getFlag?.project.environments,
+    page.data?.getFlagByName?.project.environments,
     selectedEnvironment,
   ]);
 
@@ -158,7 +167,7 @@ function FlagUpdatePage() {
     return <FullPageLoader />;
   }
 
-  if (page.data?.getFlag == null) {
+  if (page.data?.getFlagByName == null) {
     return (
       <CenteredContent>
         <EmptyState
@@ -185,7 +194,7 @@ function FlagUpdatePage() {
     form.setErrors(getMutationFieldErrors(errors));
   };
 
-  const flag = page.data.getFlag;
+  const flag = page.data.getFlagByName;
   const isSubmitEnabled = form.isDirty() && form.isValid();
 
   return (
@@ -195,7 +204,10 @@ function FlagUpdatePage() {
         <Text c="dimmed">Name</Text>
         <Text>{flag.name}</Text>
         <Text c="dimmed">Owning project</Text>
-        <LinkAnchor to="/projects/$id" params={{ id: flag.project.id }}>
+        <LinkAnchor
+          to="/project/$projectName"
+          params={{ projectName: flag.project.name }}
+        >
           {flag.project.name}
         </LinkAnchor>
         <Text c="dimmed">Environment</Text>
