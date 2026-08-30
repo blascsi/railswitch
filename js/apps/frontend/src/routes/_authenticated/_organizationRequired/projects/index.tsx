@@ -2,8 +2,6 @@ import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
 import { FolderIcon } from "@phosphor-icons/react";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "urql";
-import { FullPageLoader } from "../../../../components/feedback/FullPageLoader";
 import { CenteredContent } from "../../../../components/layout/CenteredContent";
 import {
   ProjectsTable,
@@ -12,9 +10,8 @@ import {
 import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../graphql/graphql";
-import { loadQuery } from "../../../../utils/loadQuery";
 
-export const ProjectsPageQuery = graphql(
+const ProjectsPageQuery = graphql(
   `
   query ProjectsPage {
     listProjects(sort: [{ field: NAME, order: ASC }]) {
@@ -32,21 +29,22 @@ export const Route = createFileRoute(
   "/_authenticated/_organizationRequired/projects/",
 )({
   loader: async ({ context }) => {
-    await loadQuery(context.client, ProjectsPageQuery, {});
+    const { data, error } = await context.client
+      .query(ProjectsPageQuery, {})
+      .toPromise();
+
+    if (data == null) {
+      throw error;
+    }
+
+    return data;
   },
   component: ProjectsPage,
 });
 
 function ProjectsPage() {
-  const [page] = useQuery({ query: ProjectsPageQuery });
-  const listProjects = page.data?.listProjects;
-  if (page.error && listProjects == null) {
-    throw page.error;
-  }
-
-  if (page.fetching && page.data == null) {
-    return <FullPageLoader />;
-  }
+  const loaderData = Route.useLoaderData();
+  const { listProjects } = loaderData;
 
   if (listProjects?.count === 0) {
     return (

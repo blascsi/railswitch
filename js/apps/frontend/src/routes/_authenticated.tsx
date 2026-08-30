@@ -11,9 +11,8 @@ import {
 import { AppShellLayout } from "../components/layout/AppShellLayout";
 import { graphql } from "../graphql/graphql";
 import { store } from "../store";
-import { loadQuery } from "../utils/loadQuery";
 
-export const AuthenticatedLayoutQuery = graphql(`
+const AuthenticatedLayoutQuery = graphql(`
   query AuthenticatedLayout {
     listOrganizations {
       results {
@@ -30,16 +29,17 @@ export const Route = createFileRoute("/_authenticated")({
       throw redirect({ to: "/login" });
     }
 
-    const revalidate = loadQuery(
-      store.get(crossOrganizationClientAtom),
-      AuthenticatedLayoutQuery,
-      {},
-    ).then((result) => {
-      store.set(
-        setOrganizationsAtom,
-        result.data?.listOrganizations?.results ?? [],
-      );
-    });
+    const revalidate = store
+      .get(crossOrganizationClientAtom)
+      .query(AuthenticatedLayoutQuery, {})
+      .toPromise()
+      .then(({ data, error }) => {
+        if (error && data == null) {
+          throw error;
+        }
+
+        store.set(setOrganizationsAtom, data?.listOrganizations?.results ?? []);
+      });
 
     // If the organizationsAtom is empty wait until it's data
     // is ready, otherwise refresh in the background

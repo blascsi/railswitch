@@ -1,19 +1,16 @@
 import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
 import { PlusIcon, TerminalIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "urql";
 import {
   EnvironmentsTable,
   environmentsTable_environments,
 } from "../../../../components/environments/EnvironmentsTable";
-import { FullPageLoader } from "../../../../components/feedback/FullPageLoader";
 import { CenteredContent } from "../../../../components/layout/CenteredContent";
 import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../graphql/graphql";
-import { loadQuery } from "../../../../utils/loadQuery";
 
-export const EnvironmentsPageQuery = graphql(
+const EnvironmentsPageQuery = graphql(
   `
   query EnvironmentsPage {
     listEnvironments(sort: [{field: NAME, order: ASC}]) {
@@ -31,21 +28,22 @@ export const Route = createFileRoute(
   "/_authenticated/_organizationRequired/environments/",
 )({
   loader: async ({ context }) => {
-    await loadQuery(context.client, EnvironmentsPageQuery, {});
+    const { data, error } = await context.client
+      .query(EnvironmentsPageQuery, {})
+      .toPromise();
+
+    if (data == null) {
+      throw error;
+    }
+
+    return data;
   },
   component: EnvironmentsPage,
 });
 
 function EnvironmentsPage() {
-  const [page] = useQuery({ query: EnvironmentsPageQuery });
-  const listEnvironments = page.data?.listEnvironments;
-  if (page.error && listEnvironments == null) {
-    throw page.error;
-  }
-
-  if (page.fetching && page.data == null) {
-    return <FullPageLoader />;
-  }
+  const loaderData = Route.useLoaderData();
+  const { listEnvironments } = loaderData;
 
   if (listEnvironments?.count === 0) {
     return (

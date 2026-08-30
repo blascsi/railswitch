@@ -54,9 +54,6 @@ catalogs:
     '@urql/devtools':
       specifier: ^2.0.3
       version: 2.0.3
-    '@urql/exchange-request-policy':
-      specifier: ^2.0.0
-      version: 2.0.0
     '@urql/introspection':
       specifier: ^1.2.1
       version: 1.2.1
@@ -164,9 +161,6 @@ importers:
       '@urql/devtools':
         specifier: 'catalog:'
         version: 2.0.3(@urql/core@6.0.3(graphql@16.14.2))(graphql@16.14.2)
-      '@urql/exchange-request-policy':
-        specifier: 'catalog:'
-        version: 2.0.0(@urql/core@6.0.3(graphql@16.14.2))
       gql.tada:
         specifier: 'catalog:'
         version: 1.11.3(graphql@16.14.2)(typescript@6.0.3)
@@ -925,11 +919,6 @@ packages:
 
   '@urql/exchange-context@1.0.0':
     resolution: {integrity: sha512-lxLIfGAvvbAQm+CEAmpicBDeuDFJFougpit6N96cyRZDTajfYOerUcfxTJ8EwXJx+XSUSOPJa7OAxLzeipNLEA==}
-    peerDependencies:
-      '@urql/core': ^6.0.0
-
-  '@urql/exchange-request-policy@2.0.0':
-    resolution: {integrity: sha512-GjTY7PMFTGUlXmz75mYcAS6TdLbJxNJ0DilHsLEFPW8CB36McSomCDRKFeCn8OBSw9+BJAaIFLBeGsPf75i69A==}
     peerDependencies:
       '@urql/core': ^6.0.0
 
@@ -2436,11 +2425,6 @@ snapshots:
       wonka: 6.3.6
 
   '@urql/exchange-context@1.0.0(@urql/core@6.0.3(graphql@16.14.2))':
-    dependencies:
-      '@urql/core': 6.0.3(graphql@16.14.2)
-      wonka: 6.3.6
-
-  '@urql/exchange-request-policy@2.0.0(@urql/core@6.0.3(graphql@16.14.2))':
     dependencies:
       '@urql/core': 6.0.3(graphql@16.14.2)
       wonka: 6.3.6

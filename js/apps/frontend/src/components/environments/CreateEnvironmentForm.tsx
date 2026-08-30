@@ -36,12 +36,10 @@ const CreateEnvironmentMutation = graphql(
 
 type CreateEnvironmentFormProps = {
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
-  isDataLoading: boolean;
 };
 
 export function CreateEnvironmentForm({
   projects,
-  isDataLoading,
 }: CreateEnvironmentFormProps) {
   const navigate = useNavigate();
   const [{ fetching }, createEnvironment] = useMutation(
@@ -82,7 +80,6 @@ export function CreateEnvironmentForm({
       errorTitle="Couldn't create environment"
       errorMessage={errorMessage}
       isPending={fetching}
-      isDataLoading={isDataLoading}
       onSubmit={handleSubmit}
       projects={projects}
     />

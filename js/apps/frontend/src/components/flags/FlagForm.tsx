@@ -21,7 +21,6 @@ export type FlagFormValues = z.output<typeof flagSchema>;
 export type FlagFormInstance = UseFormReturnType<FlagFormInput>;
 
 type FlagFormProps = {
-  isDataLoading: boolean;
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
   submitLabel: string;
   errorTitle: string;
@@ -32,7 +31,6 @@ type FlagFormProps = {
 };
 
 export function FlagForm({
-  isDataLoading,
   projects,
   submitLabel,
   errorTitle,
@@ -72,7 +70,6 @@ export function FlagForm({
           placeholder="Parent project"
           aria-label="Parent project"
           projects={projects}
-          loading={isDataLoading}
           key={form.key("project_id")}
           {...form.getInputProps("project_id")}
         />

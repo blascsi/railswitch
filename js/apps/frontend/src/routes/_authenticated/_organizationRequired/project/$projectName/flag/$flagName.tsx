@@ -11,21 +11,19 @@ import {
 import { useForm } from "@mantine/form";
 import { FlagIcon } from "@phosphor-icons/react";
 import { rulesSchema } from "@railswitch/schemas";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "urql";
 import {
   EnvironmentSelector,
   environmentSelector_environments,
 } from "../../../../../../components/environments/EnvironmentSelector";
-import { FullPageLoader } from "../../../../../../components/feedback/FullPageLoader";
 import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../../../../../graphql/graphql";
 import { getMutationFieldErrors } from "../../../../../../utils/apiErrorMessage";
-import { loadQuery } from "../../../../../../utils/loadQuery";
 
-export const FlagUpdatePageQuery = graphql(
+const FlagUpdatePageQuery = graphql(
   `
   query FlagUpdatePageQuery($projectName: String!, $flagName: String!) {
     getFlagByName(projectName: $projectName, flagName: $flagName) {
@@ -101,30 +99,55 @@ export const Route = createFileRoute(
   "/_authenticated/_organizationRequired/project/$projectName/flag/$flagName",
 )({
   loader: async ({ context, params }) => {
-    await loadQuery(context.client, FlagUpdatePageQuery, {
-      projectName: params.projectName,
-      flagName: params.flagName,
-    });
+    const { data, error } = await context.client
+      .query(FlagUpdatePageQuery, {
+        projectName: params.projectName,
+        flagName: params.flagName,
+      })
+      .toPromise();
+
+    if (data == null) {
+      throw error;
+    }
+
+    const flag = data.getFlagByName;
+
+    if (flag == null) {
+      throw notFound();
+    }
+
+    return { flag };
   },
   component: FlagUpdatePage,
+  notFoundComponent: FlagNotFound,
 });
 
-function FlagUpdatePage() {
-  const { projectName, flagName } = Route.useParams();
-  const [selectedEnvironment, setSelectedEnvironment] = useState<string | null>(
-    null,
+function FlagNotFound() {
+  return (
+    <CenteredContent>
+      <EmptyState
+        icon={<FlagIcon />}
+        title="Flag not found"
+        description="Please double check if you are in the right organization"
+        withIndicatorBackground
+      />
+    </CenteredContent>
   );
-  const [page] = useQuery({
-    query: FlagUpdatePageQuery,
-    variables: { projectName, flagName },
-  });
+}
+
+function FlagUpdatePage() {
+  const loaderData = Route.useLoaderData();
+  const { flag } = loaderData;
+  const [selectedEnvironment, setSelectedEnvironment] = useState<string | null>(
+    flag.project.environments?.[0]?.id ?? null,
+  );
   const [flagEnvironments] = useQuery({
     query: FlagEnvironmentQuery,
     variables: {
-      flag: { eq: page.data?.getFlagByName?.id },
+      flag: { eq: flag.id },
       environment: { eq: selectedEnvironment },
     },
-    pause: selectedEnvironment == null || page.data?.getFlagByName?.id == null,
+    pause: selectedEnvironment == null,
   });
   const [{ fetching }, updateRule] = useMutation(UpdateFlagEnvironmentMutation);
   const form = useForm<RuleUpdateInput>({
@@ -138,47 +161,12 @@ function FlagUpdatePage() {
     flagEnvironments.data?.listFlagEnvironments?.results?.[0]?.rules;
 
   useEffect(() => {
-    if (
-      page.fetching ||
-      page.data?.getFlagByName?.project.environments.length === 0 ||
-      selectedEnvironment != null
-    ) {
-      return;
-    }
-
-    setSelectedEnvironment(
-      page.data?.getFlagByName?.project.environments?.[0]?.id ?? null,
-    );
-  }, [
-    page.fetching,
-    page.data?.getFlagByName?.project.environments,
-    selectedEnvironment,
-  ]);
-
-  useEffect(() => {
     if (environmentRules == null) {
       return;
     }
 
     form.setFieldValue("rules", formatRules(environmentRules));
   }, [environmentRules]);
-
-  if (page.fetching && page.data == null) {
-    return <FullPageLoader />;
-  }
-
-  if (page.data?.getFlagByName == null) {
-    return (
-      <CenteredContent>
-        <EmptyState
-          icon={<FlagIcon />}
-          title="Flag not found"
-          description="Plese double check if you are in the right organization"
-          withIndicatorBackground
-        />
-      </CenteredContent>
-    );
-  }
 
   const handleSubmit = async (values: RuleUpdateInput) => {
     const { data } = await updateRule({
@@ -194,7 +182,6 @@ function FlagUpdatePage() {
     form.setErrors(getMutationFieldErrors(errors));
   };
 
-  const flag = page.data.getFlagByName;
   const isSubmitEnabled = form.isDirty() && form.isValid();
 
   return (
@@ -216,7 +203,6 @@ function FlagUpdatePage() {
           value={selectedEnvironment}
           onChange={setSelectedEnvironment}
           allowDeselect={false}
-          loading={page.fetching}
         />
       </Stack>
 

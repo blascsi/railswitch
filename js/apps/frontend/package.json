@@ -21,7 +21,6 @@
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
     "@urql/devtools": "catalog:",
-    "@urql/exchange-request-policy": "catalog:",
     "gql.tada": "catalog:",
     "jotai": "catalog:",
     "mantine-form-zod-resolver": "catalog:",

@@ -16,11 +16,11 @@ export const router = createRouter({
 });
 
 store.sub(graphqlClientAtom, () => {
-  router.invalidate();
+  router.invalidate({ forcePending: true });
 });
 
 store.sub(currentUserAtom, () => {
-  router.invalidate();
+  router.invalidate({ forcePending: true });
 });
 
 declare module "@tanstack/react-router" {

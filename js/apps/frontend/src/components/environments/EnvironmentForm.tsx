@@ -21,7 +21,6 @@ export type EnvironmentFormValues = z.output<typeof environmentSchema>;
 export type EnvironmentFormInstance = UseFormReturnType<EnvironmentFormInput>;
 
 type EnvironmentFormProps = {
-  isDataLoading: boolean;
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
   submitLabel: string;
   errorTitle: string;
@@ -35,7 +34,6 @@ type EnvironmentFormProps = {
 };
 
 export function EnvironmentForm({
-  isDataLoading,
   projects,
   submitLabel,
   errorTitle,
@@ -75,7 +73,6 @@ export function EnvironmentForm({
           placeholder="Parent project"
           aria-label="Parent project"
           projects={projects}
-          loading={isDataLoading}
           key={form.key("project_id")}
           {...form.getInputProps("project_id")}
         />

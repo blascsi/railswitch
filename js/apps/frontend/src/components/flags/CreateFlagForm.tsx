@@ -34,13 +34,9 @@ const CreateFlagMutation = graphql(`
 
 type CreateFlagFormProps = {
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
-  isDataLoading: boolean;
 };
 
-export function CreateFlagForm({
-  projects,
-  isDataLoading,
-}: CreateFlagFormProps) {
+export function CreateFlagForm({ projects }: CreateFlagFormProps) {
   const navigate = useNavigate();
   const [{ fetching }, createFlag] = useMutation(CreateFlagMutation);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -78,7 +74,6 @@ export function CreateFlagForm({
       errorTitle="Couldn't create flag"
       errorMessage={errorMessage}
       isPending={fetching}
-      isDataLoading={isDataLoading}
       onSubmit={handleSubmit}
       projects={projects}
     />

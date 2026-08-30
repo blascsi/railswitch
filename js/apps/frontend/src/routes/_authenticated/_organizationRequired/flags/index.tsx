@@ -2,8 +2,6 @@ import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
 import { PlusIcon } from "@phosphor-icons/react";
 import { FlagIcon } from "@phosphor-icons/react/dist/ssr";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "urql";
-import { FullPageLoader } from "../../../../components/feedback/FullPageLoader";
 import {
   FlagsTable,
   flagsTable_flags,
@@ -12,9 +10,8 @@ import { CenteredContent } from "../../../../components/layout/CenteredContent";
 import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../graphql/graphql";
-import { loadQuery } from "../../../../utils/loadQuery";
 
-export const FlagsPageQuery = graphql(
+const FlagsPageQuery = graphql(
   `
   query FlagsPage {
     listFlags(sort: [{field: NAME, order: ASC}]) {
@@ -32,18 +29,22 @@ export const Route = createFileRoute(
   "/_authenticated/_organizationRequired/flags/",
 )({
   loader: async ({ context }) => {
-    await loadQuery(context.client, FlagsPageQuery, {});
+    const { data, error } = await context.client
+      .query(FlagsPageQuery, {})
+      .toPromise();
+
+    if (data == null) {
+      throw error;
+    }
+
+    return data;
   },
   component: FlagsPage,
 });
 
 function FlagsPage() {
-  const [page] = useQuery({ query: FlagsPageQuery });
-  const listFlags = page.data?.listFlags;
-
-  if (page.fetching && page.data == null) {
-    return <FullPageLoader />;
-  }
+  const loaderData = Route.useLoaderData();
+  const { listFlags } = loaderData;
 
   if (listFlags?.count === 0) {
     return (

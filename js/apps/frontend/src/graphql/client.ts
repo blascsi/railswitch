@@ -1,5 +1,4 @@
 import { devtoolsExchange } from "@urql/devtools";
-import { requestPolicyExchange } from "@urql/exchange-request-policy";
 import { Client, cacheExchange, type Exchange, fetchExchange } from "urql";
 import { exhaustiveAdditionalTypenamesExchange } from "urql-exhaustive-additional-typenames-exchange";
 import { pipe, tap } from "wonka";
@@ -42,7 +41,6 @@ export function makeClient(scope: ClientScope) {
     preferGetMethod: false,
     exchanges: [
       ...(import.meta.env.DEV ? [devtoolsExchange] : []),
-      requestPolicyExchange({ ttl: 60_000 }),
       exhaustiveTypenamesExchange,
       cacheExchange,
       sessionExchange,
