@@ -11,6 +11,7 @@ export const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   defaultPendingComponent: FullPageLoader,
+  defaultPendingMs: 2000,
   defaultNotFoundComponent: NotFoundPage,
   defaultErrorComponent: RouteQueryError,
 });
