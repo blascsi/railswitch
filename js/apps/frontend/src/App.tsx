@@ -1,4 +1,5 @@
 import "@mantine/core/styles.css";
+import "@mantine/nprogress/styles.css";
 import "./App.css";
 
 import { MantineProvider } from "@mantine/core";

@@ -15,6 +15,7 @@
     "@mantine/core": "catalog:",
     "@mantine/form": "catalog:",
     "@mantine/hooks": "catalog:",
+    "@mantine/nprogress": "catalog:",
     "@phosphor-icons/react": "catalog:",
     "@railswitch/schemas": "workspace:*",
     "@railswitch/sdk": "workspace:*",
