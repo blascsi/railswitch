@@ -24,6 +24,10 @@ export function OrganizationSelector(props: OrganizationSelectorProps) {
       onChange={onSelectOrganization}
       checkIconPosition="right"
       allowDeselect={false}
+      // Setting `withinPortal: false` because otherwise the portaled
+      // dropdown wouldn't be cleaned up while the app reloads with
+      // the new Org, and the FullPageLoader is visible
+      comboboxProps={{ withinPortal: false }}
       {...props}
     />
   );
