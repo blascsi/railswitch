@@ -6,8 +6,8 @@ import {
   HouseIcon,
   TerminalIcon,
 } from "@phosphor-icons/react";
-import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { useIsRouteActive } from "../../hooks/useIsRouteActive";
 import { SignOutButton } from "../auth/SignOutButton";
 import { OrganizationSelector } from "../OrganizationSelector";
 import { NavbarLink } from "../routing/link-components/NavbarLink";
@@ -18,9 +18,19 @@ type AppShellLayoutProps = {
 
 export function AppShellLayout({ children }: AppShellLayoutProps) {
   const [opened, { toggle }] = useDisclosure(true);
-  const activePath = useRouterState({
-    select: (state) => state.matches[state.matches.length - 1]?.fullPath,
-  });
+  const isHomeActive = useIsRouteActive([{ to: "/home" }]);
+  const isProjectsActive = useIsRouteActive([
+    { to: "/projects", fuzzy: true },
+    { to: "/project/$projectName" },
+  ]);
+  const isEnvironmentsActive = useIsRouteActive([
+    { to: "/environments", fuzzy: true },
+    { to: "/project/$projectName/environment/$environmentName" },
+  ]);
+  const isFlagsActive = useIsRouteActive([
+    { to: "/flags", fuzzy: true },
+    { to: "/project/$projectName/flag/$flagName" },
+  ]);
 
   return (
     <AppShell
@@ -43,27 +53,29 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
           <Group m="md">
             <OrganizationSelector w="100%" />
           </Group>
-          <NavbarLink to="/home" label="Home" leftSection={<HouseIcon />} />
+          <NavbarLink
+            to="/home"
+            label="Home"
+            leftSection={<HouseIcon />}
+            active={isHomeActive}
+          />
           <NavbarLink
             to="/projects"
             label="Projects"
             leftSection={<FolderIcon />}
-            active={activePath === "/project/$projectName/"}
+            active={isProjectsActive}
           />
           <NavbarLink
             to="/environments"
             label="Environments"
             leftSection={<TerminalIcon />}
-            active={
-              activePath ===
-              "/project/$projectName/environment/$environmentName"
-            }
+            active={isEnvironmentsActive}
           />
           <NavbarLink
             to="/flags"
             label="Flags"
             leftSection={<FlagIcon />}
-            active={activePath === "/project/$projectName/flag/$flagName"}
+            active={isFlagsActive}
           />
         </AppShell.Section>
         <AppShell.Section>
