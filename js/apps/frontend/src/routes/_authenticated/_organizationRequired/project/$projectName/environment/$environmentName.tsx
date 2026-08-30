@@ -4,6 +4,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../../utils/pageTitle";
 
 const EnvironmentPageQuery = graphql(`
   query EnvironmentPageQuery($projectName: String!, $environmentName: String!) {
@@ -40,6 +41,9 @@ export const Route = createFileRoute(
 
     return { environment };
   },
+  head: ({ loaderData }) => ({
+    meta: [{ title: pageTitle(loaderData?.environment.name) }],
+  }),
   component: EnvironmentPage,
   notFoundComponent: EnvironmentNotFound,
 });

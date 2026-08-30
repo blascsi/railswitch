@@ -3,6 +3,7 @@ import { FolderIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CenteredContent } from "../../../../../components/layout/CenteredContent";
 import { graphql } from "../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 const ProjectPageQuery = graphql(`
   query ProjectPageQuery($name: String!) {
@@ -33,6 +34,9 @@ export const Route = createFileRoute(
 
     return { project };
   },
+  head: ({ loaderData }) => ({
+    meta: [{ title: pageTitle(loaderData?.project.name) }],
+  }),
   component: ProjectEditPage,
   notFoundComponent: ProjectNotFound,
 });

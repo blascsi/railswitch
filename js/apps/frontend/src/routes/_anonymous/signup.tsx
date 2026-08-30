@@ -12,6 +12,7 @@ import { AuthLayout } from "../../components/layout/AuthLayout";
 import { LinkAnchor } from "../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../graphql/graphql";
 import { getApiErrorMessage } from "../../utils/apiErrorMessage";
+import { pageTitle } from "../../utils/pageTitle";
 
 const RegisterMutation = graphql(`
   mutation Register($input: RegisterInput!) {
@@ -29,6 +30,7 @@ const RegisterMutation = graphql(`
 `);
 
 export const Route = createFileRoute("/_anonymous/signup")({
+  head: () => ({ meta: [{ title: pageTitle("Sign up") }] }),
   component: SignupPage,
 });
 

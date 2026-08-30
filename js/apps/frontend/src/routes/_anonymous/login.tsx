@@ -11,6 +11,7 @@ import { AuthLayout } from "../../components/layout/AuthLayout";
 import { LinkAnchor } from "../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../graphql/graphql";
 import { getApiErrorMessage } from "../../utils/apiErrorMessage";
+import { pageTitle } from "../../utils/pageTitle";
 
 const SignInMutation = graphql(`
   mutation SignIn($email: String!, $password: String!, $rememberMe: Boolean) {
@@ -22,6 +23,7 @@ const SignInMutation = graphql(`
 `);
 
 export const Route = createFileRoute("/_anonymous/login")({
+  head: () => ({ meta: [{ title: pageTitle("Sign in") }] }),
   component: LoginPage,
 });
 

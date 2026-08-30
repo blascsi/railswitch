@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CreateEnvironmentForm } from "../../../../components/environments/CreateEnvironmentForm";
 import { projectSelector_projects } from "../../../../components/projects/ProjectSelector";
 import { graphql } from "../../../../graphql/graphql";
+import { pageTitle } from "../../../../utils/pageTitle";
 
 const EnvironmentCreatePageQuery = graphql(
   `
@@ -31,6 +32,7 @@ export const Route = createFileRoute(
 
     return data;
   },
+  head: () => ({ meta: [{ title: pageTitle("Create environment") }] }),
   component: EnvironmentCreatePage,
 });
 

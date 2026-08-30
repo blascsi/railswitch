@@ -3,10 +3,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { currentUserAtom } from "../../../atoms/currentUser";
 import { CenteredContent } from "../../../components/layout/CenteredContent";
+import { pageTitle } from "../../../utils/pageTitle";
 
 export const Route = createFileRoute(
   "/_authenticated/_organizationRequired/home",
 )({
+  head: () => ({ meta: [{ title: pageTitle("Home") }] }),
   component: HomePage,
 });
 

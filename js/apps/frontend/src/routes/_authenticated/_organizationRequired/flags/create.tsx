@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CreateFlagForm } from "../../../../components/flags/CreateFlagForm";
 import { projectSelector_projects } from "../../../../components/projects/ProjectSelector";
 import { graphql } from "../../../../graphql/graphql";
+import { pageTitle } from "../../../../utils/pageTitle";
 
 const FlagCreatePageQuery = graphql(
   `
@@ -31,6 +32,7 @@ export const Route = createFileRoute(
 
     return data;
   },
+  head: () => ({ meta: [{ title: pageTitle("Create flag") }] }),
   component: FlagCreatePage,
 });
 

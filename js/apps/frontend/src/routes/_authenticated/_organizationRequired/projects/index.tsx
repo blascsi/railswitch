@@ -10,6 +10,7 @@ import {
 import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../graphql/graphql";
+import { pageTitle } from "../../../../utils/pageTitle";
 
 const ProjectsPageQuery = graphql(
   `
@@ -39,6 +40,7 @@ export const Route = createFileRoute(
 
     return data;
   },
+  head: () => ({ meta: [{ title: pageTitle("Projects") }] }),
   component: ProjectsPage,
 });
 

@@ -22,6 +22,7 @@ import { CenteredContent } from "../../../../../../components/layout/CenteredCon
 import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../../../../../graphql/graphql";
 import { getMutationFieldErrors } from "../../../../../../utils/apiErrorMessage";
+import { pageTitle } from "../../../../../../utils/pageTitle";
 
 const FlagUpdatePageQuery = graphql(
   `
@@ -118,6 +119,9 @@ export const Route = createFileRoute(
 
     return { flag };
   },
+  head: ({ loaderData }) => ({
+    meta: [{ title: pageTitle(loaderData?.flag.name) }],
+  }),
   component: FlagUpdatePage,
   notFoundComponent: FlagNotFound,
 });
