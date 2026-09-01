@@ -8,12 +8,13 @@ import { Provider as JoiaiProvider } from "jotai";
 import { GraphqlProvider } from "./graphql/GraphqlProvider";
 import { router } from "./router";
 import { store } from "./store.ts";
+import { mantineTheme } from "./theme.ts";
 
 export function App() {
   return (
     <JoiaiProvider store={store}>
       <GraphqlProvider>
-        <MantineProvider defaultColorScheme="auto">
+        <MantineProvider forceColorScheme="dark" theme={mantineTheme}>
           <RouterProvider router={router} />
         </MantineProvider>
       </GraphqlProvider>
