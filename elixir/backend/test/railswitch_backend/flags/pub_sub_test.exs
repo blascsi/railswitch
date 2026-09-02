@@ -16,6 +16,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
   alias RailswitchBackend.Flags
   alias RailswitchBackend.Flags.FlagEnvironment.Defaults
   alias RailswitchBackend.FlagsGenerator
+  alias RailswitchBackend.Orgs
   alias RailswitchBackend.OrgsGenerator
 
   setup do
@@ -111,6 +112,47 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       Flags.delete_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "disconnect"}
+    end
+  end
+
+  describe "Project publications" do
+    test "destroying a project publishes for each of its children", ctx do
+      flag = create_flag!(ctx)
+      api_key = generate(FlagsGenerator.api_key(tenant: ctx.org.id, project_id: ctx.project.id))
+
+      subscribe("environments:#{ctx.environment.id}")
+      subscribe("flags:#{ctx.project.id}")
+      subscribe("api_key:#{api_key.id}")
+
+      Flags.delete_project!(ctx.project, tenant: ctx.org.id, actor: ctx.user)
+
+      assert_receive %Broadcast{topic: "environments:" <> _, event: "destroy"}
+
+      assert_receive %Broadcast{
+        topic: "flags:" <> _,
+        event: "destroy",
+        payload: %Notification{data: data}
+      }
+
+      assert_receive %Broadcast{topic: "api_key:" <> _, event: "disconnect"}
+      assert data.id == flag.id
+    end
+  end
+
+  describe "Organization publications" do
+    test "destroying an organization chains the publications through its projects", ctx do
+      create_flag!(ctx)
+      api_key = generate(FlagsGenerator.api_key(tenant: ctx.org.id, project_id: ctx.project.id))
+
+      subscribe("environments:#{ctx.environment.id}")
+      subscribe("flags:#{ctx.project.id}")
+      subscribe("api_key:#{api_key.id}")
+
+      Orgs.delete_organization!(ctx.org, actor: ctx.user)
+
+      assert_receive %Broadcast{topic: "environments:" <> _, event: "destroy"}
+      assert_receive %Broadcast{topic: "flags:" <> _, event: "destroy"}
+      assert_receive %Broadcast{topic: "api_key:" <> _, event: "disconnect"}
     end
   end
 end

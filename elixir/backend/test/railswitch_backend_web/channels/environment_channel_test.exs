@@ -182,6 +182,16 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       assert_push "environment_deleted", %{}
       assert_receive {:DOWN, ^ref, :process, _pid, :shutdown}
     end
+
+    test "pushes environment_deleted and stops when the project is destroyed", ctx do
+      Process.flag(:trap_exit, true)
+      ref = Process.monitor(ctx.socket.channel_pid)
+
+      Flags.delete_project!(ctx.project, tenant: ctx.org.id, actor: ctx.user)
+
+      assert_push "environment_deleted", %{}
+      assert_receive {:DOWN, ^ref, :process, _pid, :shutdown}
+    end
   end
 
   describe "unexpected messages" do

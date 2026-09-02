@@ -18,6 +18,7 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
     repo RailswitchBackend.Repo
 
     references do
+      reference :organization, on_delete: :delete
       reference :project, on_delete: :delete
     end
   end

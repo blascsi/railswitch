@@ -37,6 +37,10 @@ defmodule RailswitchBackend.Orgs.Organization do
 
     destroy :destroy do
       primary? true
+      require_atomic? false
+
+      # Projects need to be destroyed through Ash, so we can run notifications on them
+      change RailswitchBackend.Orgs.Organization.Changes.DestroyProjects
     end
   end
 
@@ -70,6 +74,8 @@ defmodule RailswitchBackend.Orgs.Organization do
 
   relationships do
     has_many :memberships, Membership
+
+    has_many :projects, RailswitchBackend.Flags.Project
 
     many_to_many :users, RailswitchBackend.Accounts.User do
       through Membership
