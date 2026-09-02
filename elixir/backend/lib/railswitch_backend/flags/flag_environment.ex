@@ -54,8 +54,8 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
     module RailswitchBackendWeb.Endpoint
     prefix "flag_environments"
 
-    publish :create, [:environment_id]
-    publish :update, [:environment_id]
+    publish :create, [:environment_id], load: [:flag_name]
+    publish :update, [:environment_id], load: [:flag_name]
   end
 
   multitenancy do
@@ -87,6 +87,10 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
       allow_nil? false
       public? true
     end
+  end
+
+  aggregates do
+    first :flag_name, :flag, :name
   end
 
   identities do

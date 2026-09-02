@@ -54,10 +54,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
     sdk_event = if event == "create", do: "flag_created", else: "flag_updated"
     flag_environment = notification.data
 
-    with_flag_name(socket, flag_environment.flag_id, fn name ->
-      push(socket, sdk_event, %{flag: name, rules: flag_environment.rules})
-    end)
-
+    push(socket, sdk_event, %{flag: flag_environment.flag_name, rules: flag_environment.rules})
     {:noreply, socket}
   end
 
@@ -75,17 +72,6 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
   # subscribed topic later) are ignored rather than crashing the channel.
   def handle_info(_message, socket), do: {:noreply, socket}
 
-  # FlagEnvironment notifications carry flag_id but not the flag name the SDK
-  # wire format speaks in. If the flag is already gone (deletion race), the
-  # event is dropped — the client still receives flag_deleted via the
-  # flags:<project_id> topic, which supersedes it.
-  defp with_flag_name(socket, flag_id, fun) do
-    case Flags.get_flag_by_id(flag_id, tenant: socket.assigns.organization_id, authorize?: false) do
-      {:ok, flag} -> fun.(flag.name)
-      {:error, _not_found} -> :ok
-    end
-  end
-
   defp subscribe_to_internal_topics(environment, project_id) do
     for topic <- [
           "flag_environments:#{environment.id}",
@@ -99,11 +85,11 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
   defp initial_state(environment, organization_id) do
     [
       query: [filter: [environment_id: environment.id]],
-      load: :flag,
+      load: :flag_name,
       tenant: organization_id,
       authorize?: false
     ]
     |> Flags.list_flag_environments!()
-    |> Map.new(fn flag_environment -> {flag_environment.flag.name, flag_environment.rules} end)
+    |> Map.new(fn flag_environment -> {flag_environment.flag_name, flag_environment.rules} end)
   end
 end

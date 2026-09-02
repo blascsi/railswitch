@@ -61,6 +61,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       assert data.flag_id == flag.id
       assert data.environment_id == ctx.environment.id
       assert data.rules == Defaults.rules()
+      assert to_string(data.flag_name) == "checkout"
     end
 
     test "updating rules publishes update on the environment topic", ctx do
@@ -76,6 +77,7 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       assert_receive %Broadcast{event: "update", payload: %Notification{data: data}}
       assert data.id == flag_environment.id
       assert data.rules == FlagsGenerator.disabled_rules()
+      assert to_string(data.flag_name) == "checkout"
     end
   end
 
