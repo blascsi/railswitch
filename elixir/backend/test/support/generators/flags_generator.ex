@@ -85,7 +85,10 @@ defmodule RailswitchBackend.FlagsGenerator do
     changeset_generator(
       RailswitchBackend.Flags.EnvironmentApiKey,
       :create,
-      [overrides: overrides] ++ Keyword.put_new(action_opts, :authorize?, false)
+      [
+        defaults: [name: sequence(:flag_name, fn n -> "api_key_" <> letter_suffix(n) end)],
+        overrides: overrides
+      ] ++ Keyword.put_new(action_opts, :authorize?, false)
     )
   end
 

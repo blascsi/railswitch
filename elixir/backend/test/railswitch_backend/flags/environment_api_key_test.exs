@@ -29,8 +29,10 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
   describe "create" do
     test "sets the organization from the tenant and returns the plaintext key", ctx do
+      key_name = "test_key"
+
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: key_name, environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
@@ -38,11 +40,13 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
       assert api_key.organization_id == ctx.org.id
       assert api_key.environment_id == ctx.environment.id
       assert String.starts_with?(api_key.__metadata__.plaintext_api_key, "railswitch_")
+      assert to_string(api_key.name) == key_name
     end
 
     test "an outsider cannot create an api key", ctx do
       assert {:error, %Forbidden{}} =
-               Flags.create_environment_api_key(%{environment_id: ctx.environment.id},
+               Flags.create_environment_api_key(
+                 %{name: "test_key", environment_id: ctx.environment.id},
                  tenant: ctx.org.id,
                  actor: ctx.outsider
                )
@@ -50,7 +54,8 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
     test "a request without an actor cannot create an api key", ctx do
       assert {:error, %Forbidden{}} =
-               Flags.create_environment_api_key(%{environment_id: ctx.environment.id},
+               Flags.create_environment_api_key(
+                 %{name: "test_key", environment_id: ctx.environment.id},
                  tenant: ctx.org.id
                )
     end
@@ -59,7 +64,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
   describe "read" do
     test "a member can look up the api key by id", ctx do
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: "test_key", environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
@@ -71,11 +76,12 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
                )
 
       assert found.id == api_key.id
+      assert found.name == api_key.name
     end
 
     test "an outsider cannot look up the api key by id", ctx do
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: "test_key", environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
@@ -89,7 +95,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
     test "a request without an actor cannot look up the api key by id", ctx do
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: "test_key", environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
@@ -102,7 +108,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
   describe "destroy" do
     test "deletes the api key", ctx do
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: "test_key", environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
@@ -118,7 +124,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
     test "an outsider cannot delete the api key", ctx do
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: "test_key", environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
@@ -129,7 +135,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
     test "a request without an actor cannot delete the api key", ctx do
       api_key =
-        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
+        Flags.create_environment_api_key!(%{name: "test_key", environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )

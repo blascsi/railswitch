@@ -28,7 +28,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
 
     create :create do
       primary? true
-      accept [:environment_id]
+      accept [:name, :environment_id]
 
       change {AshAuthentication.Strategy.ApiKey.GenerateApiKey, prefix: :railswitch, hash: :api_key_hash}
 
@@ -69,6 +69,11 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
 
   attributes do
     uuid_primary_key :id
+
+    attribute :name, :ci_string do
+      allow_nil? false
+      public? true
+    end
 
     attribute :api_key_hash, :binary do
       allow_nil? false

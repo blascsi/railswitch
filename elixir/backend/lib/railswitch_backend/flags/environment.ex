@@ -126,7 +126,9 @@ defmodule RailswitchBackend.Flags.Environment do
       allow_nil? false
     end
 
-    has_many :valid_api_keys, RailswitchBackend.Flags.EnvironmentApiKey
+    has_many :valid_api_keys, RailswitchBackend.Flags.EnvironmentApiKey do
+      public? true
+    end
   end
 
   identities do

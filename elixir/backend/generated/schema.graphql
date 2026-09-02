@@ -340,11 +340,13 @@ type CreateEnvironmentApiKeyResult {
 }
 
 input CreateEnvironmentApiKeyInput {
+  name: String!
   environmentId: ID!
 }
 
 enum EnvironmentApiKeySortField {
   ID
+  NAME
   ENVIRONMENT_ID
 }
 
@@ -376,6 +378,22 @@ input EnvironmentApiKeyFilterEnvironmentId {
   isNotDistinctFrom: ID
 }
 
+input EnvironmentApiKeyFilterName {
+  isNil: Boolean
+  eq: String
+  notEq: String
+  in: [String!]
+  lessThan: String
+  greaterThan: String
+  lessThanOrEqual: String
+  greaterThanOrEqual: String
+  contains: String
+  isDistinctFrom: String
+  isNotDistinctFrom: String
+  stringEndsWith: String
+  stringStartsWith: String
+}
+
 input EnvironmentApiKeyFilterId {
   isNil: Boolean
   eq: ID
@@ -394,6 +412,7 @@ input EnvironmentApiKeyFilterInput {
   or: [EnvironmentApiKeyFilterInput!]
   not: [EnvironmentApiKeyFilterInput!]
   id: EnvironmentApiKeyFilterId
+  name: EnvironmentApiKeyFilterName
   environmentId: EnvironmentApiKeyFilterEnvironmentId
   environment: EnvironmentFilterInput
 }
@@ -405,6 +424,7 @@ input EnvironmentApiKeySortInput {
 
 type EnvironmentApiKey {
   id: ID!
+  name: String!
   environmentId: ID!
   environment: Environment!
 }
@@ -616,6 +636,7 @@ input EnvironmentFilterInput {
   name: EnvironmentFilterName
   projectId: EnvironmentFilterProjectId
   project: ProjectFilterInput
+  validApiKeys: EnvironmentApiKeyFilterInput
 }
 
 input EnvironmentSortInput {
@@ -628,6 +649,19 @@ type Environment {
   name: String!
   projectId: ID!
   project: Project!
+  validApiKeys(
+    "How to sort the records in the response"
+    sort: [EnvironmentApiKeySortInput]
+
+    "A filter to limit the results"
+    filter: EnvironmentApiKeyFilterInput
+
+    "The number of records to return."
+    limit: Int
+
+    "The number of records to skip."
+    offset: Int
+  ): [EnvironmentApiKey!]!
 }
 
 "The result of the :delete_flag mutation"
