@@ -45,5 +45,8 @@
         "source.organizeImports.biome": true,
       },
     },
+    "GraphQL": {
+      "tab_size": 2,
+    },
   },
 }
