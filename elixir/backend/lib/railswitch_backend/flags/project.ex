@@ -105,6 +105,10 @@ defmodule RailswitchBackend.Flags.Project do
       public? true
     end
 
+    has_many :flags, RailswitchBackend.Flags.Flag do
+      public? true
+    end
+
     has_many :valid_api_keys, RailswitchBackend.Flags.ProjectApiKey
   end
 

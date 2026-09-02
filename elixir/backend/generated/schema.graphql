@@ -846,6 +846,7 @@ input ProjectFilterInput {
   organizationId: ProjectFilterOrganizationId
   organization: OrganizationFilterInput
   environments: EnvironmentFilterInput
+  flags: FlagFilterInput
 }
 
 input ProjectSortInput {
@@ -871,6 +872,19 @@ type Project {
     "The number of records to skip."
     offset: Int
   ): [Environment!]!
+  flags(
+    "How to sort the records in the response"
+    sort: [FlagSortInput]
+
+    "A filter to limit the results"
+    filter: FlagFilterInput
+
+    "The number of records to return."
+    limit: Int
+
+    "The number of records to skip."
+    offset: Int
+  ): [Flag!]!
 }
 
 type RootQueryType {
