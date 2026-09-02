@@ -422,21 +422,6 @@ input UpdateFlagEnvironmentInput {
   rules: JsonString
 }
 
-"The result of the :create_flag_environment mutation"
-type CreateFlagEnvironmentResult {
-  "The successful result of the mutation"
-  result: FlagEnvironment
-
-  "Any errors generated, if the mutation failed"
-  errors: [MutationError!]!
-}
-
-input CreateFlagEnvironmentInput {
-  rules: JsonString
-  flagId: ID!
-  environmentId: ID!
-}
-
 enum FlagEnvironmentSortField {
   ID
   RULES
@@ -1084,8 +1069,6 @@ type RootMutationType {
   createEnvironment(input: CreateEnvironmentInput!): CreateEnvironmentResult!
 
   deleteEnvironment(id: ID!): DeleteEnvironmentResult!
-
-  createFlagEnvironment(input: CreateFlagEnvironmentInput!): CreateFlagEnvironmentResult!
 
   updateFlagEnvironment(id: ID!, input: UpdateFlagEnvironmentInput): UpdateFlagEnvironmentResult!
 
