@@ -43,7 +43,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
       Orgs.add_member!(org.id, member.id, :member, actor: owner)
 
       assert {:error, error} = Orgs.add_member(org.id, member.id, :member, authorize?: false)
-      assert Exception.message(error) =~ "already been taken"
+      assert Exception.message(error) =~ "This user is already a member of this organization"
     end
   end
 

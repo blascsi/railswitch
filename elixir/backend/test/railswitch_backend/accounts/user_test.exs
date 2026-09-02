@@ -60,7 +60,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
 
       assert {:error, error} = Accounts.register_user(dupe_email, @password, @password)
 
-      assert Exception.message(error) =~ "already been taken"
+      assert Exception.message(error) =~ "An account with this email address already exists"
     end
 
     test "issues a remember-me token when requested" do

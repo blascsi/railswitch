@@ -330,6 +330,6 @@ defmodule RailswitchBackend.Accounts.User do
   end
 
   identities do
-    identity :unique_email, [:email]
+    identity :unique_email, [:email], message: "An account with this email address already exists"
   end
 end

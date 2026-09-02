@@ -93,6 +93,8 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
   end
 
   identities do
-    identity :unique_api_key, [:api_key_hash], all_tenants?: true
+    identity :unique_api_key, [:api_key_hash],
+      all_tenants?: true,
+      message: "This API key already exists"
   end
 end

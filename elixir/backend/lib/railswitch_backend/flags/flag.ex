@@ -98,6 +98,8 @@ defmodule RailswitchBackend.Flags.Flag do
   end
 
   identities do
-    identity :unique_name, [:project_id, :name]
+    identity :unique_name, [:project_id, :name],
+      field_names: [:name],
+      message: "A flag with this name already exists in this project"
   end
 end

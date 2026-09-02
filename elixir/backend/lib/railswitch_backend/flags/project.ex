@@ -86,6 +86,6 @@ defmodule RailswitchBackend.Flags.Project do
   end
 
   identities do
-    identity :unique_name, :name
+    identity :unique_name, :name, message: "A project with this name already exists in this organization"
   end
 end

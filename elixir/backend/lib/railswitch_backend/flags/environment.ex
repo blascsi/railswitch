@@ -132,6 +132,8 @@ defmodule RailswitchBackend.Flags.Environment do
   end
 
   identities do
-    identity :unique_name, [:project_id, :name]
+    identity :unique_name, [:project_id, :name],
+      field_names: [:name],
+      message: "An environment with this name already exists in this project"
   end
 end

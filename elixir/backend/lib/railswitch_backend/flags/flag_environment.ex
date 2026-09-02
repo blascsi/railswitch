@@ -94,6 +94,8 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
   end
 
   identities do
-    identity :flag_environment_key, [:environment_id, :flag_id]
+    identity :flag_environment_key, [:environment_id, :flag_id],
+      field_names: [:flag_id],
+      message: "This flag is already configured for this environment"
   end
 end

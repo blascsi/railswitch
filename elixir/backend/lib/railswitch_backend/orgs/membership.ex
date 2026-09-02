@@ -105,6 +105,8 @@ defmodule RailswitchBackend.Orgs.Membership do
   end
 
   identities do
-    identity :unique_membership, [:user_id, :organization_id]
+    identity :unique_membership, [:user_id, :organization_id],
+      field_names: [:user_id],
+      message: "This user is already a member of this organization"
   end
 end
