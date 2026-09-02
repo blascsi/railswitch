@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import { Text } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation } from "urql";
@@ -29,12 +29,9 @@ export const Route = createFileRoute("/_anonymous/login")({
 
 function LoginPage() {
   const [{ fetching }, signIn] = useMutation(SignInMutation);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isEnteringApp, setIsEnteringApp] = useState(false);
 
   const handleSubmit = async (values: AuthenticationFormValues) => {
-    setErrorMessage(null);
-
     const result = await signIn({
       email: values.email,
       password: values.password,
@@ -48,23 +45,22 @@ function LoginPage() {
       return;
     }
 
-    setErrorMessage(
-      result.error
+    return {
+      form: result.error
         ? getApiErrorMessage(result.error)
         : "Invalid email or password.",
-    );
+      fields: {},
+    };
   };
 
   return (
     <AuthLayout title="Log in">
       <AuthenticationForm
         submitLabel="Log in"
-        errorTitle="Authentication failed"
-        errorMessage={errorMessage}
         isPending={fetching || isEnteringApp}
         onSubmit={handleSubmit}
       >
-        <Text size="sm" c="dimmed">
+        <Text type="supporting">
           Don't have an account? <LinkAnchor to="/signup">Sign up</LinkAnchor>
         </Text>
       </AuthenticationForm>

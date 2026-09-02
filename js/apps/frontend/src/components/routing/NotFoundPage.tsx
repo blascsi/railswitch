@@ -1,4 +1,5 @@
-import { EmptyState } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
 import { CompassIcon } from "@phosphor-icons/react";
 import { CenteredContent } from "../layout/CenteredContent";
 import { LinkButton } from "./link-components/LinkButton";
@@ -7,14 +8,11 @@ export function NotFoundPage() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<CompassIcon />}
+        icon={<Icon icon={CompassIcon} size="lg" />}
         title="Page not found"
         description="The page you are looking for does not exist, or it may have been moved"
-      >
-        <EmptyState.Actions>
-          <LinkButton to="/home">Go to home</LinkButton>
-        </EmptyState.Actions>
-      </EmptyState>
+        actions={<LinkButton to="/home" label="Go to home" />}
+      />
     </CenteredContent>
   );
 }

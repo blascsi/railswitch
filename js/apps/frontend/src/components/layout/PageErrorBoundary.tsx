@@ -1,4 +1,8 @@
-import { Button, Center, Stack, Text, ThemeIcon } from "@mantine/core";
+import { Button } from "@astryxdesign/core/Button";
+import { Center } from "@astryxdesign/core/Center";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Text } from "@astryxdesign/core/Text";
 import { WarningIcon } from "@phosphor-icons/react";
 import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
@@ -14,22 +18,17 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
     /Failed to fetch dynamically imported module|Loading chunk/i.test(message);
 
   return (
-    <Center h="100%" w="100%" p="md">
-      <Stack align="center" gap="sm" maw={420}>
-        <ThemeIcon size="xl" radius="xl" color="red" variant="light">
-          <WarningIcon />
-        </ThemeIcon>
-        <Text fw={600}>Something went wrong loading this page.</Text>
-        <Text size="sm" c="dimmed" ta="center">
-          {message}
-        </Text>
+    <Center width="100%" height="100%" padding={4}>
+      <Stack gap={2} hAlign="center" width="min(100%, 420px)">
+        <Icon icon={WarningIcon} size="lg" color="error" />
+        <Text weight="semibold">Something went wrong loading this page.</Text>
+        <Text type="supporting">{message}</Text>
         <Button
+          label={isChunkError ? "Reload" : "Try again"}
           onClick={() =>
             isChunkError ? window.location.reload() : resetErrorBoundary()
           }
-        >
-          {isChunkError ? "Reload" : "Try again"}
-        </Button>
+        />
       </Stack>
     </Center>
   );

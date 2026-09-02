@@ -1,22 +1,20 @@
-import "@mantine/core/styles.css";
-import "@mantine/nprogress/styles.css";
 import "./App.css";
 
-import { MantineProvider } from "@mantine/core";
+import { Theme } from "@astryxdesign/core/theme";
 import { RouterProvider } from "@tanstack/react-router";
 import { Provider as JoiaiProvider } from "jotai";
 import { GraphqlProvider } from "./graphql/GraphqlProvider";
 import { router } from "./router";
 import { store } from "./store.ts";
-import { mantineTheme } from "./theme.ts";
+import { railswitchTheme } from "./theme.ts";
 
 export function App() {
   return (
     <JoiaiProvider store={store}>
       <GraphqlProvider>
-        <MantineProvider forceColorScheme="dark" theme={mantineTheme}>
+        <Theme theme={railswitchTheme} mode="dark">
           <RouterProvider router={router} />
-        </MantineProvider>
+        </Theme>
       </GraphqlProvider>
     </JoiaiProvider>
   );

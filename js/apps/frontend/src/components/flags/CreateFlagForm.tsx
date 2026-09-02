@@ -1,17 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useMutation } from "urql";
 import { type FragmentOf, graphql } from "../../graphql/graphql";
-import {
-  getMutationErrorMessage,
-  getMutationFieldErrors,
-} from "../../utils/apiErrorMessage";
-import type { projectSelector_projects } from "../projects/ProjectSelector";
-import {
-  FlagForm,
-  type FlagFormInstance,
-  type FlagFormValues,
-} from "./FlagForm";
+import { getSubmissionErrors } from "../../utils/apiErrorMessage";
+import type { projectSelector_projects } from "../projects/projectOptions";
+import { FlagForm, type FlagFormValues } from "./FlagForm";
 
 const CreateFlagMutation = graphql(`
   mutation CreateFlagMutation($input: CreateFlagInput!) {
@@ -39,12 +31,8 @@ type CreateFlagFormProps = {
 export function CreateFlagForm({ projects }: CreateFlagFormProps) {
   const navigate = useNavigate();
   const [{ fetching }, createFlag] = useMutation(CreateFlagMutation);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (
-    values: FlagFormValues,
-    form: FlagFormInstance,
-  ) => {
+  const handleSubmit = async (values: FlagFormValues) => {
     const { data, error } = await createFlag({
       input: {
         name: values.name,
@@ -63,16 +51,12 @@ export function CreateFlagForm({ projects }: CreateFlagFormProps) {
       return;
     }
 
-    const errors = data?.createFlag.errors;
-    form.setErrors(getMutationFieldErrors(errors));
-    setErrorMessage(getMutationErrorMessage(error, errors));
+    return getSubmissionErrors(error, data?.createFlag.errors);
   };
 
   return (
     <FlagForm
       submitLabel="Create flag"
-      errorTitle="Couldn't create flag"
-      errorMessage={errorMessage}
       isPending={fetching}
       onSubmit={handleSubmit}
       projects={projects}

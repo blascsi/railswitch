@@ -1,4 +1,5 @@
-import { Center, Loader, Stack, Text } from "@mantine/core";
+import { Center } from "@astryxdesign/core/Center";
+import { Spinner } from "@astryxdesign/core/Spinner";
 
 type PageLoaderProps = {
   label?: string;
@@ -6,15 +7,8 @@ type PageLoaderProps = {
 
 export function PageLoader({ label }: PageLoaderProps) {
   return (
-    <Center w="100%">
-      <Stack align="center" gap="sm">
-        <Loader size="lg" type="dots" />
-        {label && (
-          <Text size="sm" c="dimmed">
-            {label}
-          </Text>
-        )}
-      </Stack>
+    <Center width="100%">
+      <Spinner size="lg" label={label} />
     </Center>
   );
 }

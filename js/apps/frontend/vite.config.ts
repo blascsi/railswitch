@@ -1,3 +1,4 @@
+import { astryxStylex } from "@astryxdesign/build/vite";
 import babel from "@rolldown/plugin-babel";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
@@ -13,6 +14,7 @@ export default defineConfig({
       target: "react",
       autoCodeSplitting: true,
     }),
+    ...astryxStylex(),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
   ],
@@ -31,8 +33,8 @@ export default defineConfig({
               priority: 100,
             },
             {
-              name: "mantine",
-              test: /[\\/]node_modules[\\/]@mantine[\\/]/,
+              name: "astryx",
+              test: /[\\/]node_modules[\\/]@astryxdesign[\\/]/,
               priority: 90,
             },
           ],

@@ -1,16 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useMutation } from "urql";
 import { graphql } from "../../graphql/graphql";
-import {
-  getMutationErrorMessage,
-  getMutationFieldErrors,
-} from "../../utils/apiErrorMessage";
-import {
-  ProjectForm,
-  type ProjectFormInstance,
-  type ProjectFormValues,
-} from "./ProjectForm";
+import { getSubmissionErrors } from "../../utils/apiErrorMessage";
+import { ProjectForm, type ProjectFormValues } from "./ProjectForm";
 
 const CreateProjectMutation = graphql(`
   mutation CreateProject($input: CreateProjectInput!) {
@@ -30,12 +22,8 @@ const CreateProjectMutation = graphql(`
 export function CreateProjectForm() {
   const navigate = useNavigate();
   const [{ fetching }, createProject] = useMutation(CreateProjectMutation);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (
-    values: ProjectFormValues,
-    form: ProjectFormInstance,
-  ) => {
+  const handleSubmit = async (values: ProjectFormValues) => {
     const { data, error } = await createProject({
       input: { name: values.name },
     });
@@ -48,16 +36,12 @@ export function CreateProjectForm() {
       return;
     }
 
-    const errors = data?.createProject.errors;
-    form.setErrors(getMutationFieldErrors(errors));
-    setErrorMessage(getMutationErrorMessage(error, errors));
+    return getSubmissionErrors(error, data?.createProject.errors);
   };
 
   return (
     <ProjectForm
       submitLabel="Create project"
-      errorTitle="Couldn't create project"
-      errorMessage={errorMessage}
       isPending={fetching}
       onSubmit={handleSubmit}
     />

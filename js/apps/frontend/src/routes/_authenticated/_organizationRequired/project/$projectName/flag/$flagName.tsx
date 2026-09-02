@@ -1,14 +1,8 @@
-import {
-  Button,
-  Container,
-  EmptyState,
-  Group,
-  JsonInput,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { FormLayout } from "@astryxdesign/core/FormLayout";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading, Text } from "@astryxdesign/core/Text";
 import { FlagIcon } from "@phosphor-icons/react";
 import { rulesSchema } from "@railswitch/schemas";
 import { createFileRoute, notFound } from "@tanstack/react-router";
@@ -20,8 +14,12 @@ import {
 } from "../../../../../../components/environments/EnvironmentSelector";
 import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
+import { useAppForm } from "../../../../../../forms/formHook";
 import { graphql } from "../../../../../../graphql/graphql";
-import { getMutationFieldErrors } from "../../../../../../utils/apiErrorMessage";
+import {
+  getSubmissionErrors,
+  noSubmissionErrors,
+} from "../../../../../../utils/apiErrorMessage";
 import { pageTitle } from "../../../../../../utils/pageTitle";
 
 const FlagUpdatePageQuery = graphql(
@@ -70,8 +68,6 @@ const UpdateFlagEnvironmentMutation = graphql(`
   }
 `);
 
-type RuleUpdateInput = { rules: string };
-
 function formatRules(rules: string) {
   try {
     return JSON.stringify(JSON.parse(rules), null, 2);
@@ -92,7 +88,7 @@ function validateRules(rules: string) {
   const result = rulesSchema.safeParse(parsed);
 
   return result.success
-    ? null
+    ? undefined
     : (result.error.issues[0]?.message ?? "Invalid rule configuration");
 }
 
@@ -130,10 +126,9 @@ function FlagNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<FlagIcon />}
+        icon={<Icon icon={FlagIcon} size="lg" />}
         title="Flag not found"
         description="Please double check if you are in the right organization"
-        withIndicatorBackground
       />
     </CenteredContent>
   );
@@ -154,86 +149,108 @@ function FlagUpdatePage() {
     pause: selectedEnvironment == null,
   });
   const [{ fetching }, updateRule] = useMutation(UpdateFlagEnvironmentMutation);
-  const form = useForm<RuleUpdateInput>({
-    mode: "uncontrolled",
-    validate: { rules: validateRules },
-    validateInputOnBlur: true,
-  });
   const flagEnvironmentId =
     flagEnvironments.data?.listFlagEnvironments?.results?.[0]?.id;
   const environmentRules =
     flagEnvironments.data?.listFlagEnvironments?.results?.[0]?.rules;
+
+  const form = useAppForm({
+    defaultValues: { rules: "" },
+    onSubmit: async ({ value, formApi }) => {
+      formApi.setErrorMap({ onSubmit: noSubmissionErrors });
+
+      const { data, error } = await updateRule({
+        id: flagEnvironmentId ?? "",
+        input: { rules: value.rules },
+      });
+
+      if (data?.updateFlagEnvironment.result != null) {
+        formApi.reset(value, { keepDefaultValues: true });
+        return;
+      }
+
+      formApi.setErrorMap({
+        onSubmit: getSubmissionErrors(
+          error,
+          data?.updateFlagEnvironment.errors,
+        ),
+      });
+    },
+  });
 
   useEffect(() => {
     if (environmentRules == null) {
       return;
     }
 
-    form.setFieldValue("rules", formatRules(environmentRules));
-  }, [environmentRules]);
-
-  const handleSubmit = async (values: RuleUpdateInput) => {
-    const { data } = await updateRule({
-      id: flagEnvironmentId ?? "",
-      input: { rules: values.rules },
-    });
-
-    if (data?.updateFlagEnvironment.result != null) {
-      return;
-    }
-
-    const errors = data?.updateFlagEnvironment.errors;
-    form.setErrors(getMutationFieldErrors(errors));
-  };
-
-  const isSubmitEnabled = form.isDirty() && form.isValid();
+    form.reset(
+      { rules: formatRules(environmentRules) },
+      { keepDefaultValues: true },
+    );
+  }, [environmentRules, form]);
 
   return (
-    <Container>
-      <Stack mb="md">
-        <Title>Update flag</Title>
-        <Text c="dimmed">Name</Text>
+    <Stack gap={4}>
+      <Stack gap={3}>
+        <Heading level={1}>Update flag</Heading>
+        <Text type="supporting">Name</Text>
         <Text>{flag.name}</Text>
-        <Text c="dimmed">Owning project</Text>
+        <Text type="supporting">Owning project</Text>
         <LinkAnchor
           to="/project/$projectName"
           params={{ projectName: flag.project.name }}
         >
           {flag.project.name}
         </LinkAnchor>
-        <Text c="dimmed">Environment</Text>
         <EnvironmentSelector
+          label="Environment"
           environments={flag.project.environments}
-          value={selectedEnvironment}
+          value={selectedEnvironment ?? undefined}
           onChange={setSelectedEnvironment}
-          allowDeselect={false}
         />
       </Stack>
 
-      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-        <Stack>
-          <Text c="dimmed">Environment configuration</Text>
-          <JsonInput
-            loading={flagEnvironments.fetching}
-            placeholder="Flag rule configuration for this environment..."
-            aria-label="Flag rule configuration"
-            minRows={10}
-            formatOnBlur
-            autosize
-            key={form.key("rules")}
-            {...form.getInputProps("rules")}
-          />
-          <Group justify="flex-end">
-            <Button
-              type="submit"
-              loading={fetching}
-              disabled={!isSubmitEnabled}
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <Stack gap={4}>
+          <FormLayout>
+            <form.AppField
+              name="rules"
+              validators={{ onBlur: ({ value }) => validateRules(value) }}
             >
-              Update
-            </Button>
-          </Group>
+              {(field) => (
+                <field.TextArea
+                  label="Environment configuration"
+                  placeholder="Flag rule configuration for this environment..."
+                  rows={10}
+                  isLoading={flagEnvironments.fetching}
+                  formatOnBlur={formatRules}
+                />
+              )}
+            </form.AppField>
+          </FormLayout>
+          <form.AppForm>
+            <Stack
+              direction="horizontal"
+              hAlign="end"
+              vAlign="center"
+              gap={3}
+              wrap="wrap"
+            >
+              <form.FormError />
+              <form.SubmitButton
+                label="Update"
+                isPending={fetching}
+                requiresChanges
+              />
+            </Stack>
+          </form.AppForm>
         </Stack>
       </form>
-    </Container>
+    </Stack>
   );
 }

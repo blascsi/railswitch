@@ -1,4 +1,6 @@
-import { Paper, Stack, Text, Title } from "@mantine/core";
+import { Card } from "@astryxdesign/core/Card";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading, Text } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import { currentUserAtom } from "../../../atoms/currentUser";
@@ -17,14 +19,14 @@ function HomePage() {
 
   return (
     <CenteredContent>
-      <Paper withBorder miw={500} py="lg" px="lg">
-        <Stack>
-          <Title>Welcome</Title>
-          <Text c="dimmed">
+      <Card width="min(100%, 500px)">
+        <Stack gap={4} padding={5}>
+          <Heading level={1}>Welcome</Heading>
+          <Text type="supporting">
             You are signed in as {currentUser?.email ?? "an unknown user"}.
           </Text>
         </Stack>
-      </Paper>
+      </Card>
     </CenteredContent>
   );
 }

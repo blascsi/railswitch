@@ -1,15 +1,9 @@
-import {
-  Alert,
-  Button,
-  Checkbox,
-  PasswordInput,
-  Stack,
-  TextInput,
-} from "@mantine/core";
-import { type UseFormReturnType, useForm } from "@mantine/form";
-import { zod4Resolver } from "mantine-form-zod-resolver";
+import { FormLayout } from "@astryxdesign/core/FormLayout";
+import { Stack } from "@astryxdesign/core/Stack";
 import type { ReactNode } from "react";
 import z from "zod";
+import { useAppForm } from "../../forms/formHook";
+import type { SubmissionErrors } from "../../utils/apiErrorMessage";
 
 const authenticationSchema = z.object({
   email: z.string().trim().pipe(z.email("Enter a valid email address")),
@@ -32,26 +26,25 @@ type AuthenticationFormInput = z.input<typeof authenticationSchema>;
 
 export type AuthenticationFormValues = z.output<typeof authenticationSchema>;
 
-export type AuthenticationFormInstance =
-  UseFormReturnType<AuthenticationFormInput>;
-
 type AuthenticationFormProps = {
   submitLabel: string;
-  errorTitle: string;
-  errorMessage: string | null;
   isPending: boolean;
   withPasswordConfirmation?: boolean;
   onSubmit: (
     values: AuthenticationFormValues,
-    form: AuthenticationFormInstance,
-  ) => Promise<void>;
+  ) => Promise<SubmissionErrors | undefined>;
   children: ReactNode;
+};
+
+const initialValues: AuthenticationFormInput = {
+  email: "",
+  password: "",
+  passwordConfirmation: "",
+  rememberMe: false,
 };
 
 export function AuthenticationForm({
   submitLabel,
-  errorTitle,
-  errorMessage,
   isPending,
   withPasswordConfirmation = false,
   onSubmit,
@@ -61,58 +54,83 @@ export function AuthenticationForm({
     ? passwordConfirmationSchema
     : authenticationSchema;
 
-  const form = useForm<AuthenticationFormInput>({
-    mode: "uncontrolled",
-    initialValues: {
-      email: "",
-      password: "",
-      passwordConfirmation: "",
-      rememberMe: false,
+  const form = useAppForm({
+    defaultValues: initialValues,
+    validators: {
+      onSubmit: ({ value }) => {
+        const result = schema.safeParse(value);
+
+        if (result.success) {
+          return undefined;
+        }
+
+        return {
+          fields: Object.fromEntries(
+            result.error.issues.map((issue) => [
+              issue.path.join("."),
+              issue.message,
+            ]),
+          ),
+        };
+      },
     },
-    validate: zod4Resolver(schema),
+    onSubmit: async ({ value, formApi }) => {
+      const failure = await onSubmit(schema.parse(value));
+
+      if (failure != null) {
+        formApi.setErrorMap({ onSubmit: failure });
+      }
+    },
   });
 
-  const handleSubmit = form.onSubmit((values) =>
-    onSubmit(schema.parse(values), form),
-  );
-
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack>
-        {errorMessage && (
-          <Alert color="red" title={errorTitle} role="alert">
-            {errorMessage}
-          </Alert>
-        )}
-        <TextInput
-          label="Email"
-          placeholder="you@example.com"
-          type="email"
-          key={form.key("email")}
-          {...form.getInputProps("email")}
-        />
-        <PasswordInput
-          label="Password"
-          placeholder="Password"
-          key={form.key("password")}
-          {...form.getInputProps("password")}
-        />
-        {withPasswordConfirmation && (
-          <PasswordInput
-            label="Confirm password"
-            placeholder="Confirm password"
-            key={form.key("passwordConfirmation")}
-            {...form.getInputProps("passwordConfirmation")}
-          />
-        )}
-        <Checkbox
-          label="Remember me"
-          key={form.key("rememberMe")}
-          {...form.getInputProps("rememberMe", { type: "checkbox" })}
-        />
-        <Button type="submit" loading={isPending}>
-          {submitLabel}
-        </Button>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        form.handleSubmit();
+      }}
+    >
+      <Stack gap={4}>
+        <FormLayout>
+          <form.AppField name="email">
+            {(field) => (
+              <field.TextInput
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+              />
+            )}
+          </form.AppField>
+          <form.AppField name="password">
+            {(field) => (
+              <field.TextInput
+                label="Password"
+                type="password"
+                placeholder="Password"
+              />
+            )}
+          </form.AppField>
+          {withPasswordConfirmation && (
+            <form.AppField name="passwordConfirmation">
+              {(field) => (
+                <field.TextInput
+                  label="Confirm password"
+                  type="password"
+                  placeholder="Confirm password"
+                />
+              )}
+            </form.AppField>
+          )}
+          <form.AppField name="rememberMe">
+            {(field) => <field.CheckboxInput label="Remember me" />}
+          </form.AppField>
+        </FormLayout>
+        <form.AppForm>
+          <Stack gap={3}>
+            <form.FormError />
+            <form.SubmitButton label={submitLabel} isPending={isPending} />
+          </Stack>
+        </form.AppForm>
         {children}
       </Stack>
     </form>

@@ -1,4 +1,5 @@
-import { EmptyState } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
 import { BuildingOfficeIcon } from "@phosphor-icons/react";
 import { CenteredContent } from "../layout/CenteredContent";
 import { OrganizationSelector } from "../OrganizationSelector";
@@ -7,15 +8,11 @@ export function NoOrganizationSelected() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<BuildingOfficeIcon />}
+        icon={<Icon icon={BuildingOfficeIcon} size="lg" />}
         title="No organization selected"
         description="Please select an organization before using this functionality"
-        withIndicatorBackground
-      >
-        <EmptyState.Actions>
-          <OrganizationSelector />
-        </EmptyState.Actions>
-      </EmptyState>
+        actions={<OrganizationSelector />}
+      />
     </CenteredContent>
   );
 }

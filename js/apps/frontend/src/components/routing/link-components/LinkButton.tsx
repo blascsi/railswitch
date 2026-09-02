@@ -1,17 +1,16 @@
-import { Button, type ButtonProps, type ElementProps } from "@mantine/core";
+import { Button, type ButtonProps } from "@astryxdesign/core/Button";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { forwardRef } from "react";
+import { type ComponentPropsWithoutRef, forwardRef, type Ref } from "react";
 
-interface MantineButtonLinkProps
-  extends ButtonProps,
-    Omit<ElementProps<"a", keyof ButtonProps>, "href"> {}
+type AstryxButtonLinkProps = ButtonProps &
+  Omit<ComponentPropsWithoutRef<"a">, keyof ButtonProps>;
 
-const MantineButtonLink = forwardRef<HTMLAnchorElement, MantineButtonLinkProps>(
-  (props, ref) => <Button component="a" ref={ref} {...props} />,
+const AstryxButtonLink = forwardRef<HTMLAnchorElement, AstryxButtonLinkProps>(
+  (props, ref) => <Button ref={ref as Ref<HTMLButtonElement>} {...props} />,
 );
 
-const CreatedLinkButton = createLink(MantineButtonLink);
+const CreatedLinkButton = createLink(AstryxButtonLink);
 
-export const LinkButton: LinkComponent<typeof MantineButtonLink> = (props) => (
+export const LinkButton: LinkComponent<typeof AstryxButtonLink> = (props) => (
   <CreatedLinkButton {...props} />
 );

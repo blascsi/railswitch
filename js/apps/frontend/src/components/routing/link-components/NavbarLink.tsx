@@ -1,16 +1,16 @@
-import { NavLink, type NavLinkProps } from "@mantine/core";
+import { SideNavItem, type SideNavItemProps } from "@astryxdesign/core/SideNav";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
 import { type ComponentPropsWithoutRef, forwardRef } from "react";
 
-type MantineNavLinkProps = NavLinkProps &
-  Omit<ComponentPropsWithoutRef<"a">, keyof NavLinkProps>;
+type AstryxNavItemProps = SideNavItemProps &
+  Omit<ComponentPropsWithoutRef<"a">, keyof SideNavItemProps>;
 
-const MantineNavLink = forwardRef<HTMLAnchorElement, MantineNavLinkProps>(
-  (props, ref) => <NavLink ref={ref} {...props} />,
+const AstryxNavItem = forwardRef<HTMLAnchorElement, AstryxNavItemProps>(
+  (props, ref) => <SideNavItem ref={ref} {...props} />,
 );
 
-const LinkNavLink = createLink(MantineNavLink);
+const LinkNavItem = createLink(AstryxNavItem);
 
-export const NavbarLink: LinkComponent<typeof MantineNavLink> = (props) => {
-  return <LinkNavLink activeOptions={{ exact: false }} {...props} />;
+export const NavbarLink: LinkComponent<typeof AstryxNavItem> = (props) => {
+  return <LinkNavItem activeOptions={{ exact: false }} {...props} />;
 };

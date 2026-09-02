@@ -1,4 +1,5 @@
-import { Container, Stack, Title } from "@mantine/core";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { CreateProjectForm } from "../../../../components/projects/CreateProjectForm";
 import { pageTitle } from "../../../../utils/pageTitle";
@@ -12,11 +13,9 @@ export const Route = createFileRoute(
 
 function ProjectCreatePage() {
   return (
-    <Container>
-      <Stack>
-        <Title>Create project</Title>
-        <CreateProjectForm />
-      </Stack>
-    </Container>
+    <Stack gap={4}>
+      <Heading level={1}>Create project</Heading>
+      <CreateProjectForm />
+    </Stack>
   );
 }

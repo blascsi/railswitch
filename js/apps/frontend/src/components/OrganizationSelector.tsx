@@ -1,34 +1,26 @@
-import { type MantineStyleProps, Select } from "@mantine/core";
+import { Selector } from "@astryxdesign/core/Selector";
 import { useAtom, useAtomValue } from "jotai";
 import { currentOrganizationIdAtom } from "../atoms/currentOrganizationId";
 import { organizationSelectorOptionsAtom } from "../atoms/organizationSelectorOptions";
 
-type OrganizationSelectorProps = MantineStyleProps;
-
-export function OrganizationSelector(props: OrganizationSelectorProps) {
+export function OrganizationSelector() {
   const [currentOrganizationId, setCurrentOrganizationId] = useAtom(
     currentOrganizationIdAtom,
   );
   const organizationsOptions = useAtomValue(organizationSelectorOptionsAtom);
 
-  const onSelectOrganization = (selected: string | null) => {
+  const onSelectOrganization = (selected: string) => {
     setCurrentOrganizationId(selected);
   };
 
   return (
-    <Select
-      aria-label="Organizations"
+    <Selector
+      label="Organizations"
+      isLabelHidden
       placeholder="Select an organization"
-      data={organizationsOptions}
-      value={currentOrganizationId}
+      options={[...organizationsOptions]}
+      value={currentOrganizationId ?? undefined}
       onChange={onSelectOrganization}
-      checkIconPosition="right"
-      allowDeselect={false}
-      // Setting `withinPortal: false` because otherwise the portaled
-      // dropdown wouldn't be cleaned up while the app reloads with
-      // the new Org, and the FullPageLoader is visible
-      comboboxProps={{ withinPortal: false }}
-      {...props}
     />
   );
 }

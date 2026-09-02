@@ -1,17 +1,16 @@
-import { Anchor, type AnchorProps, type ElementProps } from "@mantine/core";
+import { Link, type LinkProps } from "@astryxdesign/core/Link";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { forwardRef } from "react";
+import { type ComponentPropsWithoutRef, forwardRef } from "react";
 
-interface MantineAnchorLinkProps
-  extends AnchorProps,
-    Omit<ElementProps<"a", keyof AnchorProps>, "href"> {}
+type AstryxAnchorLinkProps = LinkProps &
+  Omit<ComponentPropsWithoutRef<"a">, keyof LinkProps>;
 
-const MantineAnchorLink = forwardRef<HTMLAnchorElement, MantineAnchorLinkProps>(
-  (props, ref) => <Anchor ref={ref} {...props} />,
+const AstryxAnchorLink = forwardRef<HTMLAnchorElement, AstryxAnchorLinkProps>(
+  (props, ref) => <Link ref={ref} {...props} />,
 );
 
-const CreatedLinkAnchor = createLink(MantineAnchorLink);
+const CreatedLinkAnchor = createLink(AstryxAnchorLink);
 
-export const LinkAnchor: LinkComponent<typeof MantineAnchorLink> = (props) => (
+export const LinkAnchor: LinkComponent<typeof AstryxAnchorLink> = (props) => (
   <CreatedLinkAnchor {...props} />
 );

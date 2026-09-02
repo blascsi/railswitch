@@ -1,4 +1,7 @@
-import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading } from "@astryxdesign/core/Text";
 import { FolderIcon } from "@phosphor-icons/react";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import { createFileRoute } from "@tanstack/react-router";
@@ -52,33 +55,26 @@ function ProjectsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<FolderIcon />}
+          icon={<Icon icon={FolderIcon} size="lg" />}
           title="No projects found"
           description="Please double check if you are in the right organization, or start by creating some projects."
-          withIndicatorBackground
-        >
-          <EmptyState.Actions>
-            <LinkButton to="/projects/create">Create</LinkButton>
-          </EmptyState.Actions>
-        </EmptyState>
+          actions={<LinkButton to="/projects/create" label="Create" />}
+        />
       </CenteredContent>
     );
   }
 
   return (
-    <Container>
-      <Stack>
-        <Group justify="space-between">
-          <Title>Projects</Title>
-          <LinkActionButton
-            to="/projects/create"
-            aria-label="Create new project"
-          >
-            <PlusIcon />
-          </LinkActionButton>
-        </Group>
-        <ProjectsTable projects={listProjects?.results ?? []} />
+    <Stack gap={4}>
+      <Stack direction="horizontal" hAlign="between" vAlign="center">
+        <Heading level={1}>Projects</Heading>
+        <LinkActionButton
+          to="/projects/create"
+          label="Create new project"
+          icon={<PlusIcon />}
+        />
       </Stack>
-    </Container>
+      <ProjectsTable projects={listProjects?.results ?? []} />
+    </Stack>
   );
 }

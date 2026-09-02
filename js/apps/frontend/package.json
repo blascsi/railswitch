@@ -4,27 +4,27 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs",
+    "build": "vite build && tsc -b",
     "check": "biome check --write",
     "check:ci": "biome ci",
     "codegen": "gql-tada generate output --tsconfig ./tsconfig.app.json && node scripts/generate-introspection.ts",
     "dev": "vite",
-    "build": "vite build && tsc -b",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/core": "catalog:",
-    "@mantine/form": "catalog:",
-    "@mantine/hooks": "catalog:",
-    "@mantine/nprogress": "catalog:",
+    "@astryxdesign/core": "catalog:",
+    "@astryxdesign/theme-stone": "catalog:",
     "@phosphor-icons/react": "catalog:",
     "@railswitch/schemas": "workspace:*",
     "@railswitch/sdk": "workspace:*",
+    "@stylexjs/stylex": "catalog:",
+    "@tanstack/react-form": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
     "@urql/devtools": "catalog:",
     "gql.tada": "catalog:",
     "jotai": "catalog:",
-    "mantine-form-zod-resolver": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-error-boundary": "catalog:",
@@ -34,6 +34,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@astryxdesign/build": "catalog:",
+    "@astryxdesign/cli": "catalog:",
     "@babel/core": "catalog:",
     "@biomejs/biome": "catalog:",
     "@railswitch/config": "workspace:*",
@@ -47,9 +49,6 @@
     "@vitejs/plugin-react": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
     "graphql": "catalog:",
-    "postcss": "catalog:",
-    "postcss-preset-mantine": "catalog:",
-    "postcss-simple-vars": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

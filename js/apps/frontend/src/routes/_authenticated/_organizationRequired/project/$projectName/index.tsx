@@ -1,4 +1,7 @@
-import { Container, EmptyState, Stack, Text, Title } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading, Text } from "@astryxdesign/core/Text";
 import { FolderIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CenteredContent } from "../../../../../components/layout/CenteredContent";
@@ -45,10 +48,9 @@ function ProjectNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<FolderIcon />}
+        icon={<Icon icon={FolderIcon} size="lg" />}
         title="Project not found"
         description="Please double check if you are in the right organization"
-        withIndicatorBackground
       />
     </CenteredContent>
   );
@@ -59,12 +61,10 @@ function ProjectEditPage() {
   const { project } = loaderData;
 
   return (
-    <Container>
-      <Stack>
-        <Title>Project details</Title>
-        <Text c="dimmed">Name</Text>
-        <Text>{project.name}</Text>
-      </Stack>
-    </Container>
+    <Stack gap={3}>
+      <Heading level={1}>Project details</Heading>
+      <Text type="supporting">Name</Text>
+      <Text>{project.name}</Text>
+    </Stack>
   );
 }

@@ -1,4 +1,7 @@
-import { Container, EmptyState, Stack, Text, Title } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading, Text } from "@astryxdesign/core/Text";
 import { TerminalIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
@@ -52,10 +55,9 @@ function EnvironmentNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<TerminalIcon />}
+        icon={<Icon icon={TerminalIcon} size="lg" />}
         title="Environment not found"
         description="Please double check if you are in the right organization"
-        withIndicatorBackground
       />
     </CenteredContent>
   );
@@ -66,19 +68,17 @@ function EnvironmentPage() {
   const { environment } = loaderData;
 
   return (
-    <Container>
-      <Stack>
-        <Title>Environment details</Title>
-        <Text c="dimmed">Name</Text>
-        <Text>{environment.name}</Text>
-        <Text c="dimmed">Owning project</Text>
-        <LinkAnchor
-          to="/project/$projectName"
-          params={{ projectName: environment.project.name }}
-        >
-          {environment.project.name}
-        </LinkAnchor>
-      </Stack>
-    </Container>
+    <Stack gap={3}>
+      <Heading level={1}>Environment details</Heading>
+      <Text type="supporting">Name</Text>
+      <Text>{environment.name}</Text>
+      <Text type="supporting">Owning project</Text>
+      <LinkAnchor
+        to="/project/$projectName"
+        params={{ projectName: environment.project.name }}
+      >
+        {environment.project.name}
+      </LinkAnchor>
+    </Stack>
   );
 }

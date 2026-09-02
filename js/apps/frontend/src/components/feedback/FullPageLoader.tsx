@@ -1,4 +1,4 @@
-import { Center } from "@mantine/core";
+import { CenteredContent } from "../layout/CenteredContent";
 import { PageLoader } from "./PageLoader";
 
 type FullPageLoaderProps = {
@@ -7,8 +7,8 @@ type FullPageLoaderProps = {
 
 export function FullPageLoader({ label }: FullPageLoaderProps) {
   return (
-    <Center mih="100dvh">
+    <CenteredContent minHeight="100dvh">
       <PageLoader label={label} />
-    </Center>
+    </CenteredContent>
   );
 }

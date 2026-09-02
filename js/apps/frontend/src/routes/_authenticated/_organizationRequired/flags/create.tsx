@@ -1,7 +1,8 @@
-import { Container, Stack, Title } from "@mantine/core";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { CreateFlagForm } from "../../../../components/flags/CreateFlagForm";
-import { projectSelector_projects } from "../../../../components/projects/ProjectSelector";
+import { projectSelector_projects } from "../../../../components/projects/projectOptions";
 import { graphql } from "../../../../graphql/graphql";
 import { pageTitle } from "../../../../utils/pageTitle";
 
@@ -41,11 +42,9 @@ function FlagCreatePage() {
   const { listProjects } = loaderData;
 
   return (
-    <Container>
-      <Stack>
-        <Title>Create flag</Title>
-        <CreateFlagForm projects={listProjects?.results ?? []} />
-      </Stack>
-    </Container>
+    <Stack gap={4}>
+      <Heading level={1}>Create flag</Heading>
+      <CreateFlagForm projects={listProjects?.results ?? []} />
+    </Stack>
   );
 }

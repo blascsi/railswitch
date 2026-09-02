@@ -1,4 +1,5 @@
-import { Alert, Button, Stack, Text } from "@mantine/core";
+import { Banner } from "@astryxdesign/core/Banner";
+import { Button } from "@astryxdesign/core/Button";
 import type { CombinedError } from "urql";
 import { getApiErrorMessage } from "../../utils/apiErrorMessage";
 
@@ -10,13 +11,11 @@ type QueryErrorProps = {
 
 export function QueryError({ title, error, onRetry }: QueryErrorProps) {
   return (
-    <Alert color="red" title={title}>
-      <Stack align="flex-start" gap="sm">
-        <Text size="sm">{getApiErrorMessage(error)}</Text>
-        <Button variant="light" color="red" size="xs" onClick={onRetry}>
-          Retry
-        </Button>
-      </Stack>
-    </Alert>
+    <Banner
+      status="error"
+      title={title}
+      description={getApiErrorMessage(error)}
+      endContent={<Button label="Retry" size="sm" onClick={onRetry} />}
+    />
   );
 }

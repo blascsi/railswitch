@@ -1,13 +1,16 @@
+import { AppShell } from "@astryxdesign/core/AppShell";
+import { Avatar } from "@astryxdesign/core/Avatar";
+import { Divider } from "@astryxdesign/core/Divider";
 import {
-  AppShell,
-  Avatar,
-  Burger,
-  Divider,
-  Group,
-  Menu,
-  Text,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+  DropdownMenu,
+  DropdownMenuDivider,
+  DropdownMenuItem,
+} from "@astryxdesign/core/DropdownMenu";
+import { Layout, LayoutContent } from "@astryxdesign/core/Layout";
+import { SideNav } from "@astryxdesign/core/SideNav";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Text } from "@astryxdesign/core/Text";
+import { TopNav } from "@astryxdesign/core/TopNav";
 import {
   FlagIcon,
   FolderIcon,
@@ -35,7 +38,6 @@ type AppShellLayoutProps = {
 };
 
 export function AppShellLayout({ children }: AppShellLayoutProps) {
-  const [opened, { toggle }] = useDisclosure(true);
   const [_, signOut] = useMutation(SignOutMutation);
   const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
   const isHomeActive = useIsRouteActive([{ to: "/home" }]);
@@ -59,76 +61,80 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
 
   return (
     <AppShell
-      layout="alt"
-      header={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: "md",
-        collapsed: { mobile: !opened, desktop: !opened },
-      }}
-      padding="md"
-    >
-      <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
-          <Group>
-            <Burger opened={opened} onClick={toggle} size="sm" />
-            <Divider orientation="vertical" />
-          </Group>
-          <Group>
-            <OrganizationSelector />
-            <Divider orientation="vertical" />
-            <Menu>
-              <Menu.Target>
-                <Avatar
-                  variant="filled"
-                  name={currentUser?.email}
-                  styles={{ root: { cursor: "pointer" } }}
+      contentPadding={0}
+      topNav={
+        <TopNav
+          label="Top navigation"
+          endContent={
+            <Stack direction="horizontal" gap={2} vAlign="center">
+              <OrganizationSelector />
+              <Divider orientation="vertical" />
+              <DropdownMenu
+                hasChevron={false}
+                alignment="end"
+                button={{
+                  label: currentUser?.email ?? "Account",
+                  variant: "ghost",
+                  isIconOnly: true,
+                  icon: (
+                    <Avatar
+                      name={currentUser?.email}
+                      size="sm"
+                      shape="square"
+                      tooltip={false}
+                    />
+                  ),
+                }}
+              >
+                <Stack gap={0} paddingInline={2} paddingBlock={1}>
+                  <Text type="supporting">Signed in as</Text>
+                  <Text>{currentUser?.email}</Text>
+                </Stack>
+                <DropdownMenuDivider />
+                <DropdownMenuItem
+                  icon={SignOutIcon}
+                  label="Sign Out"
+                  onClick={onSignOut}
                 />
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label>Signed in as</Menu.Label>
-                <Text size="sm" px="sm">
-                  {currentUser?.email}
-                </Text>
-                <Menu.Divider />
-                <Menu.Item leftSection={<SignOutIcon />} onClick={onSignOut}>
-                  Sign Out
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar>
-        <AppShell.Section grow>
+              </DropdownMenu>
+            </Stack>
+          }
+        />
+      }
+      sideNav={
+        <SideNav aria-label="Main navigation" collapsible>
           <NavbarLink
             to="/home"
             label="Home"
-            leftSection={<HouseIcon />}
-            active={isHomeActive}
+            icon={HouseIcon}
+            isSelected={isHomeActive}
           />
           <NavbarLink
             to="/projects"
             label="Projects"
-            leftSection={<FolderIcon />}
-            active={isProjectsActive}
+            icon={FolderIcon}
+            isSelected={isProjectsActive}
           />
           <NavbarLink
             to="/environments"
             label="Environments"
-            leftSection={<TerminalIcon />}
-            active={isEnvironmentsActive}
+            icon={TerminalIcon}
+            isSelected={isEnvironmentsActive}
           />
           <NavbarLink
             to="/flags"
             label="Flags"
-            leftSection={<FlagIcon />}
-            active={isFlagsActive}
+            icon={FlagIcon}
+            isSelected={isFlagsActive}
           />
-        </AppShell.Section>
-      </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
+        </SideNav>
+      }
+    >
+      <Layout
+        contentWidth={960}
+        padding={6}
+        content={<LayoutContent>{children}</LayoutContent>}
+      />
     </AppShell>
   );
 }

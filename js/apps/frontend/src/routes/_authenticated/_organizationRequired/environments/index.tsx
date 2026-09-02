@@ -1,4 +1,7 @@
-import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading } from "@astryxdesign/core/Text";
 import { PlusIcon, TerminalIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -51,33 +54,26 @@ function EnvironmentsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<TerminalIcon />}
+          icon={<Icon icon={TerminalIcon} size="lg" />}
           title="No environments found"
           description="Please double check if you are in the right organization, or start by creating a new environment"
-          withIndicatorBackground
-        >
-          <EmptyState.Actions>
-            <LinkButton to="/environments/create">Create</LinkButton>
-          </EmptyState.Actions>
-        </EmptyState>
+          actions={<LinkButton to="/environments/create" label="Create" />}
+        />
       </CenteredContent>
     );
   }
 
   return (
-    <Container>
-      <Stack>
-        <Group justify="space-between">
-          <Title>Environments</Title>
-          <LinkActionButton
-            to="/environments/create"
-            aria-label="Create new environment"
-          >
-            <PlusIcon />
-          </LinkActionButton>
-        </Group>
-        <EnvironmentsTable environments={listEnvironments?.results ?? []} />
+    <Stack gap={4}>
+      <Stack direction="horizontal" hAlign="between" vAlign="center">
+        <Heading level={1}>Environments</Heading>
+        <LinkActionButton
+          to="/environments/create"
+          label="Create new environment"
+          icon={<PlusIcon />}
+        />
       </Stack>
-    </Container>
+      <EnvironmentsTable environments={listEnvironments?.results ?? []} />
+    </Stack>
   );
 }

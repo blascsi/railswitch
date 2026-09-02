@@ -1,86 +1,98 @@
-import { Alert, Button, Group, Stack, TextInput } from "@mantine/core";
-import { type UseFormReturnType, useForm } from "@mantine/form";
-import type { FragmentOf } from "gql.tada";
-import { zod4Resolver } from "mantine-form-zod-resolver";
+import { FormLayout } from "@astryxdesign/core/FormLayout";
+import { Stack } from "@astryxdesign/core/Stack";
 import z from "zod";
+import { useAppForm } from "../../forms/formHook";
+import type { FragmentOf } from "../../graphql/graphql";
 import { lowercaseLettersAndUnderscoresSchema } from "../../schemas/lowercaseLettersAndUnderscoresSchema";
 import {
-  ProjectSelector,
+  noSubmissionErrors,
+  type SubmissionErrors,
+} from "../../utils/apiErrorMessage";
+import {
+  projectOptions,
   type projectSelector_projects,
-} from "../projects/ProjectSelector";
+} from "../projects/projectOptions";
 
 const environmentSchema = z.object({
   name: lowercaseLettersAndUnderscoresSchema,
-  project_id: z.uuid(),
+  project_id: z.uuid("Select a parent project"),
 });
 
 type EnvironmentFormInput = z.input<typeof environmentSchema>;
 
 export type EnvironmentFormValues = z.output<typeof environmentSchema>;
 
-export type EnvironmentFormInstance = UseFormReturnType<EnvironmentFormInput>;
-
 type EnvironmentFormProps = {
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
   submitLabel: string;
-  errorTitle: string;
-  errorMessage: string | null;
   isPending: boolean;
   initialValues?: EnvironmentFormInput;
   onSubmit: (
     values: EnvironmentFormValues,
-    form: EnvironmentFormInstance,
-  ) => Promise<void>;
+  ) => Promise<SubmissionErrors | undefined>;
 };
 
 export function EnvironmentForm({
   projects,
   submitLabel,
-  errorTitle,
-  errorMessage,
   isPending,
   initialValues = { name: "", project_id: "" },
   onSubmit,
 }: EnvironmentFormProps) {
-  const form = useForm<EnvironmentFormInput>({
-    mode: "uncontrolled",
-    initialValues,
-    validate: zod4Resolver(environmentSchema),
-    validateInputOnChange: true,
-  });
+  const form = useAppForm({
+    defaultValues: initialValues,
+    validators: { onSubmit: environmentSchema },
+    onSubmit: async ({ value, formApi }) => {
+      formApi.setErrorMap({ onSubmit: noSubmissionErrors });
 
-  const handleSubmit = form.onSubmit((values) => {
-    onSubmit(environmentSchema.parse(values), form);
-  });
+      const failure = await onSubmit(environmentSchema.parse(value));
 
-  const isSubmitEnabled = form.isDirty() && form.isValid();
+      if (failure != null) {
+        formApi.setErrorMap({ onSubmit: failure });
+      }
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack>
-        {errorMessage && (
-          <Alert color="red" title={errorTitle} role="alert">
-            {errorMessage}
-          </Alert>
-        )}
-        <TextInput
-          placeholder="Name"
-          aria-label="Name"
-          key={form.key("name")}
-          {...form.getInputProps("name")}
-        />
-        <ProjectSelector
-          placeholder="Parent project"
-          aria-label="Parent project"
-          projects={projects}
-          key={form.key("project_id")}
-          {...form.getInputProps("project_id")}
-        />
-        <Group justify="flex-end">
-          <Button type="submit" loading={isPending} disabled={!isSubmitEnabled}>
-            {submitLabel}
-          </Button>
-        </Group>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        form.handleSubmit();
+      }}
+    >
+      <Stack gap={4}>
+        <FormLayout defaultOptionality="required">
+          <form.AppField name="name">
+            {(field) => (
+              <field.TextInput label="Name" placeholder="my_environment" />
+            )}
+          </form.AppField>
+          <form.AppField name="project_id">
+            {(field) => (
+              <field.Selector
+                label="Parent project"
+                placeholder="Choose a project"
+                options={projectOptions(projects)}
+              />
+            )}
+          </form.AppField>
+        </FormLayout>
+        <form.AppForm>
+          <Stack
+            direction="horizontal"
+            hAlign="end"
+            vAlign="center"
+            gap={3}
+            wrap="wrap"
+          >
+            <form.FormError />
+            <form.SubmitButton
+              label={submitLabel}
+              isPending={isPending}
+              requiresChanges
+            />
+          </Stack>
+        </form.AppForm>
       </Stack>
     </form>
   );

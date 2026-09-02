@@ -1,83 +1,94 @@
-import { Alert, Button, Group, Stack, TextInput } from "@mantine/core";
-import { type UseFormReturnType, useForm } from "@mantine/form";
-import { zod4Resolver } from "mantine-form-zod-resolver";
+import { FormLayout } from "@astryxdesign/core/FormLayout";
+import { Stack } from "@astryxdesign/core/Stack";
 import z from "zod";
+import { useAppForm } from "../../forms/formHook";
 import type { FragmentOf } from "../../graphql/graphql";
 import { lowercaseLettersAndUnderscoresSchema } from "../../schemas/lowercaseLettersAndUnderscoresSchema";
 import {
-  ProjectSelector,
+  noSubmissionErrors,
+  type SubmissionErrors,
+} from "../../utils/apiErrorMessage";
+import {
+  projectOptions,
   type projectSelector_projects,
-} from "../projects/ProjectSelector";
+} from "../projects/projectOptions";
 
 const flagSchema = z.object({
   name: lowercaseLettersAndUnderscoresSchema,
-  project_id: z.uuid(),
+  project_id: z.uuid("Select a parent project"),
 });
 
 type FlagFormInput = z.input<typeof flagSchema>;
 
 export type FlagFormValues = z.output<typeof flagSchema>;
 
-export type FlagFormInstance = UseFormReturnType<FlagFormInput>;
-
 type FlagFormProps = {
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
   submitLabel: string;
-  errorTitle: string;
-  errorMessage: string | null;
   isPending: boolean;
   initialValues?: FlagFormInput;
-  onSubmit: (values: FlagFormValues, form: FlagFormInstance) => Promise<void>;
+  onSubmit: (values: FlagFormValues) => Promise<SubmissionErrors | undefined>;
 };
 
 export function FlagForm({
   projects,
   submitLabel,
-  errorTitle,
-  errorMessage,
   isPending,
   initialValues = { name: "", project_id: "" },
   onSubmit,
 }: FlagFormProps) {
-  const form = useForm<FlagFormInput>({
-    mode: "uncontrolled",
-    initialValues,
-    validate: zod4Resolver(flagSchema),
-    validateInputOnChange: true,
-  });
+  const form = useAppForm({
+    defaultValues: initialValues,
+    validators: { onSubmit: flagSchema },
+    onSubmit: async ({ value, formApi }) => {
+      formApi.setErrorMap({ onSubmit: noSubmissionErrors });
 
-  const handleSubmit = form.onSubmit((values) => {
-    onSubmit(flagSchema.parse(values), form);
-  });
+      const failure = await onSubmit(flagSchema.parse(value));
 
-  const isSubmitEnabled = form.isDirty() && form.isValid();
+      if (failure != null) {
+        formApi.setErrorMap({ onSubmit: failure });
+      }
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack>
-        {errorMessage && (
-          <Alert color="red" title={errorTitle} role="alert">
-            {errorMessage}
-          </Alert>
-        )}
-        <TextInput
-          placeholder="Name"
-          aria-label="Name"
-          key={form.key("name")}
-          {...form.getInputProps("name")}
-        />
-        <ProjectSelector
-          placeholder="Parent project"
-          aria-label="Parent project"
-          projects={projects}
-          key={form.key("project_id")}
-          {...form.getInputProps("project_id")}
-        />
-        <Group justify="flex-end">
-          <Button type="submit" loading={isPending} disabled={!isSubmitEnabled}>
-            {submitLabel}
-          </Button>
-        </Group>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        form.handleSubmit();
+      }}
+    >
+      <Stack gap={4}>
+        <FormLayout defaultOptionality="required">
+          <form.AppField name="name">
+            {(field) => <field.TextInput label="Name" placeholder="my_flag" />}
+          </form.AppField>
+          <form.AppField name="project_id">
+            {(field) => (
+              <field.Selector
+                label="Parent project"
+                placeholder="Choose a project"
+                options={projectOptions(projects)}
+              />
+            )}
+          </form.AppField>
+        </FormLayout>
+        <form.AppForm>
+          <Stack
+            direction="horizontal"
+            hAlign="end"
+            vAlign="center"
+            gap={3}
+            wrap="wrap"
+          >
+            <form.FormError />
+            <form.SubmitButton
+              label={submitLabel}
+              isPending={isPending}
+              requiresChanges
+            />
+          </Stack>
+        </form.AppForm>
       </Stack>
     </form>
   );

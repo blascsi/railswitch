@@ -1,4 +1,4 @@
-import { Container } from "@mantine/core";
+import { Section } from "@astryxdesign/core/Section";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { CombinedError } from "urql";
 import { QueryError } from "../feedback/QueryError";
@@ -10,12 +10,12 @@ export function RouteQueryError({ error, reset }: ErrorComponentProps) {
       : new CombinedError({ networkError: error });
 
   return (
-    <Container>
+    <Section variant="transparent">
       <QueryError
         title="Failed to load this page"
         error={combinedError}
         onRetry={reset}
       />
-    </Container>
+    </Section>
   );
 }

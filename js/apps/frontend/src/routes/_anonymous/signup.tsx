@@ -1,17 +1,16 @@
-import { Text } from "@mantine/core";
+import { Text } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation } from "urql";
 import { onAuthenticationSuccess } from "../../auth/authenticationSuccess";
 import {
   AuthenticationForm,
-  type AuthenticationFormInstance,
   type AuthenticationFormValues,
 } from "../../components/auth/AuthenticationForm";
 import { AuthLayout } from "../../components/layout/AuthLayout";
 import { LinkAnchor } from "../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../graphql/graphql";
-import { getApiErrorMessage } from "../../utils/apiErrorMessage";
+import { getSubmissionErrors } from "../../utils/apiErrorMessage";
 import { pageTitle } from "../../utils/pageTitle";
 
 const RegisterMutation = graphql(`
@@ -36,15 +35,9 @@ export const Route = createFileRoute("/_anonymous/signup")({
 
 function SignupPage() {
   const [{ fetching }, register] = useMutation(RegisterMutation);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isEnteringApp, setIsEnteringApp] = useState(false);
 
-  const handleSubmit = async (
-    values: AuthenticationFormValues,
-    form: AuthenticationFormInstance,
-  ) => {
-    setErrorMessage(null);
-
+  const handleSubmit = async (values: AuthenticationFormValues) => {
     const result = await register({
       input: {
         email: values.email,
@@ -54,11 +47,6 @@ function SignupPage() {
       },
     });
 
-    if (result.error) {
-      setErrorMessage(getApiErrorMessage(result.error));
-      return;
-    }
-
     const registeredUser = result.data?.register.result;
     if (registeredUser != null) {
       setIsEnteringApp(true);
@@ -66,31 +54,18 @@ function SignupPage() {
       return;
     }
 
-    const errors = result.data?.register.errors ?? [];
-    const emailError = errors.find((error) => error.fields?.includes("email"));
-
-    if (emailError?.message != null) {
-      form.setErrors({ email: emailError.message });
-      return;
-    }
-
-    setErrorMessage(
-      errors.map((error) => error.message).join(" ") ||
-        "Something went wrong. Please try again.",
-    );
+    return getSubmissionErrors(result.error, result.data?.register.errors);
   };
 
   return (
     <AuthLayout title="Create an account">
       <AuthenticationForm
         submitLabel="Register"
-        errorTitle="Registration failed"
-        errorMessage={errorMessage}
         isPending={fetching || isEnteringApp}
         withPasswordConfirmation
         onSubmit={handleSubmit}
       >
-        <Text size="sm" c="dimmed">
+        <Text type="supporting">
           Already have an account? <LinkAnchor to="/login">Log in</LinkAnchor>
         </Text>
       </AuthenticationForm>

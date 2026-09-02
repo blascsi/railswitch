@@ -1,5 +1,8 @@
-import { Center, Paper, Stack, Title } from "@mantine/core";
+import { Card } from "@astryxdesign/core/Card";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading } from "@astryxdesign/core/Text";
 import type { ReactNode } from "react";
+import { CenteredContent } from "./CenteredContent";
 
 type AuthLayoutProps = {
   title: string;
@@ -8,13 +11,13 @@ type AuthLayoutProps = {
 
 export function AuthLayout({ title, children }: AuthLayoutProps) {
   return (
-    <Center mih="100dvh">
-      <Paper withBorder miw={500} py="lg" px="lg">
-        <Stack>
-          <Title>{title}</Title>
+    <CenteredContent minHeight="100dvh">
+      <Card width="min(100%, 500px)">
+        <Stack gap={4} padding={5}>
+          <Heading level={1}>{title}</Heading>
           {children}
         </Stack>
-      </Paper>
-    </Center>
+      </Card>
+    </CenteredContent>
   );
 }

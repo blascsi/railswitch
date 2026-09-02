@@ -1,22 +1,19 @@
-import {
-  ActionIcon,
-  type ActionIconProps,
-  type ElementProps,
-} from "@mantine/core";
+import { Button, type ButtonProps } from "@astryxdesign/core/Button";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { forwardRef } from "react";
+import { type ComponentPropsWithoutRef, forwardRef, type Ref } from "react";
 
-interface MantineActionIconLinkProps
-  extends ActionIconProps,
-    Omit<ElementProps<"a", keyof ActionIconProps>, "href"> {}
+type AstryxActionButtonLinkProps = ButtonProps &
+  Omit<ComponentPropsWithoutRef<"a">, keyof ButtonProps>;
 
-const MantineActionIconLink = forwardRef<
+const AstryxActionButtonLink = forwardRef<
   HTMLAnchorElement,
-  MantineActionIconLinkProps
->((props, ref) => <ActionIcon component="a" ref={ref} {...props} />);
+  AstryxActionButtonLinkProps
+>((props, ref) => (
+  <Button ref={ref as Ref<HTMLButtonElement>} isIconOnly {...props} />
+));
 
-const CreatedLinkActionButton = createLink(MantineActionIconLink);
+const CreatedLinkActionButton = createLink(AstryxActionButtonLink);
 
-export const LinkActionButton: LinkComponent<typeof MantineActionIconLink> = (
+export const LinkActionButton: LinkComponent<typeof AstryxActionButtonLink> = (
   props,
 ) => <CreatedLinkActionButton preload="intent" {...props} />;

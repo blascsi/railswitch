@@ -1,17 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useMutation } from "urql";
 import { type FragmentOf, graphql } from "../../graphql/graphql";
-import {
-  getMutationErrorMessage,
-  getMutationFieldErrors,
-} from "../../utils/apiErrorMessage";
-import type { projectSelector_projects } from "../projects/ProjectSelector";
-import {
-  EnvironmentForm,
-  type EnvironmentFormInstance,
-  type EnvironmentFormValues,
-} from "./EnvironmentForm";
+import { getSubmissionErrors } from "../../utils/apiErrorMessage";
+import type { projectSelector_projects } from "../projects/projectOptions";
+import { EnvironmentForm, type EnvironmentFormValues } from "./EnvironmentForm";
 
 const CreateEnvironmentMutation = graphql(
   `
@@ -45,12 +37,8 @@ export function CreateEnvironmentForm({
   const [{ fetching }, createEnvironment] = useMutation(
     CreateEnvironmentMutation,
   );
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (
-    values: EnvironmentFormValues,
-    form: EnvironmentFormInstance,
-  ) => {
+  const handleSubmit = async (values: EnvironmentFormValues) => {
     const { data, error } = await createEnvironment({
       input: {
         name: values.name,
@@ -69,16 +57,12 @@ export function CreateEnvironmentForm({
       return;
     }
 
-    const errors = data?.createEnvironment.errors;
-    form.setErrors(getMutationFieldErrors(errors));
-    setErrorMessage(getMutationErrorMessage(error, errors));
+    return getSubmissionErrors(error, data?.createEnvironment.errors);
   };
 
   return (
     <EnvironmentForm
       submitLabel="Create environment"
-      errorTitle="Couldn't create environment"
-      errorMessage={errorMessage}
       isPending={fetching}
       onSubmit={handleSubmit}
       projects={projects}

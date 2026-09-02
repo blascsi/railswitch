@@ -1,4 +1,4 @@
-import { Select, type SelectProps } from "@mantine/core";
+import { Selector, type SelectorProps } from "@astryxdesign/core/Selector";
 import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
 
 export const environmentSelector_environments = graphql(`
@@ -10,11 +10,11 @@ export const environmentSelector_environments = graphql(`
 
 type EnvironmentSelectorProps = {
   environments: readonly FragmentOf<typeof environmentSelector_environments>[];
-} & Omit<SelectProps, "data">;
+} & Omit<Extract<SelectorProps, { hasClear?: false }>, "options">;
 
 export function EnvironmentSelector({
   environments,
-  ...selectProps
+  ...selectorProps
 }: EnvironmentSelectorProps) {
   const environmentsData = readFragment(
     environmentSelector_environments,
@@ -26,5 +26,5 @@ export function EnvironmentSelector({
     label: environment.name,
   }));
 
-  return <Select data={environmentOptions} {...selectProps} />;
+  return <Selector options={environmentOptions} {...selectorProps} />;
 }

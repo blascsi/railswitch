@@ -1,4 +1,7 @@
-import { Container, EmptyState, Group, Stack, Title } from "@mantine/core";
+import { EmptyState } from "@astryxdesign/core/EmptyState";
+import { Icon } from "@astryxdesign/core/Icon";
+import { Stack } from "@astryxdesign/core/Stack";
+import { Heading } from "@astryxdesign/core/Text";
 import { PlusIcon } from "@phosphor-icons/react";
 import { FlagIcon } from "@phosphor-icons/react/dist/ssr";
 import { createFileRoute } from "@tanstack/react-router";
@@ -52,30 +55,26 @@ function FlagsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<FlagIcon />}
+          icon={<Icon icon={FlagIcon} size="lg" />}
           title="No flags found"
           description="Please double check if you are in the right organization, or start by creating a flag"
-          withIndicatorBackground
-        >
-          <EmptyState.Actions>
-            <LinkButton to="/flags/create">Create</LinkButton>
-          </EmptyState.Actions>
-        </EmptyState>
+          actions={<LinkButton to="/flags/create" label="Create" />}
+        />
       </CenteredContent>
     );
   }
 
   return (
-    <Container>
-      <Stack>
-        <Group justify="space-between">
-          <Title>Flags</Title>
-          <LinkActionButton to="/flags/create" aria-label="Create new flag">
-            <PlusIcon />
-          </LinkActionButton>
-        </Group>
-        <FlagsTable flags={listFlags?.results ?? []} />
+    <Stack gap={4}>
+      <Stack direction="horizontal" hAlign="between" vAlign="center">
+        <Heading level={1}>Flags</Heading>
+        <LinkActionButton
+          to="/flags/create"
+          label="Create new flag"
+          icon={<PlusIcon />}
+        />
       </Stack>
-    </Container>
+      <FlagsTable flags={listFlags?.results ?? []} />
+    </Stack>
   );
 }

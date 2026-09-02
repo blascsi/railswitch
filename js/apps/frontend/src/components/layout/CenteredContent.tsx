@@ -1,13 +1,18 @@
-import { Center } from "@mantine/core";
+import { Center } from "@astryxdesign/core/Center";
 import type { ReactNode } from "react";
 
-const availableHeight =
-  "calc(100dvh - var(--app-shell-header-offset, 0rem) - var(--app-shell-footer-offset, 0rem) - var(--app-shell-padding, 0rem) * 2)";
-
 type CenteredContentProps = {
+  minHeight?: string;
   children: ReactNode;
 };
 
-export function CenteredContent({ children }: CenteredContentProps) {
-  return <Center mih={availableHeight}>{children}</Center>;
+export function CenteredContent({
+  minHeight = "100%",
+  children,
+}: CenteredContentProps) {
+  return (
+    <Center width="100%" minHeight={minHeight} padding={4}>
+      {children}
+    </Center>
+  );
 }
