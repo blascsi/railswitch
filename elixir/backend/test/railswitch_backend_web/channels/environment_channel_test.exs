@@ -136,16 +136,6 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
       assert to_string(name) == "checkout"
     end
 
-    test "pushes flag_deleted when a flag environment is destroyed", ctx do
-      flag = create_flag!(ctx, "checkout")
-      flag_environment = flag_environment!(ctx, flag)
-
-      Flags.delete_flag_environment!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
-
-      assert_push "flag_deleted", %{flag: name}
-      assert to_string(name) == "checkout"
-    end
-
     test "pushes flag_deleted when the flag itself is destroyed", ctx do
       flag = create_flag!(ctx, "checkout")
 

@@ -103,27 +103,4 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
                )
     end
   end
-
-  describe "destroy" do
-    test "a member can destroy a flag environment", ctx do
-      assert :ok =
-               Flags.delete_flag_environment(ctx.flag_environment,
-                 tenant: ctx.org.id,
-                 actor: ctx.user
-               )
-    end
-
-    test "an outsider cannot destroy a flag environment", ctx do
-      assert {:error, %Forbidden{}} =
-               Flags.delete_flag_environment(ctx.flag_environment,
-                 tenant: ctx.org.id,
-                 actor: ctx.outsider
-               )
-    end
-
-    test "a request without an actor cannot destroy a flag environment", ctx do
-      assert {:error, %Forbidden{}} =
-               Flags.delete_flag_environment(ctx.flag_environment, tenant: ctx.org.id)
-    end
-  end
 end

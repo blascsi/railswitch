@@ -26,7 +26,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
   end
 
   actions do
-    defaults [:read, :destroy]
+    defaults [:read]
 
     create :create do
       accept [:rules]
@@ -56,7 +56,6 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
 
     publish :create, [:environment_id]
     publish :update, [:environment_id]
-    publish :destroy, [:environment_id]
   end
 
   multitenancy do

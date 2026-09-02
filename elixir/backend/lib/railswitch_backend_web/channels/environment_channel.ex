@@ -61,14 +61,6 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
     {:noreply, socket}
   end
 
-  def handle_info(%Broadcast{topic: "flag_environments:" <> _, event: "destroy", payload: notification}, socket) do
-    with_flag_name(socket, notification.data.flag_id, fn name ->
-      push(socket, "flag_deleted", %{flag: name})
-    end)
-
-    {:noreply, socket}
-  end
-
   def handle_info(%Broadcast{topic: "flags:" <> _, event: "destroy", payload: notification}, socket) do
     push(socket, "flag_deleted", %{flag: notification.data.name})
     {:noreply, socket}

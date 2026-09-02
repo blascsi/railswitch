@@ -77,17 +77,6 @@ defmodule RailswitchBackend.Flags.PubSubTest do
       assert data.id == flag_environment.id
       assert data.rules == FlagsGenerator.disabled_rules()
     end
-
-    test "destroying a flag environment publishes destroy on the environment topic", ctx do
-      create_flag!(ctx)
-      flag_environment = flag_environment!(ctx)
-      subscribe("flag_environments:#{ctx.environment.id}")
-
-      Flags.delete_flag_environment!(flag_environment, tenant: ctx.org.id, actor: ctx.user)
-
-      assert_receive %Broadcast{event: "destroy", payload: %Notification{data: data}}
-      assert data.id == flag_environment.id
-    end
   end
 
   describe "Flag publications" do

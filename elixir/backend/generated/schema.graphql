@@ -409,15 +409,6 @@ type ProjectApiKey {
   project: Project!
 }
 
-"The result of the :delete_flag_environment mutation"
-type DeleteFlagEnvironmentResult {
-  "The record that was successfully deleted"
-  result: FlagEnvironment
-
-  "Any errors generated, if the mutation failed"
-  errors: [MutationError!]!
-}
-
 "The result of the :update_flag_environment mutation"
 type UpdateFlagEnvironmentResult {
   "The successful result of the mutation"
@@ -1097,8 +1088,6 @@ type RootMutationType {
   createFlagEnvironment(input: CreateFlagEnvironmentInput!): CreateFlagEnvironmentResult!
 
   updateFlagEnvironment(id: ID!, input: UpdateFlagEnvironmentInput): UpdateFlagEnvironmentResult!
-
-  deleteFlagEnvironment(id: ID!): DeleteFlagEnvironmentResult!
 
   createProjectApiKey(input: CreateProjectApiKeyInput!): CreateProjectApiKeyResult!
 
