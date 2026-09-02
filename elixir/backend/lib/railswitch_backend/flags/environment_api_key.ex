@@ -1,4 +1,4 @@
-defmodule RailswitchBackend.Flags.ProjectApiKey do
+defmodule RailswitchBackend.Flags.EnvironmentApiKey do
   @moduledoc false
 
   use Ash.Resource,
@@ -10,16 +10,16 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
     notifiers: [Ash.Notifier.PubSub]
 
   graphql do
-    type :project_api_key
+    type :environment_api_key
   end
 
   postgres do
-    table "project_api_keys"
+    table "environment_api_keys"
     repo RailswitchBackend.Repo
 
     references do
       reference :organization, on_delete: :delete
-      reference :project, on_delete: :delete
+      reference :environment, on_delete: :delete
     end
   end
 
@@ -28,7 +28,7 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
 
     create :create do
       primary? true
-      accept [:project_id]
+      accept [:environment_id]
 
       change {AshAuthentication.Strategy.ApiKey.GenerateApiKey, prefix: :railswitch, hash: :api_key_hash}
 
@@ -81,7 +81,7 @@ defmodule RailswitchBackend.Flags.ProjectApiKey do
       allow_nil? false
     end
 
-    belongs_to :project, RailswitchBackend.Flags.Project do
+    belongs_to :environment, RailswitchBackend.Flags.Environment do
       allow_nil? false
       public? true
     end

@@ -2,14 +2,14 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
   @moduledoc """
   Streams flag state to SDK clients for a single environment.
 
-  Clients join `"environment:<name>"`; the name is resolved strictly within
-  the authenticated socket's project and organization, so the topic string can
-  never address another tenant's data. The join reply carries the full flag
+  The topic is the constant `"environment"`: the API key resolved one
+  environment during the socket handshake, so the client never names one and
+  cannot address another tenant's data. The join reply carries the full flag
   state; afterwards the channel forwards changes from the UUID-keyed internal
   PubSub topics published by the Flags resources.
 
-  Never `Endpoint.broadcast` on `environment:*` topics — they are not
-  tenant-unique. All fan-out stays on the internal topics.
+  Never `Endpoint.broadcast` on the `"environment"` topic — every client shares
+  it. All fan-out stays on the internal topics.
   """
 
   use RailswitchBackendWeb, :channel
@@ -19,23 +19,17 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
 
   # The API-key handshake on SdkSocket is the authorization here; every read
   # is scoped by the authenticated socket assigns.
-  #
-  # The environment is looked up again after subscribing: a destroy between
-  # the first lookup and the subscription is published before we can hear it,
-  # which would leave the client a live-looking but dead session.
   @impl true
-  def join("environment:" <> name, _payload, socket) do
-    %{project_id: project_id, organization_id: organization_id} = socket.assigns
-    lookup_opts = [tenant: organization_id, authorize?: false]
+  def join("environment", _payload, socket) do
+    %{environment_id: environment_id, organization_id: organization_id} = socket.assigns
 
-    with {:ok, environment} <-
-           Flags.get_environment_by_project_id_and_name(project_id, name, lookup_opts),
-         subscribe_to_internal_topics(environment, project_id),
-         {:ok, environment} <-
-           Flags.get_environment_by_project_id_and_name(project_id, name, lookup_opts) do
-      {:ok, %{flags: initial_state(environment, organization_id)}, socket}
-    else
-      {:error, _not_found} -> {:error, %{reason: "environment not found"}}
+    case Flags.get_environment_by_id(environment_id, tenant: organization_id, authorize?: false) do
+      {:ok, environment} ->
+        subscribe_to_internal_topics(environment)
+        {:ok, %{flags: initial_state(environment, organization_id)}, socket}
+
+      {:error, _not_found} ->
+        {:error, %{reason: "environment not found"}}
     end
   end
 
@@ -72,10 +66,10 @@ defmodule RailswitchBackendWeb.EnvironmentChannel do
   # subscribed topic later) are ignored rather than crashing the channel.
   def handle_info(_message, socket), do: {:noreply, socket}
 
-  defp subscribe_to_internal_topics(environment, project_id) do
+  defp subscribe_to_internal_topics(environment) do
     for topic <- [
           "flag_environments:#{environment.id}",
-          "flags:#{project_id}",
+          "flags:#{environment.project_id}",
           "environments:#{environment.id}"
         ] do
       :ok = Phoenix.PubSub.subscribe(RailswitchBackend.PubSub, topic)

@@ -43,8 +43,8 @@
           "global": null,
           "strategy": null
         },
-        "name": "project_api_keys_organization_id_fkey",
-        "on_delete": null,
+        "name": "environment_api_keys_organization_id_fkey",
+        "on_delete": "delete",
         "on_update": null,
         "primary_key?": true,
         "schema": "public",
@@ -74,16 +74,16 @@
           "global": false,
           "strategy": "attribute"
         },
-        "name": "project_api_keys_project_id_fkey",
+        "name": "environment_api_keys_environment_id_fkey",
         "on_delete": "delete",
         "on_update": null,
         "primary_key?": true,
         "schema": "public",
-        "table": "projects"
+        "table": "environments"
       },
       "scale": null,
       "size": null,
-      "source": "project_id",
+      "source": "environment_id",
       "type": "uuid"
     }
   ],
@@ -93,12 +93,12 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "4DCCA68425D38AB9EB30377AF69232EE5189910C101482BA79F4AC7514441F38",
+  "hash": "0E27AEF06B10A402476A7C11BD086F815FEDA62B05910BB0025B6ABD675AE395",
   "identities": [
     {
       "all_tenants?": true,
       "base_filter": null,
-      "index_name": "project_api_keys_unique_api_key_index",
+      "index_name": "environment_api_keys_unique_api_key_index",
       "keys": [
         {
           "type": "atom",
@@ -117,5 +117,5 @@
   },
   "repo": "Elixir.RailswitchBackend.Repo",
   "schema": null,
-  "table": "project_api_keys"
+  "table": "environment_api_keys"
 }

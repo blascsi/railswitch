@@ -75,15 +75,15 @@ defmodule RailswitchBackend.FlagsGenerator do
   end
 
   @doc """
-  Builds a `:create` changeset for a project API key. Requires `:tenant` and a
-  `:project_id` override. The plaintext key is available on the generated
-  record as `record.__metadata__.plaintext_api_key`.
+  Builds a `:create` changeset for an environment API key. Requires `:tenant`
+  and an `:environment_id` override. The plaintext key is available on the
+  generated record as `record.__metadata__.plaintext_api_key`.
   """
   def api_key(opts \\ []) do
     {action_opts, overrides} = Keyword.split(opts, @action_opts)
 
     changeset_generator(
-      RailswitchBackend.Flags.ProjectApiKey,
+      RailswitchBackend.Flags.EnvironmentApiKey,
       :create,
       [overrides: overrides] ++ Keyword.put_new(action_opts, :authorize?, false)
     )

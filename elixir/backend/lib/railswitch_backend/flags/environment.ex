@@ -3,13 +3,22 @@ defmodule RailswitchBackend.Flags.Environment do
   use Ash.Resource,
     otp_app: :railswitch_backend,
     domain: RailswitchBackend.Flags,
-    extensions: [AshGraphql.Resource],
+    extensions: [AshGraphql.Resource, AshAuthentication],
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
   graphql do
     type :environment
+  end
+
+  authentication do
+    strategies do
+      api_key :environment_api_key do
+        api_key_relationship :valid_api_keys
+        multitenancy_relationship :organization
+      end
+    end
   end
 
   postgres do
@@ -23,7 +32,28 @@ defmodule RailswitchBackend.Flags.Environment do
   end
 
   actions do
-    defaults [:read, :destroy]
+    defaults [:read]
+
+    destroy :destroy do
+      primary? true
+      require_atomic? false
+
+      # Destroyed through Ash rather than by the Postgres cascade, because only
+      # an Ash destroy fires the `api_key:<id>` disconnect that drops the SDK
+      # sockets authenticated with these keys.
+      change cascade_destroy(:valid_api_keys, after_action?: false, return_notifications?: true)
+    end
+
+    read :sign_in_with_environment_api_key do
+      argument :api_key, :string, allow_nil?: false
+
+      # `:allow_global` because callers don't know the tenant before signing
+      # in — the SignInPreparation resolves it from the API key's organization
+      # (the strategy's `multitenancy_relationship`) and sets it mid-query.
+      multitenancy :allow_global
+
+      prepare AshAuthentication.Strategy.ApiKey.SignInPreparation
+    end
 
     read :get_by_name do
       get? true
@@ -48,6 +78,10 @@ defmodule RailswitchBackend.Flags.Environment do
   end
 
   policies do
+    bypass always() do
+      authorize_if AshAuthentication.Checks.AshAuthenticationInteraction
+    end
+
     policy always() do
       description "Only members of the owning organization can act on environments"
       authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
@@ -91,6 +125,8 @@ defmodule RailswitchBackend.Flags.Environment do
     belongs_to :organization, RailswitchBackend.Orgs.Organization do
       allow_nil? false
     end
+
+    has_many :valid_api_keys, RailswitchBackend.Flags.EnvironmentApiKey
   end
 
   identities do

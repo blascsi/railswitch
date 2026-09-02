@@ -3,10 +3,10 @@ defmodule RailswitchBackend.Flags do
   use Ash.Domain, otp_app: :railswitch_backend, extensions: [AshGraphql.Domain]
 
   alias RailswitchBackend.Flags.Environment
+  alias RailswitchBackend.Flags.EnvironmentApiKey
   alias RailswitchBackend.Flags.Flag
   alias RailswitchBackend.Flags.FlagEnvironment
   alias RailswitchBackend.Flags.Project
-  alias RailswitchBackend.Flags.ProjectApiKey
 
   graphql do
     queries do
@@ -25,8 +25,8 @@ defmodule RailswitchBackend.Flags do
       get FlagEnvironment, :get_flag_environment, :read
       list FlagEnvironment, :list_flag_environments, :read
 
-      get ProjectApiKey, :get_project_api_key, :read
-      list ProjectApiKey, :list_project_api_keys, :read
+      get EnvironmentApiKey, :get_environment_api_key, :read
+      list EnvironmentApiKey, :list_environment_api_keys, :read
     end
 
     mutations do
@@ -41,8 +41,8 @@ defmodule RailswitchBackend.Flags do
 
       update FlagEnvironment, :update_flag_environment, :update
 
-      create ProjectApiKey, :create_project_api_key, :create
-      destroy ProjectApiKey, :delete_project_api_key, :destroy
+      create EnvironmentApiKey, :create_environment_api_key, :create
+      destroy EnvironmentApiKey, :delete_environment_api_key, :destroy
     end
   end
 
@@ -65,6 +65,7 @@ defmodule RailswitchBackend.Flags do
     resource Environment do
       define :list_environments, action: :read
       define :get_environment_by_project_id_and_name, action: :read, get_by_identity: :unique_name
+      define :get_environment_by_id, action: :read, get_by: :id
       define :get_environment_by_project_and_environment_name, action: :get_by_name
       define :create_environment, action: :create
       define :delete_environment, action: :destroy
@@ -75,11 +76,11 @@ defmodule RailswitchBackend.Flags do
       define :update_flag_environment, action: :update
     end
 
-    resource ProjectApiKey do
-      define :list_project_api_keys, action: :read
-      define :get_api_key_by_id, action: :read, get_by: :id
-      define :create_api_key, action: :create
-      define :delete_api_key, action: :destroy
+    resource EnvironmentApiKey do
+      define :list_environment_api_keys, action: :read
+      define :get_environment_api_key_by_id, action: :read, get_by: :id
+      define :create_environment_api_key, action: :create
+      define :delete_environment_api_key, action: :destroy
     end
   end
 end

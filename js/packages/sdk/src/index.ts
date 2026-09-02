@@ -13,7 +13,6 @@ export type FlagValue = RuleValueResult["value"];
 export interface SDKOptions {
   url: string;
   apiKey: string;
-  environment: string;
 }
 
 interface FlagSnapshot {
@@ -47,7 +46,7 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
   let connectionEstablished = false;
   let environmentFlags: Record<string, Rules> | null = null;
 
-  const { url, apiKey, environment } = options;
+  const { url, apiKey } = options;
   const socket = new Socket(url, { params: { api_key: apiKey } });
 
   socket.onError((error) => {
@@ -61,7 +60,7 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
 
   socket.connect();
 
-  const environmentChannel = socket.channel(`environment:${environment}`);
+  const environmentChannel = socket.channel("environment");
 
   const applyFlagChange = (payload: FlagChange) => {
     if (environmentFlags === null) {
@@ -86,7 +85,7 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
     delete environmentFlags[payload.flag];
   });
   environmentChannel.on("environment_deleted", () => {
-    console.error(`Railswitch SDK environment ${environment} was deleted.`);
+    console.error("Railswitch SDK environment was deleted.");
     connectionEstablished = false;
     environmentFlags = null;
     environmentChannel.leave();
@@ -110,11 +109,11 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
     })
     .receive("error", (reason) => {
       connectionEstablished = false;
-      console.error(`Railswitch SDK failed to join ${environment}:`, reason);
+      console.error("Railswitch SDK failed to join its environment:", reason);
     })
     .receive("timeout", () => {
       connectionEstablished = false;
-      console.error(`Railswitch SDK timed out joining ${environment}.`);
+      console.error("Railswitch SDK timed out joining its environment.");
     });
 
   return {

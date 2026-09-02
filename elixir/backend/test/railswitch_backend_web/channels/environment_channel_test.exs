@@ -18,7 +18,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
     environment =
       generate(FlagsGenerator.environment(tenant: org.id, project_id: project.id, name: "production"))
 
-    api_key = generate(FlagsGenerator.api_key(tenant: org.id, project_id: project.id))
+    api_key = generate(FlagsGenerator.api_key(tenant: org.id, environment_id: environment.id))
 
     {:ok, socket} = connect(SdkSocket, %{"api_key" => api_key.__metadata__.plaintext_api_key})
 
@@ -55,7 +55,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
       create_flag!(ctx, "search")
 
-      assert {:ok, reply, _socket} = subscribe_and_join(ctx.socket, "environment:production")
+      assert {:ok, reply, _socket} = subscribe_and_join(ctx.socket, "environment")
 
       assert %{flags: flags} = reply
 
@@ -67,50 +67,46 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
     test "replies with an empty flag map when the project has no flags", ctx do
       assert {:ok, %{flags: %{}}, _socket} =
-               subscribe_and_join(ctx.socket, "environment:production")
+               subscribe_and_join(ctx.socket, "environment")
     end
 
-    test "refuses to join an unknown environment", ctx do
-      assert {:error, %{reason: "environment not found"}} =
-               subscribe_and_join(ctx.socket, "environment:staging")
-    end
+    test "replies with only the key's own environment, not its siblings", ctx do
+      staging =
+        generate(
+          FlagsGenerator.environment(
+            tenant: ctx.org.id,
+            project_id: ctx.project.id,
+            name: "staging"
+          )
+        )
 
-    test "refuses to join an environment that exists only in another project", ctx do
-      other_project = generate(FlagsGenerator.project(tenant: ctx.org.id))
+      flag = create_flag!(ctx, "checkout")
 
-      generate(
-        FlagsGenerator.environment(
+      [staging_flag_environment] =
+        Flags.list_flag_environments!(
+          query: [filter: [environment_id: staging.id, flag_id: flag.id]],
           tenant: ctx.org.id,
-          project_id: other_project.id,
-          name: "staging"
+          actor: ctx.user
         )
+
+      Flags.update_flag_environment!(
+        staging_flag_environment,
+        %{rules: FlagsGenerator.disabled_rules()},
+        tenant: ctx.org.id,
+        actor: ctx.user
       )
 
-      assert {:error, %{reason: "environment not found"}} =
-               subscribe_and_join(ctx.socket, "environment:staging")
-    end
+      assert {:ok, %{flags: flags}, _socket} = subscribe_and_join(ctx.socket, "environment")
 
-    test "refuses to join an environment of a project in another organization", ctx do
-      other_user = generate(AccountsGenerator.user())
-      other_org = generate(OrgsGenerator.organization(actor: other_user))
-      other_project = generate(FlagsGenerator.project(tenant: other_org.id))
-
-      generate(
-        FlagsGenerator.environment(
-          tenant: other_org.id,
-          project_id: other_project.id,
-          name: "staging"
-        )
-      )
-
-      assert {:error, %{reason: "environment not found"}} =
-               subscribe_and_join(ctx.socket, "environment:staging")
+      assert Map.new(flags, fn {name, rules} -> {to_string(name), rules} end) == %{
+               "checkout" => Defaults.rules()
+             }
     end
   end
 
   describe "event forwarding" do
     setup ctx do
-      {:ok, _reply, socket} = subscribe_and_join(ctx.socket, "environment:production")
+      {:ok, _reply, socket} = subscribe_and_join(ctx.socket, "environment")
       %{socket: socket}
     end
 
@@ -196,7 +192,7 @@ defmodule RailswitchBackendWeb.EnvironmentChannelTest do
 
   describe "unexpected messages" do
     setup ctx do
-      {:ok, _reply, socket} = subscribe_and_join(ctx.socket, "environment:production")
+      {:ok, _reply, socket} = subscribe_and_join(ctx.socket, "environment")
       %{socket: socket}
     end
 

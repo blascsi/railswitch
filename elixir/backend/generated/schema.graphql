@@ -313,48 +313,48 @@ type Organization {
   name: String!
 }
 
-"The result of the :delete_project_api_key mutation"
-type DeleteProjectApiKeyResult {
+"The result of the :delete_environment_api_key mutation"
+type DeleteEnvironmentApiKeyResult {
   "The record that was successfully deleted"
-  result: ProjectApiKey
+  result: EnvironmentApiKey
 
   "Any errors generated, if the mutation failed"
   errors: [MutationError!]!
 }
 
-type CreateProjectApiKeyMetadata {
+type CreateEnvironmentApiKeyMetadata {
   "The API key in plaintext. Only available on creation."
   plaintextApiKey: String!
 }
 
-"The result of the :create_project_api_key mutation"
-type CreateProjectApiKeyResult {
+"The result of the :create_environment_api_key mutation"
+type CreateEnvironmentApiKeyResult {
   "The successful result of the mutation"
-  result: ProjectApiKey
+  result: EnvironmentApiKey
 
   "Any errors generated, if the mutation failed"
   errors: [MutationError!]!
 
   "Metadata produced by the mutation"
-  metadata: CreateProjectApiKeyMetadata
+  metadata: CreateEnvironmentApiKeyMetadata
 }
 
-input CreateProjectApiKeyInput {
-  projectId: ID!
+input CreateEnvironmentApiKeyInput {
+  environmentId: ID!
 }
 
-enum ProjectApiKeySortField {
+enum EnvironmentApiKeySortField {
   ID
-  PROJECT_ID
+  ENVIRONMENT_ID
 }
 
-"A keyset page of :project_api_key"
-type KeysetPageOfProjectApiKey {
+"A keyset page of :environment_api_key"
+type KeysetPageOfEnvironmentApiKey {
   "Total count on all pages"
   count: Int
 
   "The records contained in the page"
-  results: [ProjectApiKey!]
+  results: [EnvironmentApiKey!]
 
   "The first keyset in the results"
   startKeyset: String
@@ -363,7 +363,7 @@ type KeysetPageOfProjectApiKey {
   endKeyset: String
 }
 
-input ProjectApiKeyFilterProjectId {
+input EnvironmentApiKeyFilterEnvironmentId {
   isNil: Boolean
   eq: ID
   notEq: ID
@@ -376,7 +376,7 @@ input ProjectApiKeyFilterProjectId {
   isNotDistinctFrom: ID
 }
 
-input ProjectApiKeyFilterId {
+input EnvironmentApiKeyFilterId {
   isNil: Boolean
   eq: ID
   notEq: ID
@@ -389,24 +389,24 @@ input ProjectApiKeyFilterId {
   isNotDistinctFrom: ID
 }
 
-input ProjectApiKeyFilterInput {
-  and: [ProjectApiKeyFilterInput!]
-  or: [ProjectApiKeyFilterInput!]
-  not: [ProjectApiKeyFilterInput!]
-  id: ProjectApiKeyFilterId
-  projectId: ProjectApiKeyFilterProjectId
-  project: ProjectFilterInput
+input EnvironmentApiKeyFilterInput {
+  and: [EnvironmentApiKeyFilterInput!]
+  or: [EnvironmentApiKeyFilterInput!]
+  not: [EnvironmentApiKeyFilterInput!]
+  id: EnvironmentApiKeyFilterId
+  environmentId: EnvironmentApiKeyFilterEnvironmentId
+  environment: EnvironmentFilterInput
 }
 
-input ProjectApiKeySortInput {
+input EnvironmentApiKeySortInput {
   order: SortOrder
-  field: ProjectApiKeySortField!
+  field: EnvironmentApiKeySortField!
 }
 
-type ProjectApiKey {
+type EnvironmentApiKey {
   id: ID!
-  projectId: ID!
-  project: Project!
+  environmentId: ID!
+  environment: Environment!
 }
 
 "The result of the :update_flag_environment mutation"
@@ -997,17 +997,17 @@ type RootQueryType {
     last: Int
   ): KeysetPageOfFlagEnvironment
 
-  getProjectApiKey(
+  getEnvironmentApiKey(
     "The id of the record"
     id: ID!
-  ): ProjectApiKey
+  ): EnvironmentApiKey
 
-  listProjectApiKeys(
+  listEnvironmentApiKeys(
     "How to sort the records in the response"
-    sort: [ProjectApiKeySortInput]
+    sort: [EnvironmentApiKeySortInput]
 
     "A filter to limit the results"
-    filter: ProjectApiKeyFilterInput
+    filter: EnvironmentApiKeyFilterInput
 
     "The number of records to return from the beginning. Maximum 250"
     first: Int
@@ -1020,7 +1020,7 @@ type RootQueryType {
 
     "The number of records to return to the end. Maximum 250"
     last: Int
-  ): KeysetPageOfProjectApiKey
+  ): KeysetPageOfEnvironmentApiKey
 
   getOrganization(
     "The id of the record"
@@ -1086,9 +1086,9 @@ type RootMutationType {
 
   updateFlagEnvironment(id: ID!, input: UpdateFlagEnvironmentInput): UpdateFlagEnvironmentResult!
 
-  createProjectApiKey(input: CreateProjectApiKeyInput!): CreateProjectApiKeyResult!
+  createEnvironmentApiKey(input: CreateEnvironmentApiKeyInput!): CreateEnvironmentApiKeyResult!
 
-  deleteProjectApiKey(id: ID!): DeleteProjectApiKeyResult!
+  deleteEnvironmentApiKey(id: ID!): DeleteEnvironmentApiKeyResult!
 
   createOrganization(input: CreateOrganizationInput!): CreateOrganizationResult!
 

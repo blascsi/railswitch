@@ -1,6 +1,6 @@
-defmodule RailswitchBackend.Flags.ApiKeyTest do
+defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
   @moduledoc """
-  Action tests for `RailswitchBackend.Flags.ProjectApiKey`.
+  Action tests for `RailswitchBackend.Flags.EnvironmentApiKey`.
   """
   use RailswitchBackend.DataCase, async: true
 
@@ -18,27 +18,31 @@ defmodule RailswitchBackend.Flags.ApiKeyTest do
     user = generate(AccountsGenerator.user())
     org = generate(OrgsGenerator.organization(actor: user))
     project = generate(FlagsGenerator.project(tenant: org.id))
+
+    environment =
+      generate(FlagsGenerator.environment(tenant: org.id, project_id: project.id))
+
     outsider = generate(AccountsGenerator.user())
 
-    %{user: user, org: org, project: project, outsider: outsider}
+    %{user: user, org: org, project: project, environment: environment, outsider: outsider}
   end
 
   describe "create" do
     test "sets the organization from the tenant and returns the plaintext key", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
       assert api_key.organization_id == ctx.org.id
-      assert api_key.project_id == ctx.project.id
+      assert api_key.environment_id == ctx.environment.id
       assert String.starts_with?(api_key.__metadata__.plaintext_api_key, "railswitch_")
     end
 
     test "an outsider cannot create an api key", ctx do
       assert {:error, %Forbidden{}} =
-               Flags.create_api_key(%{project_id: ctx.project.id},
+               Flags.create_environment_api_key(%{environment_id: ctx.environment.id},
                  tenant: ctx.org.id,
                  actor: ctx.outsider
                )
@@ -46,81 +50,92 @@ defmodule RailswitchBackend.Flags.ApiKeyTest do
 
     test "a request without an actor cannot create an api key", ctx do
       assert {:error, %Forbidden{}} =
-               Flags.create_api_key(%{project_id: ctx.project.id}, tenant: ctx.org.id)
+               Flags.create_environment_api_key(%{environment_id: ctx.environment.id},
+                 tenant: ctx.org.id
+               )
     end
   end
 
   describe "read" do
     test "a member can look up the api key by id", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
       assert {:ok, found} =
-               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, actor: ctx.user)
+               Flags.get_environment_api_key_by_id(api_key.id,
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
 
       assert found.id == api_key.id
     end
 
     test "an outsider cannot look up the api key by id", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
       assert {:error, %Invalid{errors: [%NotFound{}]}} =
-               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, actor: ctx.outsider)
+               Flags.get_environment_api_key_by_id(api_key.id,
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
     end
 
     test "a request without an actor cannot look up the api key by id", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
       assert {:error, %Invalid{errors: [%NotFound{}]}} =
-               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id)
+               Flags.get_environment_api_key_by_id(api_key.id, tenant: ctx.org.id)
     end
   end
 
   describe "destroy" do
     test "deletes the api key", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
-      assert :ok = Flags.delete_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
+      assert :ok = Flags.delete_environment_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
 
       assert {:error, %Invalid{errors: [%NotFound{}]}} =
-               Flags.get_api_key_by_id(api_key.id, tenant: ctx.org.id, actor: ctx.user)
+               Flags.get_environment_api_key_by_id(api_key.id,
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
     end
 
     test "an outsider cannot delete the api key", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
       assert {:error, %Forbidden{}} =
-               Flags.delete_api_key(api_key, tenant: ctx.org.id, actor: ctx.outsider)
+               Flags.delete_environment_api_key(api_key, tenant: ctx.org.id, actor: ctx.outsider)
     end
 
     test "a request without an actor cannot delete the api key", ctx do
       api_key =
-        Flags.create_api_key!(%{project_id: ctx.project.id},
+        Flags.create_environment_api_key!(%{environment_id: ctx.environment.id},
           tenant: ctx.org.id,
           actor: ctx.user
         )
 
       assert {:error, %Forbidden{}} =
-               Flags.delete_api_key(api_key, tenant: ctx.org.id)
+               Flags.delete_environment_api_key(api_key, tenant: ctx.org.id)
     end
   end
 end

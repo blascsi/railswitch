@@ -102,14 +102,27 @@ defmodule RailswitchBackend.Flags.PubSubTest do
 
       assert_receive %Broadcast{event: "destroy", payload: %Notification{}}
     end
-  end
 
-  describe "ProjectApiKey publications" do
-    test "destroying an api key publishes disconnect on the socket id topic", ctx do
-      api_key = generate(FlagsGenerator.api_key(tenant: ctx.org.id, project_id: ctx.project.id))
+    test "destroying an environment disconnects the sockets holding its api keys", ctx do
+      api_key =
+        generate(FlagsGenerator.api_key(tenant: ctx.org.id, environment_id: ctx.environment.id))
+
       subscribe("api_key:#{api_key.id}")
 
-      Flags.delete_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
+      Flags.delete_environment!(ctx.environment, tenant: ctx.org.id, actor: ctx.user)
+
+      assert_receive %Broadcast{event: "disconnect"}
+    end
+  end
+
+  describe "EnvironmentApiKey publications" do
+    test "destroying an api key publishes disconnect on the socket id topic", ctx do
+      api_key =
+        generate(FlagsGenerator.api_key(tenant: ctx.org.id, environment_id: ctx.environment.id))
+
+      subscribe("api_key:#{api_key.id}")
+
+      Flags.delete_environment_api_key!(api_key, tenant: ctx.org.id, actor: ctx.user)
 
       assert_receive %Broadcast{event: "disconnect"}
     end
@@ -118,7 +131,9 @@ defmodule RailswitchBackend.Flags.PubSubTest do
   describe "Project publications" do
     test "destroying a project publishes for each of its children", ctx do
       flag = create_flag!(ctx)
-      api_key = generate(FlagsGenerator.api_key(tenant: ctx.org.id, project_id: ctx.project.id))
+
+      api_key =
+        generate(FlagsGenerator.api_key(tenant: ctx.org.id, environment_id: ctx.environment.id))
 
       subscribe("environments:#{ctx.environment.id}")
       subscribe("flags:#{ctx.project.id}")
@@ -142,7 +157,9 @@ defmodule RailswitchBackend.Flags.PubSubTest do
   describe "Organization publications" do
     test "destroying an organization chains the publications through its projects", ctx do
       create_flag!(ctx)
-      api_key = generate(FlagsGenerator.api_key(tenant: ctx.org.id, project_id: ctx.project.id))
+
+      api_key =
+        generate(FlagsGenerator.api_key(tenant: ctx.org.id, environment_id: ctx.environment.id))
 
       subscribe("environments:#{ctx.environment.id}")
       subscribe("flags:#{ctx.project.id}")
