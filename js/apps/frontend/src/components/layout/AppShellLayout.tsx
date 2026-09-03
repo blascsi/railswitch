@@ -62,6 +62,7 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
   return (
     <AppShell
       contentPadding={0}
+      variant="wash"
       topNav={
         <TopNav
           label="Top navigation"

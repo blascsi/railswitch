@@ -15,9 +15,6 @@ catalogs:
     '@astryxdesign/core':
       specifier: ^0.5.2
       version: 0.5.2
-    '@astryxdesign/theme-stone':
-      specifier: ^0.5.2
-      version: 0.5.2
     '@babel/core':
       specifier: ^7.29.7
       version: 7.29.7
@@ -134,9 +131,6 @@ importers:
       '@astryxdesign/core':
         specifier: 'catalog:'
         version: 0.5.2(@stylexjs/stylex@0.19.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@astryxdesign/theme-stone':
-        specifier: 'catalog:'
-        version: 0.5.2(@astryxdesign/core@0.5.2(@stylexjs/stylex@0.19.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       '@phosphor-icons/react':
         specifier: 'catalog:'
         version: 2.1.10(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -376,12 +370,6 @@ packages:
       '@stylexjs/stylex': ^0.19.0
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
-
-  '@astryxdesign/theme-stone@0.5.2':
-    resolution: {integrity: sha512-qijUFvSmRNpXK0RVWpspCuRqYz/1vJyI8WPP6miHoVoShKXzi7B+hGr92DuUCFDcWxwzxAsY03IzLFEyIcpHyQ==}
-    peerDependencies:
-      '@astryxdesign/core': 0.5.2
-      react: '>=19'
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -1668,11 +1656,6 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@1.38.0:
-    resolution: {integrity: sha512-xZCyBd/wiVUDactoCc+42TjL0aB7EBOXsuX+tjz+W/sGzw2KhHpL1NOH3FIaVUcpimvUBpIYfz34Ofj9S5JEzQ==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
@@ -2190,12 +2173,6 @@ snapshots:
       intl-messageformat: 11.2.14
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-
-  '@astryxdesign/theme-stone@0.5.2(@astryxdesign/core@0.5.2(@stylexjs/stylex@0.19.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)':
-    dependencies:
-      '@astryxdesign/core': 0.5.2(@stylexjs/stylex@0.19.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      lucide-react: 1.38.0(react@19.2.7)
-      react: 19.2.7
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -3348,10 +3325,6 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
-
-  lucide-react@1.38.0(react@19.2.7):
-    dependencies:
-      react: 19.2.7
 
   magic-string@0.30.21:
     dependencies:

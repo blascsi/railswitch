@@ -1,8 +1,12 @@
 @import "@astryxdesign/core/reset.css";
-@import "@astryxdesign/theme-stone/theme.css";
 
 html,
 body,
 #root {
   height: 100dvh;
+}
+
+body {
+  background-color: var(--color-background-body);
+  color: var(--color-text-primary);
 }
