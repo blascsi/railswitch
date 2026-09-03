@@ -1,20 +1,19 @@
+import { Center } from "@astryxdesign/core/Center";
 import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
   mark: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 32,
-    height: 32,
     flexShrink: 0,
     backgroundColor: "var(--color-accent)",
   },
 });
 
+/**
+ * The Railswitch logo, with an accent background color
+ */
 export function RailswitchMark() {
   return (
-    <div {...stylex.props(styles.mark)}>
+    <Center width={32} height={32} xstyle={styles.mark}>
       <svg
         viewBox="0 0 32 32"
         width="21"
@@ -36,6 +35,6 @@ export function RailswitchMark() {
           stroke="none"
         />
       </svg>
-    </div>
+    </Center>
   );
 }

@@ -1,8 +1,17 @@
 import { Card } from "@astryxdesign/core/Card";
-import { Stack } from "@astryxdesign/core/Stack";
+import { Center } from "@astryxdesign/core/Center";
+import { HStack, Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
+import * as stylex from "@stylexjs/stylex";
 import type { ReactNode } from "react";
-import { CenteredContent } from "./CenteredContent";
+import { AuthHeroPanel } from "./AuthHeroPanel";
+
+const styles = stylex.create({
+  formSide: {
+    flexGrow: 1,
+    minWidth: 0,
+  },
+});
 
 type AuthLayoutProps = {
   title: string;
@@ -11,13 +20,16 @@ type AuthLayoutProps = {
 
 export function AuthLayout({ title, children }: AuthLayoutProps) {
   return (
-    <CenteredContent minHeight="100dvh">
-      <Card width="min(100%, 500px)">
-        <Stack gap={4} padding={5}>
-          <Heading level={1}>{title}</Heading>
-          {children}
-        </Stack>
-      </Card>
-    </CenteredContent>
+    <HStack minHeight="100dvh">
+      <AuthHeroPanel />
+      <Center padding={4} xstyle={styles.formSide}>
+        <Card padding={8} width="100%" maxWidth={440}>
+          <Stack gap={5}>
+            <Heading level={1}>{title}</Heading>
+            {children}
+          </Stack>
+        </Card>
+      </Center>
+    </HStack>
   );
 }
