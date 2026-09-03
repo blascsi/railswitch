@@ -1,3 +1,4 @@
+import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
@@ -73,7 +74,9 @@ function EnvironmentsPage() {
           icon={<PlusIcon />}
         />
       </Stack>
-      <EnvironmentsTable environments={listEnvironments?.results ?? []} />
+      <Card>
+        <EnvironmentsTable environments={listEnvironments?.results ?? []} />
+      </Card>
     </Stack>
   );
 }

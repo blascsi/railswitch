@@ -1,3 +1,4 @@
+import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
@@ -74,7 +75,9 @@ function ProjectsPage() {
           icon={<PlusIcon />}
         />
       </Stack>
-      <ProjectsTable projects={listProjects?.results ?? []} />
+      <Card>
+        <ProjectsTable projects={listProjects?.results ?? []} />
+      </Card>
     </Stack>
   );
 }
