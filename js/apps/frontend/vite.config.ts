@@ -32,11 +32,6 @@ export default defineConfig({
               test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
               priority: 100,
             },
-            {
-              name: "astryx",
-              test: /[\\/]node_modules[\\/]@astryxdesign[\\/]/,
-              priority: 90,
-            },
           ],
         },
       },
