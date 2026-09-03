@@ -26,6 +26,7 @@ import { graphql } from "../../graphql/graphql";
 import { useIsRouteActive } from "../../hooks/useIsRouteActive";
 import { OrganizationSelector } from "../OrganizationSelector";
 import { NavbarLink } from "../routing/link-components/NavbarLink";
+import { RailswitchSidebarHeader } from "./RailswitchSidebarHeader";
 
 const SignOutMutation = graphql(`
   mutation SignOut {
@@ -66,13 +67,15 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
       topNav={
         <TopNav
           label="Top navigation"
+          heading={<RailswitchSidebarHeader />}
           endContent={
             <Stack direction="horizontal" gap={2} vAlign="center">
               <OrganizationSelector />
               <Divider orientation="vertical" />
               <DropdownMenu
-                hasChevron={false}
                 alignment="end"
+                menuWidth={250}
+                hasChevron={false}
                 button={{
                   label: currentUser?.email ?? "Account",
                   variant: "ghost",
@@ -80,7 +83,7 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
                   icon: (
                     <Avatar
                       name={currentUser?.email}
-                      size="sm"
+                      size={32}
                       shape="square"
                       tooltip={false}
                     />

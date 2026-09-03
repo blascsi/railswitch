@@ -318,6 +318,17 @@ export const railswitchTheme = defineTheme({
       base: { borderRadius: "var(--radius-inner)" },
     },
 
+    // The initials surface is a chip in the palette's neutrals rather than a
+    // per-name colour, so a row of avatars stays quiet.
+    "avatar-fallback": {
+      base: {
+        backgroundColor: "light-dark(#E3E7D5, #2C3222)",
+        color: "var(--color-text-secondary)",
+        fontWeight: "600",
+        letterSpacing: "0.02em",
+      },
+    },
+
     // =========================================================================
     // Banner — info takes the same slate as the info badge, on a pale
     // surface in light and a tinted overlay in dark. The other three read
@@ -400,6 +411,33 @@ export const railswitchTheme = defineTheme({
         borderBlockEndWidth: "var(--border-width)",
         borderBlockEndStyle: "solid",
         borderBlockEndColor: "var(--color-border)",
+      },
+    },
+
+    // =========================================================================
+    // Top nav — a fixed height, so the bar does not resize when the layout
+    // crosses into mobile and its contents change. No padding of its own
+    // either, so a slot can run flush to the edge and to the full height of
+    // the bar; the slots carry their own spacing instead, and only the
+    // trailing edge keeps a gap. The mobile bar has no such slot and keeps
+    // the component's padding. The height is published as a variable so a
+    // slot can fill it: nothing between the bar and its slots stretches, so
+    // a percentage height there resolves against a content-sized box. The
+    // rail's width rides along for a slot that has to line up with it.
+    // =========================================================================
+    "top-nav": {
+      base: {
+        "--railswitch-top-nav-height": "60px",
+        // Mirrors SideNav's own default width. Nothing enforces the match:
+        // if the rail ever stops lining up with the header block that reads
+        // this, the component's default moved and this value needs to be updated.
+        "--railswitch-side-nav-width": "260px",
+        height: "var(--railswitch-top-nav-height)",
+        padding: "0",
+        paddingInlineEnd: "var(--spacing-5)",
+      },
+      "mobile-bar": {
+        padding: "var(--spacing-2)",
       },
     },
 
