@@ -2,16 +2,15 @@ import { Center } from "@astryxdesign/core/Center";
 import type { ReactNode } from "react";
 
 type CenteredContentProps = {
-  minHeight?: string;
   children: ReactNode;
 };
 
-export function CenteredContent({
-  minHeight = "100%",
-  children,
-}: CenteredContentProps) {
+/**
+ * A page block centred in whatever height it is given — empty states, errors.
+ */
+export function CenteredContent({ children }: CenteredContentProps) {
   return (
-    <Center width="100%" minHeight={minHeight} padding={4}>
+    <Center width="100%" minHeight="100%" padding={4}>
       {children}
     </Center>
   );

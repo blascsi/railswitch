@@ -1,4 +1,4 @@
-import { CenteredContent } from "../layout/CenteredContent";
+import { Center } from "@astryxdesign/core/Center";
 import { PageLoader } from "./PageLoader";
 
 type FullPageLoaderProps = {
@@ -6,9 +6,11 @@ type FullPageLoaderProps = {
 };
 
 export function FullPageLoader({ label }: FullPageLoaderProps) {
+  // Centres in the viewport rather than in a parent's height: this renders
+  // before there is a layout around it.
   return (
-    <CenteredContent minHeight="100dvh">
+    <Center width="100%" minHeight="100dvh" padding={4}>
       <PageLoader label={label} />
-    </CenteredContent>
+    </Center>
   );
 }
