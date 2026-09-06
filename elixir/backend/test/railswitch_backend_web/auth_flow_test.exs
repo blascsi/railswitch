@@ -100,7 +100,7 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
       # A generic error that doesn't reveal whether the email or the password
       # was wrong.
       assert %{"data" => %{"signIn" => nil}, "errors" => errors} = json(conn)
-      assert Enum.any?(errors, &(&1["code"] == "authentication_failed"))
+      assert Enum.any?(errors, &(&1["extensions"]["code"] == "authentication_failed"))
       assert is_nil(auth_cookie_value(conn))
     end
   end

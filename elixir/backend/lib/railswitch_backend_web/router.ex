@@ -22,11 +22,13 @@ defmodule RailswitchBackendWeb.Router do
         schema: Module.concat(["RailswitchBackendWeb.GraphqlSchema"]),
         socket: Module.concat(["RailswitchBackendWeb.GraphqlSocket"]),
         interface: :simple,
+        pipeline: {RailswitchBackendWeb.GraphqlPipeline, :pipeline},
         before_send: {RailswitchBackendWeb.GraphqlAuth, :before_send}
     end
 
     forward "/", Absinthe.Plug,
       schema: Module.concat(["RailswitchBackendWeb.GraphqlSchema"]),
+      pipeline: {RailswitchBackendWeb.GraphqlPipeline, :pipeline},
       before_send: {RailswitchBackendWeb.GraphqlAuth, :before_send}
   end
 

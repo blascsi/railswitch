@@ -227,7 +227,7 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       conn = gql(authed(conn, user), @list_environments)
 
       assert %{"errors" => errors} = json(conn)
-      assert Enum.any?(errors, &(&1["code"] == "tenant_not_provided"))
+      assert Enum.any?(errors, &(&1["extensions"]["code"] == "tenant_not_provided"))
     end
   end
 
