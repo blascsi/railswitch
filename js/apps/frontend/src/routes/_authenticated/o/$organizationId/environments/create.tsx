@@ -1,10 +1,10 @@
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
-import { CreateEnvironmentForm } from "../../../../components/environments/CreateEnvironmentForm";
-import { projectSelector_projects } from "../../../../components/projects/projectOptions";
-import { graphql } from "../../../../graphql/graphql";
-import { pageTitle } from "../../../../utils/pageTitle";
+import { CreateEnvironmentForm } from "../../../../../components/environments/CreateEnvironmentForm";
+import { projectSelector_projects } from "../../../../../components/projects/projectOptions";
+import { graphql } from "../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 const EnvironmentCreatePageQuery = graphql(
   `
@@ -20,7 +20,7 @@ const EnvironmentCreatePageQuery = graphql(
 );
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/environments/create",
+  "/_authenticated/o/$organizationId/environments/create",
 )({
   loader: async ({ context }) => {
     const { data, error } = await context.client

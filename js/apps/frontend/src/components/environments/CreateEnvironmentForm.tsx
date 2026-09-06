@@ -33,7 +33,7 @@ type CreateEnvironmentFormProps = {
 export function CreateEnvironmentForm({
   projects,
 }: CreateEnvironmentFormProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: "/o/$organizationId" });
   const [{ fetching }, createEnvironment] = useMutation(
     CreateEnvironmentMutation,
   );
@@ -48,7 +48,7 @@ export function CreateEnvironmentForm({
 
     if (data?.createEnvironment.result != null) {
       navigate({
-        to: "/project/$projectName/environment/$environmentName",
+        to: "/o/$organizationId/project/$projectName/environment/$environmentName",
         params: {
           projectName: data.createEnvironment.result.project.name,
           environmentName: data.createEnvironment.result.name,

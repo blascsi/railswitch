@@ -29,7 +29,7 @@ type CreateFlagFormProps = {
 };
 
 export function CreateFlagForm({ projects }: CreateFlagFormProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: "/o/$organizationId" });
   const [{ fetching }, createFlag] = useMutation(CreateFlagMutation);
 
   const handleSubmit = async (values: FlagFormValues) => {
@@ -42,7 +42,7 @@ export function CreateFlagForm({ projects }: CreateFlagFormProps) {
 
     if (data?.createFlag.result != null) {
       navigate({
-        to: "/project/$projectName/flag/$flagName",
+        to: "/o/$organizationId/project/$projectName/flag/$flagName",
         params: {
           projectName: data.createFlag.result.project.name,
           flagName: data.createFlag.result.name,

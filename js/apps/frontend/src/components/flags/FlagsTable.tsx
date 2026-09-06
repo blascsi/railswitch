@@ -37,7 +37,8 @@ export function FlagsTable({ flags }: FlagsTableProps) {
           width: proportional(1),
           renderCell: (flag) => (
             <LinkAnchor
-              to="/project/$projectName/flag/$flagName"
+              from="/o/$organizationId"
+              to="/o/$organizationId/project/$projectName/flag/$flagName"
               params={{ projectName: flag.project.name, flagName: flag.name }}
             >
               {flag.name}
@@ -50,7 +51,8 @@ export function FlagsTable({ flags }: FlagsTableProps) {
           width: proportional(1),
           renderCell: (flag) => (
             <LinkAnchor
-              to="/project/$projectName"
+              from="/o/$organizationId"
+              to="/o/$organizationId/project/$projectName"
               params={{ projectName: flag.project.name }}
             >
               {flag.project.name}

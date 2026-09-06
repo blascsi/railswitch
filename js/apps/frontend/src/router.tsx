@@ -1,6 +1,5 @@
 import { createRouter } from "@tanstack/react-router";
 import { currentUserAtom } from "./atoms/currentUser";
-import { graphqlClientAtom } from "./atoms/graphqlClient";
 import { FullPageLoader } from "./components/feedback/FullPageLoader";
 import { NotFoundPage } from "./components/routing/NotFoundPage";
 import { RouteQueryError } from "./components/routing/RouteQueryError";
@@ -16,12 +15,11 @@ export const router = createRouter({
   defaultErrorComponent: RouteQueryError,
 });
 
-store.sub(graphqlClientAtom, () => {
-  router.invalidate({ forcePending: true });
-});
-
+// A session can end on any request's 401, from any route.
 store.sub(currentUserAtom, () => {
-  router.invalidate({ forcePending: true });
+  if (store.get(currentUserAtom) == null) {
+    router.navigate({ to: "/login" });
+  }
 });
 
 declare module "@tanstack/react-router" {

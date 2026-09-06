@@ -37,7 +37,8 @@ export function EnvironmentsTable({ environments }: EnvironmentsTableProps) {
           width: proportional(1),
           renderCell: (environment) => (
             <LinkAnchor
-              to="/project/$projectName/environment/$environmentName"
+              from="/o/$organizationId"
+              to="/o/$organizationId/project/$projectName/environment/$environmentName"
               params={{
                 projectName: environment.project.name,
                 environmentName: environment.name,
@@ -53,7 +54,8 @@ export function EnvironmentsTable({ environments }: EnvironmentsTableProps) {
           width: proportional(1),
           renderCell: (environment) => (
             <LinkAnchor
-              to="/project/$projectName"
+              from="/o/$organizationId"
+              to="/o/$organizationId/project/$projectName"
               params={{ projectName: environment.project.name }}
             >
               {environment.project.name}

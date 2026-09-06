@@ -1,11 +1,11 @@
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
-import { CreateProjectForm } from "../../../../components/projects/CreateProjectForm";
-import { pageTitle } from "../../../../utils/pageTitle";
+import { CreateProjectForm } from "../../../../../components/projects/CreateProjectForm";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/projects/create",
+  "/_authenticated/o/$organizationId/projects/create",
 )({
   head: () => ({ meta: [{ title: pageTitle("Create project") }] }),
   component: ProjectCreatePage,

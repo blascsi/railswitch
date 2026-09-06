@@ -1,17 +1,24 @@
 import { Selector } from "@astryxdesign/core/Selector";
 import { BuildingsIcon } from "@phosphor-icons/react";
-import { useAtom, useAtomValue } from "jotai";
-import { currentOrganizationIdAtom } from "../atoms/currentOrganizationId";
-import { organizationSelectorOptionsAtom } from "../atoms/organizationSelectorOptions";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 
-export function OrganizationSelector() {
-  const [currentOrganizationId, setCurrentOrganizationId] = useAtom(
-    currentOrganizationIdAtom,
-  );
-  const organizationsOptions = useAtomValue(organizationSelectorOptionsAtom);
+const authenticatedRoute = getRouteApi("/_authenticated");
+
+type OrganizationSelectorProps = {
+  organizationId?: string | null;
+};
+
+export function OrganizationSelector({
+  organizationId,
+}: OrganizationSelectorProps) {
+  const navigate = useNavigate();
+  const organizations = authenticatedRoute.useLoaderData();
 
   const onSelectOrganization = (selected: string) => {
-    setCurrentOrganizationId(selected);
+    navigate({
+      to: "/o/$organizationId",
+      params: { organizationId: selected },
+    });
   };
 
   return (
@@ -20,8 +27,11 @@ export function OrganizationSelector() {
       isLabelHidden
       startIcon={BuildingsIcon}
       placeholder="Select an organization"
-      options={[...organizationsOptions]}
-      value={currentOrganizationId ?? undefined}
+      options={organizations.map((organization) => ({
+        label: organization.name,
+        value: organization.id,
+      }))}
+      value={organizationId ?? undefined}
       onChange={onSelectOrganization}
     />
   );

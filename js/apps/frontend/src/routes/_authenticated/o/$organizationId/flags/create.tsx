@@ -1,10 +1,10 @@
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
-import { CreateFlagForm } from "../../../../components/flags/CreateFlagForm";
-import { projectSelector_projects } from "../../../../components/projects/projectOptions";
-import { graphql } from "../../../../graphql/graphql";
-import { pageTitle } from "../../../../utils/pageTitle";
+import { CreateFlagForm } from "../../../../../components/flags/CreateFlagForm";
+import { projectSelector_projects } from "../../../../../components/projects/projectOptions";
+import { graphql } from "../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 const FlagCreatePageQuery = graphql(
   `
@@ -20,7 +20,7 @@ const FlagCreatePageQuery = graphql(
 );
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/flags/create",
+  "/_authenticated/o/$organizationId/flags/create",
 )({
   loader: async ({ context }) => {
     const { data, error } = await context.client

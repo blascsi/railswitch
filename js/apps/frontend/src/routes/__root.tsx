@@ -1,22 +1,30 @@
 import { createRootRoute, HeadContent, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { graphqlClientAtom } from "../atoms/graphqlClient";
+import { Provider } from "urql";
 import { PageErrorBoundary } from "../components/layout/PageErrorBoundary";
 import { RouteProgress } from "../components/routing/RouteProgress";
-import { store } from "../store";
+import { crossOrganizationClient } from "../graphql/client";
 import { pageTitle } from "../utils/pageTitle";
 
 export const Route = createRootRoute({
   beforeLoad: () => ({
-    client: store.get(graphqlClientAtom),
+    client: crossOrganizationClient(),
   }),
   head: () => ({ meta: [{ title: pageTitle() }] }),
-  component: () => (
-    <PageErrorBoundary>
-      <HeadContent />
-      <RouteProgress />
-      <Outlet />
-      <TanStackRouterDevtools />
-    </PageErrorBoundary>
-  ),
+  component: RootLayout,
 });
+
+function RootLayout() {
+  const { client } = Route.useRouteContext();
+
+  return (
+    <Provider value={client}>
+      <PageErrorBoundary>
+        <HeadContent />
+        <RouteProgress />
+        <Outlet />
+        <TanStackRouterDevtools />
+      </PageErrorBoundary>
+    </Provider>
+  );
+}

@@ -11,16 +11,16 @@ import { useMutation, useQuery } from "urql";
 import {
   EnvironmentSelector,
   environmentSelector_environments,
-} from "../../../../../../components/environments/EnvironmentSelector";
-import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
-import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
-import { useAppForm } from "../../../../../../forms/formHook";
-import { graphql } from "../../../../../../graphql/graphql";
+} from "../../../../../../../components/environments/EnvironmentSelector";
+import { CenteredContent } from "../../../../../../../components/layout/CenteredContent";
+import { LinkAnchor } from "../../../../../../../components/routing/link-components/LinkAnchor";
+import { useAppForm } from "../../../../../../../forms/formHook";
+import { graphql } from "../../../../../../../graphql/graphql";
 import {
   getSubmissionErrors,
   noSubmissionErrors,
-} from "../../../../../../utils/apiErrorMessage";
-import { pageTitle } from "../../../../../../utils/pageTitle";
+} from "../../../../../../../utils/apiErrorMessage";
+import { pageTitle } from "../../../../../../../utils/pageTitle";
 
 const FlagUpdatePageQuery = graphql(
   `
@@ -93,7 +93,7 @@ function validateRules(rules: string) {
 }
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/project/$projectName/flag/$flagName",
+  "/_authenticated/o/$organizationId/project/$projectName/flag/$flagName",
 )({
   loader: async ({ context, params }) => {
     const { data, error } = await context.client
@@ -197,7 +197,8 @@ function FlagUpdatePage() {
         <Text>{flag.name}</Text>
         <Text type="supporting">Owning project</Text>
         <LinkAnchor
-          to="/project/$projectName"
+          from="/o/$organizationId"
+          to="/o/$organizationId/project/$projectName"
           params={{ projectName: flag.project.name }}
         >
           {flag.project.name}

@@ -20,7 +20,7 @@ const CreateProjectMutation = graphql(`
 `);
 
 export function CreateProjectForm() {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: "/o/$organizationId" });
   const [{ fetching }, createProject] = useMutation(CreateProjectMutation);
 
   const handleSubmit = async (values: ProjectFormValues) => {
@@ -30,7 +30,7 @@ export function CreateProjectForm() {
 
     if (data?.createProject.result != null) {
       navigate({
-        to: "/project/$projectName",
+        to: "/o/$organizationId/project/$projectName",
         params: { projectName: data.createProject.result.name },
       });
       return;

@@ -9,12 +9,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   FlagsTable,
   flagsTable_flags,
-} from "../../../../components/flags/FlagsTable";
-import { CenteredContent } from "../../../../components/layout/CenteredContent";
-import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
-import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
-import { graphql } from "../../../../graphql/graphql";
-import { pageTitle } from "../../../../utils/pageTitle";
+} from "../../../../../components/flags/FlagsTable";
+import { CenteredContent } from "../../../../../components/layout/CenteredContent";
+import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
+import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
+import { graphql } from "../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 const FlagsPageQuery = graphql(
   `
@@ -31,7 +31,7 @@ const FlagsPageQuery = graphql(
 );
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/flags/",
+  "/_authenticated/o/$organizationId/flags/",
 )({
   loader: async ({ context }) => {
     const { data, error } = await context.client
@@ -59,7 +59,13 @@ function FlagsPage() {
           icon={<Icon icon={FlagIcon} size="lg" />}
           title="No flags found"
           description="Please double check if you are in the right organization, or start by creating a flag"
-          actions={<LinkButton to="/flags/create" label="Create" />}
+          actions={
+            <LinkButton
+              from="/o/$organizationId"
+              to="/o/$organizationId/flags/create"
+              label="Create"
+            />
+          }
         />
       </CenteredContent>
     );
@@ -70,7 +76,8 @@ function FlagsPage() {
       <Stack direction="horizontal" hAlign="between" vAlign="center">
         <Heading level={1}>Flags</Heading>
         <LinkActionButton
-          to="/flags/create"
+          from="/o/$organizationId"
+          to="/o/$organizationId/flags/create"
           label="Create new flag"
           icon={<PlusIcon />}
         />

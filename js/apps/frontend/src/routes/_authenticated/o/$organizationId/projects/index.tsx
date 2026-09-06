@@ -6,15 +6,15 @@ import { Heading } from "@astryxdesign/core/Text";
 import { FolderIcon } from "@phosphor-icons/react";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import { createFileRoute } from "@tanstack/react-router";
-import { CenteredContent } from "../../../../components/layout/CenteredContent";
+import { CenteredContent } from "../../../../../components/layout/CenteredContent";
 import {
   ProjectsTable,
   projectsTable_projects,
-} from "../../../../components/projects/ProjectsTable";
-import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
-import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
-import { graphql } from "../../../../graphql/graphql";
-import { pageTitle } from "../../../../utils/pageTitle";
+} from "../../../../../components/projects/ProjectsTable";
+import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
+import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
+import { graphql } from "../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 const ProjectsPageQuery = graphql(
   `
@@ -31,7 +31,7 @@ const ProjectsPageQuery = graphql(
 );
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/projects/",
+  "/_authenticated/o/$organizationId/projects/",
 )({
   loader: async ({ context }) => {
     const { data, error } = await context.client
@@ -59,7 +59,13 @@ function ProjectsPage() {
           icon={<Icon icon={FolderIcon} size="lg" />}
           title="No projects found"
           description="Please double check if you are in the right organization, or start by creating some projects."
-          actions={<LinkButton to="/projects/create" label="Create" />}
+          actions={
+            <LinkButton
+              from="/o/$organizationId"
+              to="/o/$organizationId/projects/create"
+              label="Create"
+            />
+          }
         />
       </CenteredContent>
     );
@@ -70,7 +76,8 @@ function ProjectsPage() {
       <Stack direction="horizontal" hAlign="between" vAlign="center">
         <Heading level={1}>Projects</Heading>
         <LinkActionButton
-          to="/projects/create"
+          from="/o/$organizationId"
+          to="/o/$organizationId/projects/create"
           label="Create new project"
           icon={<PlusIcon />}
         />

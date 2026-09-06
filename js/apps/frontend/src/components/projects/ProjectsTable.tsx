@@ -32,7 +32,8 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
           width: proportional(1),
           renderCell: (project) => (
             <LinkAnchor
-              to="/project/$projectName"
+              from="/o/$organizationId"
+              to="/o/$organizationId/project/$projectName"
               params={{ projectName: project.name }}
             >
               {project.name}

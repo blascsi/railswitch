@@ -8,12 +8,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   EnvironmentsTable,
   environmentsTable_environments,
-} from "../../../../components/environments/EnvironmentsTable";
-import { CenteredContent } from "../../../../components/layout/CenteredContent";
-import { LinkActionButton } from "../../../../components/routing/link-components/LinkActionButton";
-import { LinkButton } from "../../../../components/routing/link-components/LinkButton";
-import { graphql } from "../../../../graphql/graphql";
-import { pageTitle } from "../../../../utils/pageTitle";
+} from "../../../../../components/environments/EnvironmentsTable";
+import { CenteredContent } from "../../../../../components/layout/CenteredContent";
+import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
+import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
+import { graphql } from "../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../utils/pageTitle";
 
 const EnvironmentsPageQuery = graphql(
   `
@@ -30,7 +30,7 @@ const EnvironmentsPageQuery = graphql(
 );
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/environments/",
+  "/_authenticated/o/$organizationId/environments/",
 )({
   loader: async ({ context }) => {
     const { data, error } = await context.client
@@ -58,7 +58,13 @@ function EnvironmentsPage() {
           icon={<Icon icon={TerminalIcon} size="lg" />}
           title="No environments found"
           description="Please double check if you are in the right organization, or start by creating a new environment"
-          actions={<LinkButton to="/environments/create" label="Create" />}
+          actions={
+            <LinkButton
+              from="/o/$organizationId"
+              to="/o/$organizationId/environments/create"
+              label="Create"
+            />
+          }
         />
       </CenteredContent>
     );
@@ -69,7 +75,8 @@ function EnvironmentsPage() {
       <Stack direction="horizontal" hAlign="between" vAlign="center">
         <Heading level={1}>Environments</Heading>
         <LinkActionButton
-          to="/environments/create"
+          from="/o/$organizationId"
+          to="/o/$organizationId/environments/create"
           label="Create new environment"
           icon={<PlusIcon />}
         />

@@ -4,10 +4,10 @@ import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
 import { TerminalIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
-import { LinkAnchor } from "../../../../../../components/routing/link-components/LinkAnchor";
-import { graphql } from "../../../../../../graphql/graphql";
-import { pageTitle } from "../../../../../../utils/pageTitle";
+import { CenteredContent } from "../../../../../../../components/layout/CenteredContent";
+import { LinkAnchor } from "../../../../../../../components/routing/link-components/LinkAnchor";
+import { graphql } from "../../../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../../../utils/pageTitle";
 
 const EnvironmentPageQuery = graphql(`
   query EnvironmentPageQuery($projectName: String!, $environmentName: String!) {
@@ -22,7 +22,7 @@ const EnvironmentPageQuery = graphql(`
 `);
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/project/$projectName/environment/$environmentName",
+  "/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName",
 )({
   loader: async ({ context, params }) => {
     const { data, error } = await context.client
@@ -74,7 +74,8 @@ function EnvironmentPage() {
       <Text>{environment.name}</Text>
       <Text type="supporting">Owning project</Text>
       <LinkAnchor
-        to="/project/$projectName"
+        from="/o/$organizationId"
+        to="/o/$organizationId/project/$projectName"
         params={{ projectName: environment.project.name }}
       >
         {environment.project.name}

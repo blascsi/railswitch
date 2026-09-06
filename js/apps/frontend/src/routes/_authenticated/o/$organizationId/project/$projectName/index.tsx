@@ -4,9 +4,9 @@ import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
 import { FolderIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { CenteredContent } from "../../../../../components/layout/CenteredContent";
-import { graphql } from "../../../../../graphql/graphql";
-import { pageTitle } from "../../../../../utils/pageTitle";
+import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
+import { graphql } from "../../../../../../graphql/graphql";
+import { pageTitle } from "../../../../../../utils/pageTitle";
 
 const ProjectPageQuery = graphql(`
   query ProjectPageQuery($name: String!) {
@@ -18,7 +18,7 @@ const ProjectPageQuery = graphql(`
 `);
 
 export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/project/$projectName/",
+  "/_authenticated/o/$organizationId/project/$projectName/",
 )({
   loader: async ({ context, params }) => {
     const { data, error } = await context.client

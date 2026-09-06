@@ -3,13 +3,11 @@ import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
-import { currentUserAtom } from "../../../atoms/currentUser";
-import { CenteredContent } from "../../../components/layout/CenteredContent";
-import { pageTitle } from "../../../utils/pageTitle";
+import { currentUserAtom } from "../../atoms/currentUser";
+import { CenteredContent } from "../../components/layout/CenteredContent";
+import { pageTitle } from "../../utils/pageTitle";
 
-export const Route = createFileRoute(
-  "/_authenticated/_organizationRequired/home",
-)({
+export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({ meta: [{ title: pageTitle("Home") }] }),
   component: HomePage,
 });
