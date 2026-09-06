@@ -18,10 +18,12 @@ export const Route = createFileRoute("/_authenticated/o/$organizationId")({
 
 function OrganizationScope() {
   const { client } = Route.useRouteContext();
+  const { organizationId } = Route.useParams();
 
   return (
     <Provider value={client}>
-      <Outlet />
+      {/* Keyed so nothing below carries state from the organization we left. */}
+      <Outlet key={organizationId} />
     </Provider>
   );
 }
