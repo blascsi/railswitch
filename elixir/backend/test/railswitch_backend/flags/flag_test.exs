@@ -7,11 +7,11 @@ defmodule RailswitchBackend.Flags.FlagTest do
   import Ash.Generator
 
   alias Ash.Error.Forbidden
-  alias Ash.Error.Invalid
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.Flags.FlagEnvironment.Defaults
   alias RailswitchBackend.FlagsGenerator
+  alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.OrgsGenerator
 
   setup do
@@ -80,7 +80,8 @@ defmodule RailswitchBackend.Flags.FlagTest do
         actor: ctx.user
       )
 
-      assert {:ok, []} = Flags.list_flags(tenant: ctx.org.id, actor: ctx.outsider)
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.list_flags(tenant: ctx.org.id, actor: ctx.outsider)
     end
 
     test "a request without an actor cannot list flags", ctx do
@@ -89,7 +90,8 @@ defmodule RailswitchBackend.Flags.FlagTest do
         actor: ctx.user
       )
 
-      assert {:ok, []} = Flags.list_flags(tenant: ctx.org.id)
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.list_flags(tenant: ctx.org.id)
     end
 
     test "get_flag_by_project_and_flag_name returns the correct flag", ctx do
@@ -116,7 +118,7 @@ defmodule RailswitchBackend.Flags.FlagTest do
           actor: ctx.user
         )
 
-      assert {:error, %Invalid{}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_flag_by_project_and_flag_name(
                  %{project_name: ctx.project.name, flag_name: flag.name},
                  tenant: ctx.org.id,
@@ -131,7 +133,7 @@ defmodule RailswitchBackend.Flags.FlagTest do
           actor: ctx.user
         )
 
-      assert {:error, %Invalid{}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_flag_by_project_and_flag_name(
                  %{project_name: ctx.project.name, flag_name: flag.name},
                  tenant: ctx.org.id

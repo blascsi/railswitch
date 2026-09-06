@@ -45,6 +45,7 @@ defmodule RailswitchBackend.Flags.Project do
   policies do
     policy always() do
       description "Only members of the owning organization can act on projects"
+      forbid_unless RailswitchBackend.Orgs.Checks.ActorInTenant
       authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
     end
   end

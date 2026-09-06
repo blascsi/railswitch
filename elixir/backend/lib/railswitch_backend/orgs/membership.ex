@@ -8,6 +8,7 @@ defmodule RailswitchBackend.Orgs.Membership do
     extensions: [AshGraphql.Resource],
     data_layer: AshPostgres.DataLayer
 
+  alias RailswitchBackend.Orgs.Checks.ActorInTenant
   alias RailswitchBackend.Orgs.Membership.Changes.EnsureRemainingOwner
 
   graphql do
@@ -56,18 +57,21 @@ defmodule RailswitchBackend.Orgs.Membership do
   policies do
     policy action_type(:read) do
       description "Members see all memberships in the org, and users always see their own memberships"
+      forbid_unless ActorInTenant
       authorize_if expr(user_id == ^actor(:id))
       authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
     end
 
     policy action_type([:create, :update]) do
       description "Owners can manage memberships"
+      forbid_unless ActorInTenant
 
       authorize_if expr(exists(organization.memberships, user_id == ^actor(:id) and role == :owner))
     end
 
     policy action_type(:destroy) do
       description "Anyone can remove themselves from an Organization, and owners can remove anyone from an Organization"
+      forbid_unless ActorInTenant
 
       authorize_if expr(user_id == ^actor(:id))
 

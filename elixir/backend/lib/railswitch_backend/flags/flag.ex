@@ -8,6 +8,7 @@ defmodule RailswitchBackend.Flags.Flag do
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
+
   graphql do
     type :flag
   end
@@ -50,6 +51,7 @@ defmodule RailswitchBackend.Flags.Flag do
   policies do
     policy always() do
       description "Only members of the owning organization can act on flags"
+      forbid_unless RailswitchBackend.Orgs.Checks.ActorInTenant
       authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
     end
   end

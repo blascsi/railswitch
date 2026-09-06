@@ -11,6 +11,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
+  alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.OrgsGenerator
 
   setup do
@@ -96,7 +97,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
         actor: ctx.user
       )
 
-      assert {:error, %Invalid{}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
                  tenant: ctx.org.id,
                  actor: ctx.outsider
@@ -111,7 +112,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
         actor: ctx.user
       )
 
-      assert {:error, %Invalid{}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_id_and_name(ctx.project.id, "production", tenant: ctx.org.id)
     end
 
@@ -160,7 +161,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
         actor: ctx.user
       )
 
-      assert {:error, %Invalid{}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_and_environment_name(
                  %{project_name: ctx.project.id, environment_name: "production"},
                  tenant: ctx.org.id,
@@ -176,7 +177,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
         actor: ctx.user
       )
 
-      assert {:error, %Invalid{}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_and_environment_name(
                  %{project_name: ctx.project.id, environment_name: "production"},
                  tenant: ctx.org.id

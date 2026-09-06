@@ -10,6 +10,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
+  alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.OrgsGenerator
 
   setup do
@@ -54,7 +55,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
     end
 
     test "an outsider cannot list flag environments", ctx do
-      assert {:ok, []} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.list_flag_environments(
                  query: [filter: [id: ctx.flag_environment.id]],
                  tenant: ctx.org.id,
@@ -63,7 +64,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
     end
 
     test "a request without an actor cannot list flag environments", ctx do
-      assert {:ok, []} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.list_flag_environments(
                  query: [filter: [id: ctx.flag_environment.id]],
                  tenant: ctx.org.id

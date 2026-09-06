@@ -12,6 +12,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
+  alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.OrgsGenerator
 
   setup do
@@ -86,7 +87,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
           actor: ctx.user
         )
 
-      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_api_key_by_id(api_key.id,
                  tenant: ctx.org.id,
                  actor: ctx.outsider
@@ -100,7 +101,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
           actor: ctx.user
         )
 
-      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_api_key_by_id(api_key.id, tenant: ctx.org.id)
     end
   end

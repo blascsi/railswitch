@@ -7,10 +7,9 @@ defmodule RailswitchBackend.Flags.ProjectTest do
   import Ash.Generator
 
   alias Ash.Error.Forbidden
-  alias Ash.Error.Invalid
-  alias Ash.Error.Query.NotFound
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
+  alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.OrgsGenerator
 
   setup do
@@ -51,13 +50,15 @@ defmodule RailswitchBackend.Flags.ProjectTest do
     test "an outsider cannot read projects", ctx do
       Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
-      assert {:ok, []} = Flags.list_projects(tenant: ctx.org.id, actor: ctx.outsider)
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.list_projects(tenant: ctx.org.id, actor: ctx.outsider)
     end
 
     test "a request without an actor cannot read projects", ctx do
       Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
-      assert {:ok, []} = Flags.list_projects(tenant: ctx.org.id)
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.list_projects(tenant: ctx.org.id)
     end
 
     test "get_project_by_org_id_and_name returns the correct project", ctx do
@@ -75,7 +76,7 @@ defmodule RailswitchBackend.Flags.ProjectTest do
     test "get_project_by_org_id_and_name does not return the project to an outsider", ctx do
       project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
-      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_project_by_org_id_and_name(project.name,
                  tenant: ctx.org.id,
                  actor: ctx.outsider
@@ -86,7 +87,7 @@ defmodule RailswitchBackend.Flags.ProjectTest do
          ctx do
       project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
-      assert {:error, %Invalid{errors: [%NotFound{}]}} =
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_project_by_org_id_and_name(project.name,
                  tenant: ctx.org.id
                )

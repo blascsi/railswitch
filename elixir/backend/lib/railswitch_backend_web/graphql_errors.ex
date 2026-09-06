@@ -74,3 +74,15 @@ defimpl AshGraphql.Error, for: Ash.Error.Invalid.TenantRequired do
     }
   end
 end
+
+defimpl AshGraphql.Error, for: RailswitchBackend.Orgs.Errors.NotOrganizationMember do
+  def to_error(_error) do
+    %{
+      message: "You are not a member of this organization",
+      short_message: "Not a member",
+      code: "not_organization_member",
+      vars: %{},
+      fields: []
+    }
+  end
+end
