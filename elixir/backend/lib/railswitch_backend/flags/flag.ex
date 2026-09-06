@@ -8,6 +8,7 @@ defmodule RailswitchBackend.Flags.Flag do
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
+  alias RailswitchBackend.Orgs.Validations.RelationshipInTenant
 
   graphql do
     type :flag
@@ -42,6 +43,8 @@ defmodule RailswitchBackend.Flags.Flag do
       accept [:name]
 
       argument :project_id, :uuid, allow_nil?: false
+
+      validate {RelationshipInTenant, relationships: [:project]}
 
       change set_attribute(:project_id, arg(:project_id))
       change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :flag}

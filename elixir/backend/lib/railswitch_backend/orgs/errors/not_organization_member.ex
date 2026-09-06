@@ -5,14 +5,16 @@ defmodule RailswitchBackend.Orgs.Errors.NotOrganizationMember do
   Distinct from a plain forbidden so the client can offer a different
   organization instead of an error page.
 
-  The claim model answers three shapes differently:
+  The backend can treat organization ids differently based on where they
+  are in the request:
 
-    * Claiming one — the `x-organization-id` header — gets this error.
+    * Naming an organization via the `x-organization-id` header: gets
+      this error returned if the user is not a member.
 
-    * Naming a record inside the claim is a lookup: `null` from a get-by-id.
+    * Including an ID in an action acts like a lookup: on reading one resource
+      gets `null` returned, on create / update gets `invalid_attribute`.
 
-    * Asking for your own things — `listOrganizations`, header-less
-      `listMemberships` — is filtered.
+    * Reading lists of resources are filtered, getting empty lists back.
   """
 
   use Splode.Error, fields: [:organization_id], class: :forbidden

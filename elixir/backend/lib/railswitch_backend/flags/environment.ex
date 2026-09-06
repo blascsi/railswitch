@@ -8,6 +8,7 @@ defmodule RailswitchBackend.Flags.Environment do
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
+  alias RailswitchBackend.Orgs.Validations.RelationshipInTenant
 
   graphql do
     type :environment
@@ -72,6 +73,8 @@ defmodule RailswitchBackend.Flags.Environment do
       accept [:name]
 
       argument :project_id, :uuid, allow_nil?: false
+
+      validate {RelationshipInTenant, relationships: [:project]}
 
       change set_attribute(:project_id, arg(:project_id))
       change {RailswitchBackend.Flags.Changes.CreateFlagEnvironments, type: :environment}

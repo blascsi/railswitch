@@ -10,6 +10,7 @@ defmodule RailswitchBackendWeb.Router do
     plug :user_to_actor
     plug RailswitchBackendWeb.Plugs.RequireSession
     plug RailswitchBackendWeb.Plugs.SetTenant
+    plug RailswitchBackendWeb.Plugs.LoadActorOrganizations
     plug AshGraphql.Plug
   end
 

@@ -9,6 +9,7 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
+  alias RailswitchBackend.Orgs.Validations.RelationshipInTenant
 
   graphql do
     type :environment_api_key
@@ -30,6 +31,8 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
     create :create do
       primary? true
       accept [:name, :environment_id]
+
+      validate {RelationshipInTenant, relationships: [:environment]}
 
       change {AshAuthentication.Strategy.ApiKey.GenerateApiKey, prefix: :railswitch, hash: :api_key_hash}
 

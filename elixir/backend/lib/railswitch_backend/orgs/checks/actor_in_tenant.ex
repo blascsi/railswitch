@@ -3,11 +3,13 @@ defmodule RailswitchBackend.Orgs.Checks.ActorInTenant do
   Whether the actor is a member of the organization the request acts in.
 
   Ash normally hides rows you may not read, so a request naming an organization
-  the actor has left comes back empty — which looks just like an organization
+  the actor does not belong to comes back empty — which looks just like an organization
   with nothing in it. This check returns an error instead, conveying this information
   to the clients.
 
-  `SetTenant` does no verification, so the claim is checked here.
+  This is needed since `SetTenant` does no verification, so the header is checked here.
+  The ids a request carries in its input are the sibling rule, in
+  `RailswitchBackend.Orgs.Validations.RelationshipInTenant`.
   """
 
   use Ash.Policy.SimpleCheck
@@ -20,8 +22,8 @@ defmodule RailswitchBackend.Orgs.Checks.ActorInTenant do
   @impl true
   def describe(_opts), do: "actor is a member of the requested organization"
 
-  # Without a tenant there is no claim to check. Actions that require one fail
-  # with Ash's own `TenantRequired`, which says so precisely.
+  # Without a tenant there is nothing to check. Actions that require one will
+  #  fail with Ash's own `TenantRequired` error.
   @impl true
   def match?(_actor, %{subject: %{tenant: nil}}, _opts), do: true
 
@@ -34,6 +36,9 @@ defmodule RailswitchBackend.Orgs.Checks.ActorInTenant do
   end
 
   defp member?(nil, _tenant), do: false
+
+  # Try answering from the pre-loaded organization IDs if the actor has them
+  defp member?(%{organization_ids: ids}, tenant) when is_list(ids), do: tenant in ids
 
   defp member?(actor, tenant) do
     Membership

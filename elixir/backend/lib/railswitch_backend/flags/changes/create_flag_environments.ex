@@ -60,8 +60,8 @@ defmodule RailswitchBackend.Flags.Changes.CreateFlagEnvironments do
   # could each miss the other's uncommitted record, so we serialize them by
   # locking the project row for the duration of the surrounding transaction.
   #
-  # The lock skips authorization: it is an internal implementation detail, and
-  # the parent create action already enforces its own policies.
+  # The lock skips authorization, and tenant verification: it is an internal
+  # implementation detail, and the parent create action already enforces its own policies.
   defp lock_project(record, scope_opts) do
     Ash.get!(
       RailswitchBackend.Flags.Project,

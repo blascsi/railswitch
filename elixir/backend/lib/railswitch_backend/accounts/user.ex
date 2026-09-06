@@ -321,12 +321,18 @@ defmodule RailswitchBackend.Accounts.User do
   end
 
   relationships do
+    has_many :memberships, Membership
+
     many_to_many :organizations, RailswitchBackend.Orgs.Organization do
       public? true
       through Membership
       source_attribute_on_join_resource :user_id
       destination_attribute_on_join_resource :organization_id
     end
+  end
+
+  aggregates do
+    list :organization_ids, :memberships, :organization_id
   end
 
   identities do

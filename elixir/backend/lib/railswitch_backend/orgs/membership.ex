@@ -10,6 +10,7 @@ defmodule RailswitchBackend.Orgs.Membership do
 
   alias RailswitchBackend.Orgs.Checks.ActorInTenant
   alias RailswitchBackend.Orgs.Membership.Changes.EnsureRemainingOwner
+  alias RailswitchBackend.Orgs.Validations.ArgumentIsTenant
 
   graphql do
     type :membership
@@ -34,6 +35,8 @@ defmodule RailswitchBackend.Orgs.Membership do
 
       argument :user_id, :uuid, allow_nil?: false
       argument :organization_id, :uuid, allow_nil?: false
+
+      validate {ArgumentIsTenant, arguments: [:organization_id]}
 
       change set_attribute(:user_id, arg(:user_id))
       change set_attribute(:organization_id, arg(:organization_id))
