@@ -18,12 +18,11 @@ import {
   SignOutIcon,
   TerminalIcon,
 } from "@phosphor-icons/react";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useParams } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
 import { useMutation } from "urql";
 import { currentUserAtom } from "../../atoms/currentUser";
-import { lastOrganizationIdAtom } from "../../atoms/lastOrganizationId";
 import { clearSession } from "../../auth/clearSession";
 import { graphql } from "../../graphql/graphql";
 import { useIsRouteActive } from "../../hooks/useIsRouteActive";
@@ -47,11 +46,11 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
   const [_, signOut] = useMutation(SignOutMutation);
   const currentUser = useAtomValue(currentUserAtom);
   const organizations = authenticatedRoute.useLoaderData();
-  const lastOrganizationId = useAtomValue(lastOrganizationIdAtom);
-  // This layout sits above the organization param, so it picks one itself.
+  // This layout also renders on pages that name no organization, and the one
+  // in the URL may be refused, so it falls back to whatever is available.
+  const { organizationId } = useParams({ strict: false });
   const organization =
-    organizations.find(({ id }) => id === lastOrganizationId) ??
-    organizations[0];
+    organizations.find(({ id }) => id === organizationId) ?? organizations[0];
   const organizationParams = organization
     ? { organizationId: organization.id }
     : null;
