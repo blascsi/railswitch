@@ -3,8 +3,7 @@ import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
-import { PlusIcon } from "@phosphor-icons/react";
-import { FlagIcon } from "@phosphor-icons/react/dist/ssr";
+import { FlagIcon, PlusIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   FlagsTable,
