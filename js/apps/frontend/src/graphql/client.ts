@@ -12,19 +12,30 @@ const exhaustiveTypenamesExchange = exhaustiveAdditionalTypenamesExchange({
   debug: import.meta.env.DEV,
 });
 
-const sessionExchange: Exchange =
+// Bumped on every session change. A client created before the change keeps
+// running its in-flight requests, and a 401 from one of those says the old
+// session ended — not the current one.
+let sessionGeneration = 0;
+
+const sessionExchange =
+  (generation: number): Exchange =>
   ({ forward }) =>
   (operations$) =>
     pipe(
       forward(operations$),
       tap((result) => {
-        if (result.error?.response?.status === 401) {
+        if (
+          result.error?.response?.status === 401 &&
+          generation === sessionGeneration
+        ) {
           clearSession();
         }
       }),
     );
 
 function makeClient(organizationId: string | null) {
+  const generation = sessionGeneration;
+
   return new Client({
     url: import.meta.env.VITE_API_URL ?? "http://localhost:4000/gql",
     // Overrides the "within-url-limit" default: GET would leak queries and
@@ -34,7 +45,7 @@ function makeClient(organizationId: string | null) {
       ...(import.meta.env.DEV ? [devtoolsExchange] : []),
       exhaustiveTypenamesExchange,
       cacheExchange,
-      sessionExchange,
+      sessionExchange(generation),
       fetchExchange,
     ],
     // Read per request: the session header tracks the current user rather than
@@ -71,6 +82,7 @@ export function organizationClient(organizationId: string) {
 }
 
 export function resetGraphqlClients() {
+  sessionGeneration += 1;
   crossOrganization = null;
   scoped = null;
 }
