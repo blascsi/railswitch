@@ -11,6 +11,7 @@ import {
 import { CenteredContent } from "../../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../../../utils/pageTitle";
 
 const FlagUpdatePageQuery = graphql(
@@ -34,18 +35,14 @@ export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/project/$projectName/flag/$flagName",
 )({
   loader: async ({ context, params }) => {
-    const { data, error } = await context.client
-      .query(FlagUpdatePageQuery, {
+    const { getFlagByName: flag } = await loaderQuery(
+      context.client,
+      FlagUpdatePageQuery,
+      {
         projectName: params.projectName,
         flagName: params.flagName,
-      })
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    const flag = data.getFlagByName;
+      },
+    );
 
     if (flag == null) {
       throw notFound();

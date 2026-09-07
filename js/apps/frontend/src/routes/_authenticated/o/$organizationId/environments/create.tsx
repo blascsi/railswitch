@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CreateEnvironmentForm } from "../../../../../components/environments/CreateEnvironmentForm";
 import { projectSelector_projects } from "../../../../../components/projects/projectOptions";
 import { graphql } from "../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../utils/pageTitle";
 
 const EnvironmentCreatePageQuery = graphql(
@@ -22,17 +23,8 @@ const EnvironmentCreatePageQuery = graphql(
 export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/environments/create",
 )({
-  loader: async ({ context }) => {
-    const { data, error } = await context.client
-      .query(EnvironmentCreatePageQuery, {})
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    return data;
-  },
+  loader: ({ context }) =>
+    loaderQuery(context.client, EnvironmentCreatePageQuery, {}),
   head: () => ({ meta: [{ title: pageTitle("Create environment") }] }),
   component: EnvironmentCreatePage,
 });

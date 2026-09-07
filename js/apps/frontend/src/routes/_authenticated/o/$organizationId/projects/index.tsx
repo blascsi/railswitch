@@ -14,6 +14,7 @@ import {
 import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../utils/pageTitle";
 
 const ProjectsPageQuery = graphql(
@@ -33,17 +34,7 @@ const ProjectsPageQuery = graphql(
 export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/projects/",
 )({
-  loader: async ({ context }) => {
-    const { data, error } = await context.client
-      .query(ProjectsPageQuery, {})
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    return data;
-  },
+  loader: ({ context }) => loaderQuery(context.client, ProjectsPageQuery, {}),
   head: () => ({ meta: [{ title: pageTitle("Projects") }] }),
   component: ProjectsPage,
 });

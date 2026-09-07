@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CreateFlagForm } from "../../../../../components/flags/CreateFlagForm";
 import { projectSelector_projects } from "../../../../../components/projects/projectOptions";
 import { graphql } from "../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../utils/pageTitle";
 
 const FlagCreatePageQuery = graphql(
@@ -22,17 +23,7 @@ const FlagCreatePageQuery = graphql(
 export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/flags/create",
 )({
-  loader: async ({ context }) => {
-    const { data, error } = await context.client
-      .query(FlagCreatePageQuery, {})
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    return data;
-  },
+  loader: ({ context }) => loaderQuery(context.client, FlagCreatePageQuery, {}),
   head: () => ({ meta: [{ title: pageTitle("Create flag") }] }),
   component: FlagCreatePage,
 });

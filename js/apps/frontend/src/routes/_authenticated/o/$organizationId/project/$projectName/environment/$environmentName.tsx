@@ -7,6 +7,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CenteredContent } from "../../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../../../utils/pageTitle";
 
 const EnvironmentPageQuery = graphql(`
@@ -25,18 +26,14 @@ export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName",
 )({
   loader: async ({ context, params }) => {
-    const { data, error } = await context.client
-      .query(EnvironmentPageQuery, {
+    const { getEnvironmentByName: environment } = await loaderQuery(
+      context.client,
+      EnvironmentPageQuery,
+      {
         projectName: params.projectName,
         environmentName: params.environmentName,
-      })
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    const environment = data.getEnvironmentByName;
+      },
+    );
 
     if (environment == null) {
       throw notFound();

@@ -13,6 +13,7 @@ import { CenteredContent } from "../../../../../components/layout/CenteredConten
 import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../utils/pageTitle";
 
 const EnvironmentsPageQuery = graphql(
@@ -32,17 +33,8 @@ const EnvironmentsPageQuery = graphql(
 export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/environments/",
 )({
-  loader: async ({ context }) => {
-    const { data, error } = await context.client
-      .query(EnvironmentsPageQuery, {})
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    return data;
-  },
+  loader: ({ context }) =>
+    loaderQuery(context.client, EnvironmentsPageQuery, {}),
   head: () => ({ meta: [{ title: pageTitle("Environments") }] }),
   component: EnvironmentsPage,
 });

@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { currentUserAtom } from "../atoms/currentUser";
 import { AppShellLayout } from "../components/layout/AppShellLayout";
 import { graphql } from "../graphql/graphql";
+import { loaderQuery } from "../graphql/loaderQuery";
 import { store } from "../store";
 
 const AuthenticatedLayoutQuery = graphql(`
@@ -22,13 +23,12 @@ export const Route = createFileRoute("/_authenticated")({
     }
   },
   loader: async ({ context }) => {
-    const { data, error } = await context.client
-      .query(AuthenticatedLayoutQuery, {}, { requestPolicy: "network-only" })
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
+    const data = await loaderQuery(
+      context.client,
+      AuthenticatedLayoutQuery,
+      {},
+      { requestPolicy: "network-only" },
+    );
 
     return data.listOrganizations?.results ?? [];
   },

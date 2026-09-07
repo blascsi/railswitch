@@ -6,9 +6,12 @@
       {
         "name": "gql.tada/ts-plugin",
         "schema": "../../../elixir/backend/generated/schema.graphql",
-        "tadaOutputLocation": "./src/graphql/graphql-env.d.ts"
-      }
-    ]
+        "tadaOutputLocation": "./src/graphql/graphql-env.d.ts",
+        // A route's fields are read through `Route.useLoaderData()`, which the
+        // usage tracker cannot follow, so it reports every scalar as unused.
+        "trackFieldUsage": false,
+      },
+    ],
   },
-  "include": ["src"]
+  "include": ["src"],
 }

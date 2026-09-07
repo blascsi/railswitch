@@ -6,6 +6,7 @@ import { FolderIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
 import { graphql } from "../../../../../../graphql/graphql";
+import { loaderQuery } from "../../../../../../graphql/loaderQuery";
 import { pageTitle } from "../../../../../../utils/pageTitle";
 
 const ProjectPageQuery = graphql(`
@@ -21,15 +22,11 @@ export const Route = createFileRoute(
   "/_authenticated/o/$organizationId/project/$projectName/",
 )({
   loader: async ({ context, params }) => {
-    const { data, error } = await context.client
-      .query(ProjectPageQuery, { name: params.projectName })
-      .toPromise();
-
-    if (data == null) {
-      throw error;
-    }
-
-    const project = data.getProjectByName;
+    const { getProjectByName: project } = await loaderQuery(
+      context.client,
+      ProjectPageQuery,
+      { name: params.projectName },
+    );
 
     if (project == null) {
       throw notFound();
