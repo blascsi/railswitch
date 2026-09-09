@@ -17,6 +17,7 @@
     "@phosphor-icons/react": "catalog:",
     "@railswitch/schemas": "workspace:*",
     "@railswitch/sdk": "workspace:*",
+    "@sentry/react": "catalog:",
     "@stylexjs/stylex": "catalog:",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-router": "catalog:",
