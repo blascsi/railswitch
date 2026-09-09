@@ -26,7 +26,7 @@ run = [
 
 [tasks."gql:check"]
 description = "Run GraphQLSP diagnostics on GraphQL documents"
-run = ["pnpm exec gql-tada check --tsconfig ./tsconfig.app.json"]
+run = ["pnpm exec gql-tada check --tsconfig ./tsconfig.app.json --fail-on-warn"]
 
 [tasks.build]
 depends = ["//js/packages/sdk:build"]

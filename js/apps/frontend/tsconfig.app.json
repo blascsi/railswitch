@@ -10,6 +10,7 @@
         // A route's fields are read through `Route.useLoaderData()`, which the
         // usage tracker cannot follow, so it reports every scalar as unused.
         "trackFieldUsage": false,
+        "shouldCheckForColocatedFragments": true,
       },
     ],
   },
