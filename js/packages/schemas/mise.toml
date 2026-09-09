@@ -11,5 +11,16 @@ extends = "js:check"
 [tasks."check:ci"]
 extends = "js:check:ci"
 
+[tasks.codegen]
+description = "Generate the JSON Schema the backend validates rules against"
+run = ["pnpm codegen"]
+
+[tasks."codegen:check"]
+description = "Check if the generated JSON Schema is up to date"
+run = [
+  "pnpm codegen",
+  "git diff --exit-code -- ../../../elixir/backend/priv/generated/rules.schema.json",
+]
+
 [tasks.typecheck]
 extends = "js:typecheck"

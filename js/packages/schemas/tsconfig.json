@@ -1,3 +1,4 @@
 {
-  "extends": "@railswitch/config/tsconfig.base.json"
+  "extends": "@railswitch/config/tsconfig.base.json",
+  "include": ["src"]
 }

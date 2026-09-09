@@ -6,7 +6,8 @@
   "scripts": {
     "check": "biome check --write",
     "check:ci": "biome ci",
-    "typecheck": "tsc --noEmit"
+    "codegen": "node scripts/generate-json-schema.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.scripts.json"
   },
   "keywords": [
     "schema",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@railswitch/config": "workspace:*",
+    "@types/node": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"
   }

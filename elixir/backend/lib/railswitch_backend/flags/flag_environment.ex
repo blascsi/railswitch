@@ -8,6 +8,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
     authorizers: [Ash.Policy.Authorizer],
     notifiers: [Ash.Notifier.PubSub]
 
+  alias RailswitchBackend.Flags.FlagEnvironment.Changes.NormalizeAndValidateRules
   alias RailswitchBackend.Flags.FlagEnvironment.Defaults
 
   graphql do
@@ -36,10 +37,14 @@ defmodule RailswitchBackend.Flags.FlagEnvironment do
 
       change set_attribute(:flag_id, arg(:flag_id))
       change set_attribute(:environment_id, arg(:environment_id))
+      change NormalizeAndValidateRules
     end
 
     update :update do
       accept [:rules]
+      require_atomic? false
+
+      change NormalizeAndValidateRules
     end
   end
 

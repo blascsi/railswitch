@@ -1,0 +1,350 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "resultType": {
+          "type": "string",
+          "const": "boolean"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "conditions": {
+                "$ref": "#/definitions/__schema0"
+              },
+              "result": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "value"
+                      },
+                      "value": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "enabled",
+              "conditions",
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "resultType",
+        "rules"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "resultType": {
+          "type": "string",
+          "const": "number"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "conditions": {
+                "$ref": "#/definitions/__schema0"
+              },
+              "result": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "value"
+                      },
+                      "value": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "enabled",
+              "conditions",
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "resultType",
+        "rules"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "resultType": {
+          "type": "string",
+          "const": "string"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "conditions": {
+                "$ref": "#/definitions/__schema0"
+              },
+              "result": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "value"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "value"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "enabled",
+              "conditions",
+              "result"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "resultType",
+        "rules"
+      ],
+      "additionalProperties": false
+    }
+  ],
+  "definitions": {
+    "__schema0": {
+      "type": "object",
+      "properties": {
+        "combinator": {
+          "type": "string",
+          "enum": [
+            "and",
+            "or"
+          ]
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "attribute"
+                          },
+                          "attribute": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "operator": {
+                            "type": "string",
+                            "enum": [
+                              "exists",
+                              "not_exists",
+                              "is_true",
+                              "is_false"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "attribute",
+                          "operator"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "attribute"
+                          },
+                          "attribute": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "operator": {
+                            "type": "string",
+                            "enum": [
+                              "eq",
+                              "neq"
+                            ]
+                          },
+                          "value": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "attribute",
+                          "operator",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "attribute"
+                          },
+                          "attribute": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "operator": {
+                            "type": "string",
+                            "enum": [
+                              "lt",
+                              "lte",
+                              "gt",
+                              "gte"
+                            ]
+                          },
+                          "value": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "attribute",
+                          "operator",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "attribute"
+                          },
+                          "attribute": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "operator": {
+                            "type": "string",
+                            "enum": [
+                              "contains",
+                              "not_contains"
+                            ]
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "attribute",
+                          "operator",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/__schema0"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "combinator",
+        "conditions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

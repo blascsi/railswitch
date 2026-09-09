@@ -55,6 +55,7 @@ defmodule RailswitchBackend.MixProject do
       {:phoenix, "~> 1.8.7"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
+      {:ex_json_schema, "~> 0.10"},
       {:postgrex, ">= 0.0.0"},
       {:styler, "~> 1.11", only: [:dev, :test], runtime: false},
       {:swoosh, "~> 1.16"},

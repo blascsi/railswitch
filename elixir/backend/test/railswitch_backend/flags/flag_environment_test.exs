@@ -6,7 +6,9 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
 
   import Ash.Generator
 
+  alias Ash.Error.Changes.InvalidAttribute
   alias Ash.Error.Forbidden
+  alias Ash.Error.Invalid
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
   alias RailswitchBackend.FlagsGenerator
@@ -102,6 +104,71 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
                  %{rules: FlagsGenerator.disabled_rules()},
                  tenant: ctx.org.id
                )
+    end
+
+    test "rules that do not match the shared schema are rejected", ctx do
+      # `gt` operator can't be used with a string `value`
+      invalid = %{
+        "resultType" => "string",
+        "rules" => [
+          %{
+            "enabled" => true,
+            "conditions" => %{
+              "combinator" => "and",
+              "conditions" => [
+                %{
+                  "type" => "attribute",
+                  "attribute" => "points",
+                  "operator" => "gt",
+                  "value" => "100"
+                }
+              ]
+            },
+            "result" => %{"type" => "value", "value" => "matched"}
+          }
+        ]
+      }
+
+      assert {:error, %Invalid{errors: errors}} =
+               Flags.update_flag_environment(
+                 ctx.flag_environment,
+                 %{rules: invalid},
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+
+      assert Enum.any?(errors, fn error ->
+               match?(%InvalidAttribute{field: :rules}, error)
+             end)
+    end
+
+    test "condition attributes are trimmed before being stored", ctx do
+      rules = %{
+        "resultType" => "boolean",
+        "rules" => [
+          %{
+            "enabled" => true,
+            "conditions" => %{
+              "combinator" => "and",
+              "conditions" => [
+                %{"type" => "attribute", "attribute" => "  plan  ", "operator" => "exists"}
+              ]
+            },
+            "result" => %{"type" => "value", "value" => true}
+          }
+        ]
+      }
+
+      assert {:ok, updated} =
+               Flags.update_flag_environment(
+                 ctx.flag_environment,
+                 %{rules: rules},
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+
+      assert %{"rules" => [%{"conditions" => %{"conditions" => [condition]}}]} = updated.rules
+      assert condition["attribute"] == "plan"
     end
   end
 end
