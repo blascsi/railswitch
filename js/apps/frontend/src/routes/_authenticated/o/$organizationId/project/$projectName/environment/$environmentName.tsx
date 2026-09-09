@@ -1,9 +1,8 @@
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
-import { TerminalIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { AppIcon } from "../../../../../../../components/AppIcon";
 import { CenteredContent } from "../../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../../../../../../graphql/graphql";
@@ -52,7 +51,7 @@ function EnvironmentNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<Icon icon={TerminalIcon} size="lg" />}
+        icon={<AppIcon icon="environment" size="lg" />}
         title="Environment not found"
         description="Please double check if you are in the right organization"
       />

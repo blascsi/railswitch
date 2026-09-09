@@ -1,5 +1,4 @@
 import { Selector } from "@astryxdesign/core/Selector";
-import { BuildingsIcon } from "@phosphor-icons/react";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 
 const authenticatedRoute = getRouteApi("/_authenticated");
@@ -25,7 +24,7 @@ export function OrganizationSelector({
     <Selector
       label="Organizations"
       isLabelHidden
-      startIcon={BuildingsIcon}
+      startIcon="organization"
       placeholder="Select an organization"
       options={organizations.map((organization) => ({
         label: organization.name,

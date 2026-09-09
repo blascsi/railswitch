@@ -30,6 +30,7 @@
 
 import { defineSyntaxTheme, defineTheme } from "@astryxdesign/core/theme";
 import { neutralTheme } from "../neutral/neutralTheme";
+import { railswitchIconRegistry } from "./icons";
 
 /**
  * Syntax palette — the theme's ink ladder, with literals on the accent and
@@ -83,6 +84,8 @@ export const railswitchTheme = defineTheme({
   },
 
   syntax: railswitchSyntax,
+
+  icons: railswitchIconRegistry,
 
   tokens: {
     // =========================================================================

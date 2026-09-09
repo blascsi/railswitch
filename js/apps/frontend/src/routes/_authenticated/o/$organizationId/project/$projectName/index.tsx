@@ -1,9 +1,8 @@
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
-import { FolderIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { AppIcon } from "../../../../../../components/AppIcon";
 import { CenteredContent } from "../../../../../../components/layout/CenteredContent";
 import { graphql } from "../../../../../../graphql/graphql";
 import { loaderQuery } from "../../../../../../graphql/loaderQuery";
@@ -45,7 +44,7 @@ function ProjectNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<Icon icon={FolderIcon} size="lg" />}
+        icon={<AppIcon icon="project" size="lg" />}
         title="Project not found"
         description="Please double check if you are in the right organization"
       />

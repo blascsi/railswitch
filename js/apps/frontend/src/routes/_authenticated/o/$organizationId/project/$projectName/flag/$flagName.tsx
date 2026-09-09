@@ -1,9 +1,8 @@
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
-import { FlagIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { AppIcon } from "../../../../../../../components/AppIcon";
 import {
   UpdateFlagForm,
   updateFlagForm_flag,
@@ -61,7 +60,7 @@ function FlagNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<Icon icon={FlagIcon} size="lg" />}
+        icon={<AppIcon icon="flag" size="lg" />}
         title="Flag not found"
         description="Please double check if you are in the right organization"
       />

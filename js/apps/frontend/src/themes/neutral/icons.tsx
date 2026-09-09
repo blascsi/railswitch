@@ -32,7 +32,7 @@ import {
 // biome-ignore lint/correctness/noUnusedImports: The Astryx CLI needs this import present
 import React from "react";
 
-const iconProps = {
+export const iconProps = {
   size: "1em",
   "aria-hidden": true as const,
 };

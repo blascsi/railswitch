@@ -1,10 +1,9 @@
 import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
-import { FlagIcon, PlusIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { AppIcon } from "../../../../../components/AppIcon";
 import {
   FlagsTable,
   flagsTable_flags,
@@ -46,7 +45,7 @@ function FlagsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<Icon icon={FlagIcon} size="lg" />}
+          icon={<AppIcon icon="flag" size="lg" />}
           title="No flags found"
           description="Please double check if you are in the right organization, or start by creating a flag"
           actions={
@@ -69,7 +68,7 @@ function FlagsPage() {
           from="/o/$organizationId"
           to="/o/$organizationId/flags/create"
           label="Create new flag"
-          icon={<PlusIcon />}
+          icon={<AppIcon icon="add" size="sm" />}
         />
       </Stack>
       <Card>

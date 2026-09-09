@@ -3,7 +3,6 @@ import {
   CheckboxInput,
   type CheckboxInputProps,
 } from "@astryxdesign/core/CheckboxInput";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Selector, type SelectorProps } from "@astryxdesign/core/Selector";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Text } from "@astryxdesign/core/Text";
@@ -11,6 +10,7 @@ import { TextArea, type TextAreaProps } from "@astryxdesign/core/TextArea";
 import { TextInput, type TextInputProps } from "@astryxdesign/core/TextInput";
 import { colorVars } from "@astryxdesign/core/theme/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
+import { AppIcon } from "../components/AppIcon";
 import { errorMessages, fieldErrorStatus } from "./fieldStatus";
 import { useFieldContext, useFormContext } from "./formContexts";
 
@@ -103,7 +103,7 @@ export function FormError() {
 
         return (
           <Stack direction="horizontal" gap={1} vAlign="center" role="alert">
-            <Icon icon="error" color="error" size="sm" />
+            <AppIcon icon="error" color="error" size="sm" />
             <Text type="supporting" xstyle={styles.formErrorText}>
               {message}
             </Text>

@@ -1,10 +1,9 @@
 import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
-import { PlusIcon, TerminalIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { AppIcon } from "../../../../../components/AppIcon";
 import {
   EnvironmentsTable,
   environmentsTable_environments,
@@ -47,7 +46,7 @@ function EnvironmentsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<Icon icon={TerminalIcon} size="lg" />}
+          icon={<AppIcon icon="environment" size="lg" />}
           title="No environments found"
           description="Please double check if you are in the right organization, or start by creating a new environment"
           actions={
@@ -70,7 +69,7 @@ function EnvironmentsPage() {
           from="/o/$organizationId"
           to="/o/$organizationId/environments/create"
           label="Create new environment"
-          icon={<PlusIcon />}
+          icon={<AppIcon icon="add" size="sm" />}
         />
       </Stack>
       <Card>

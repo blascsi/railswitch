@@ -1,10 +1,9 @@
 import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Icon } from "@astryxdesign/core/Icon";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
-import { FolderIcon, PlusIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { AppIcon } from "../../../../../components/AppIcon";
 import { CenteredContent } from "../../../../../components/layout/CenteredContent";
 import {
   ProjectsTable,
@@ -46,7 +45,7 @@ function ProjectsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<Icon icon={FolderIcon} size="lg" />}
+          icon={<AppIcon icon="project" size="lg" />}
           title="No projects found"
           description="Please double check if you are in the right organization, or start by creating some projects."
           actions={
@@ -69,7 +68,7 @@ function ProjectsPage() {
           from="/o/$organizationId"
           to="/o/$organizationId/projects/create"
           label="Create new project"
-          icon={<PlusIcon />}
+          icon={<AppIcon icon="add" size="sm" />}
         />
       </Stack>
       <Card>

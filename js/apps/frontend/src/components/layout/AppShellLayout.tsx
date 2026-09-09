@@ -11,13 +11,6 @@ import { SideNav, SideNavItem } from "@astryxdesign/core/SideNav";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Text } from "@astryxdesign/core/Text";
 import { TopNav } from "@astryxdesign/core/TopNav";
-import {
-  FlagIcon,
-  FolderIcon,
-  HouseIcon,
-  SignOutIcon,
-  TerminalIcon,
-} from "@phosphor-icons/react";
 import { getRouteApi, useParams } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
@@ -143,7 +136,7 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
                 </Stack>
                 <DropdownMenuDivider />
                 <DropdownMenuItem
-                  icon={SignOutIcon}
+                  icon="signOut"
                   label="Sign Out"
                   onClick={onSignOut}
                 />
@@ -157,18 +150,14 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
           <NavbarLink
             to="/home"
             label="Home"
-            icon={HouseIcon}
+            icon="home"
             isSelected={isHomeActive}
           />
           {organizationParams == null ? (
             <>
-              <SideNavItem label="Projects" icon={FolderIcon} isDisabled />
-              <SideNavItem
-                label="Environments"
-                icon={TerminalIcon}
-                isDisabled
-              />
-              <SideNavItem label="Flags" icon={FlagIcon} isDisabled />
+              <SideNavItem label="Projects" icon="project" isDisabled />
+              <SideNavItem label="Environments" icon="environment" isDisabled />
+              <SideNavItem label="Flags" icon="flag" isDisabled />
             </>
           ) : (
             <>
@@ -176,21 +165,21 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
                 to="/o/$organizationId/projects"
                 params={organizationParams}
                 label="Projects"
-                icon={FolderIcon}
+                icon="project"
                 isSelected={isProjectsActive}
               />
               <NavbarLink
                 to="/o/$organizationId/environments"
                 params={organizationParams}
                 label="Environments"
-                icon={TerminalIcon}
+                icon="environment"
                 isSelected={isEnvironmentsActive}
               />
               <NavbarLink
                 to="/o/$organizationId/flags"
                 params={organizationParams}
                 label="Flags"
-                icon={FlagIcon}
+                icon="flag"
                 isSelected={isFlagsActive}
               />
             </>
