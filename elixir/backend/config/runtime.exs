@@ -22,6 +22,12 @@ end
 
 config :railswitch_backend, RailswitchBackendWeb.Endpoint, http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
+config :sentry,
+  dsn: System.get_env("SENTRY_DSN"),
+  environment_name: config_env(),
+  enable_source_code_context: true,
+  root_source_code_paths: [File.cwd!()]
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

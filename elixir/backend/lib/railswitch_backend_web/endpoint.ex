@@ -1,4 +1,5 @@
 defmodule RailswitchBackendWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :railswitch_backend
   use Absinthe.Phoenix.Endpoint
 
@@ -51,6 +52,8 @@ defmodule RailswitchBackendWeb.Endpoint do
     parsers: [:json, Absinthe.Plug.Parser],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
+
+  plug Sentry.PlugContext
 
   plug Plug.Head
   plug Plug.Session, @session_options

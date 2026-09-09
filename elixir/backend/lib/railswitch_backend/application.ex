@@ -7,6 +7,8 @@ defmodule RailswitchBackend.Application do
 
   @impl true
   def start(_type, _args) do
+    :logger.add_handler(:sentry_handler, Sentry.LoggerHandler, %{})
+
     children = [
       RailswitchBackendWeb.Telemetry,
       RailswitchBackend.Repo,
