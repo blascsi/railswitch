@@ -279,36 +279,5 @@
       "defaultValue": "rule_did_not_match",
       "expected": "rule_did_not_match",
     },
-    {
-      "description": "The greater than equals operator fails when the value in the rule is not a number",
-      "context": {
-        "points": 101,
-      },
-      "configuration": {
-        "resultType": "string",
-        "rules": [
-          {
-            "enabled": true,
-            "conditions": {
-              "combinator": "and",
-              "conditions": [
-                {
-                  "type": "attribute",
-                  "attribute": "points",
-                  "operator": "gte",
-                  "value": "100",
-                },
-              ],
-            },
-            "result": {
-              "type": "value",
-              "value": "greater_than_equals",
-            },
-          },
-        ],
-      },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
-    },
   ]
 }

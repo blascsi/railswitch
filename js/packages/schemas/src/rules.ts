@@ -17,28 +17,32 @@ const comparisonOperatorSchema = z.enum([
 
 const combinatorOperatorSchema = z.enum(["and", "or"]);
 
-const attributeConditionSchema = z
-  .strictObject({
-    type: z.literal("attribute"),
-    attribute: z.string().min(1).trim(),
-    operator: comparisonOperatorSchema,
-    value: z.unknown().optional(),
-  })
-  .refine(
-    (val) => {
-      // Making sure that operations that can't accept values always pass
-      if (
-        ["exists", "not_exists", "is_true", "is_false"].includes(val.operator)
-      ) {
-        return true;
-      }
+const attributeConditionFields = {
+  type: z.literal("attribute"),
+  attribute: z.string().trim().min(1),
+};
 
-      return val.value != null;
-    },
-    {
-      error: "Condition must have 'value' for comparison operators",
-    },
-  );
+const attributeConditionSchema = z.discriminatedUnion("operator", [
+  z.strictObject({
+    ...attributeConditionFields,
+    operator: z.enum(["exists", "not_exists", "is_true", "is_false"]),
+  }),
+  z.strictObject({
+    ...attributeConditionFields,
+    operator: z.enum(["eq", "neq"]),
+    value: z.union([z.string(), z.number(), z.boolean()]),
+  }),
+  z.strictObject({
+    ...attributeConditionFields,
+    operator: z.enum(["lt", "lte", "gt", "gte"]),
+    value: z.number(),
+  }),
+  z.strictObject({
+    ...attributeConditionFields,
+    operator: z.enum(["contains", "not_contains"]),
+    value: z.string(),
+  }),
+]);
 
 const conditionSchema = z.discriminatedUnion("type", [
   attributeConditionSchema,

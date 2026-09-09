@@ -94,37 +94,6 @@
       "expected": "rule_did_not_match",
     },
     {
-      "description": "Contains operator fails when the value in rule is not a string",
-      "context": {
-        "name": "123",
-      },
-      "configuration": {
-        "resultType": "string",
-        "rules": [
-          {
-            "enabled": true,
-            "conditions": {
-              "combinator": "and",
-              "conditions": [
-                {
-                  "type": "attribute",
-                  "attribute": "name",
-                  "operator": "contains",
-                  "value": 1,
-                },
-              ],
-            },
-            "result": {
-              "type": "value",
-              "value": "contains",
-            },
-          },
-        ],
-      },
-      "defaultValue": "rule_did_not_match",
-      "expected": "rule_did_not_match",
-    },
-    {
       "description": "Contains operator succeeds when the value in rule is an empty string",
       "context": {
         "name": "Tester Theo",

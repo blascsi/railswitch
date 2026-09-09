@@ -143,9 +143,12 @@ function evaluateAttributeCondition(
   context: Context,
   attributeCondition: AttributeCondition,
 ) {
+  const valueFromRule =
+    "value" in attributeCondition ? attributeCondition.value : undefined;
+
   // Value is not defined, for an operator that requires it, so the flag has no way of evaluating to true
   if (
-    attributeCondition.value === undefined &&
+    valueFromRule === undefined &&
     !NO_VALUE_COMPARISION_OPERATORS.includes(attributeCondition.operator)
   ) {
     return false;
@@ -158,7 +161,7 @@ function evaluateAttributeCondition(
   return evaluateComparisionOperator(
     attributeCondition.operator,
     valueFromContextAttribute,
-    attributeCondition.value,
+    valueFromRule,
   );
 }
 
