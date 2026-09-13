@@ -1,5 +1,7 @@
 import { proportional, Table } from "@astryxdesign/core/Table";
+import { Text } from "@astryxdesign/core/Text";
 import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
+import { MonospaceToken } from "../MonospaceToken";
 import { LinkAnchor } from "../routing/link-components/LinkAnchor";
 
 export const flagsTable_flags = graphql(`
@@ -41,7 +43,7 @@ export function FlagsTable({ flags }: FlagsTableProps) {
               to="/o/$organizationId/project/$projectName/flag/$flagName"
               params={{ projectName: flag.project.name, flagName: flag.name }}
             >
-              {flag.name}
+              <Text type="code">{flag.name}</Text>
             </LinkAnchor>
           ),
         },
@@ -55,7 +57,7 @@ export function FlagsTable({ flags }: FlagsTableProps) {
               to="/o/$organizationId/project/$projectName"
               params={{ projectName: flag.project.name }}
             >
-              {flag.project.name}
+              <MonospaceToken label={flag.project.name} />
             </LinkAnchor>
           ),
         },

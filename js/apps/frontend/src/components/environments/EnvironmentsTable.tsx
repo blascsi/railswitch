@@ -1,5 +1,7 @@
 import { proportional, Table } from "@astryxdesign/core/Table";
+import { Text } from "@astryxdesign/core/Text";
 import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
+import { MonospaceToken } from "../MonospaceToken";
 import { LinkAnchor } from "../routing/link-components/LinkAnchor";
 
 export const environmentsTable_environments = graphql(`
@@ -44,7 +46,7 @@ export function EnvironmentsTable({ environments }: EnvironmentsTableProps) {
                 environmentName: environment.name,
               }}
             >
-              {environment.name}
+              <Text type="code">{environment.name}</Text>
             </LinkAnchor>
           ),
         },
@@ -58,7 +60,7 @@ export function EnvironmentsTable({ environments }: EnvironmentsTableProps) {
               to="/o/$organizationId/project/$projectName"
               params={{ projectName: environment.project.name }}
             >
-              {environment.project.name}
+              <MonospaceToken label={environment.project.name} />
             </LinkAnchor>
           ),
         },

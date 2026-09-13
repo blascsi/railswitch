@@ -1,5 +1,13 @@
+import { Divider } from "@astryxdesign/core/Divider";
+import { FieldLabel } from "@astryxdesign/core/Field";
 import { FormLayout } from "@astryxdesign/core/FormLayout";
-import { Stack } from "@astryxdesign/core/Stack";
+import {
+  Card,
+  Layout,
+  LayoutContent,
+  LayoutHeader,
+} from "@astryxdesign/core/Layout";
+import { HStack, Stack } from "@astryxdesign/core/Stack";
 import { rulesSchema } from "@railswitch/schemas";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "urql";
@@ -139,58 +147,85 @@ export function UpdateFlagForm({ flag }: UpdateFlagFormProps) {
   }, [environmentRules, form]);
 
   return (
-    <Stack gap={4}>
-      <EnvironmentSelector
-        label="Environment"
-        environments={environments}
-        value={selectedEnvironment ?? undefined}
-        onChange={setSelectedEnvironment}
-      />
-
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <Stack gap={4}>
-          <FormLayout>
-            <form.AppField
-              name="rules"
-              validators={{
-                onBlur: ({ value }) => validateRules(value),
-                onSubmit: ({ value }) => validateRules(value),
+    <Card>
+      <Layout
+        header={
+          <LayoutHeader hasDivider>
+            <HStack gap={2}>
+              <FieldLabel inputID="environment_selector" label="Environment" />
+              <EnvironmentSelector
+                id="environment_selector"
+                label=""
+                isLabelHidden={true}
+                environments={environments}
+                value={selectedEnvironment ?? undefined}
+                onChange={setSelectedEnvironment}
+              />
+              <Divider orientation="vertical" variant="strong" />
+              <FieldLabel
+                inputID="environment_selector_2"
+                label="Environment"
+              />
+              <EnvironmentSelector
+                id="environment_selector_2"
+                label=""
+                isLabelHidden={true}
+                environments={environments}
+                value={selectedEnvironment ?? undefined}
+                onChange={setSelectedEnvironment}
+              />
+            </HStack>
+          </LayoutHeader>
+        }
+        content={
+          <LayoutContent>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                form.handleSubmit();
               }}
             >
-              {(field) => (
-                <field.TextArea
-                  label="Environment configuration"
-                  placeholder="Flag rule configuration for this environment..."
-                  rows={10}
-                  isLoading={flagEnvironments.fetching}
-                  formatOnBlur={formatRules}
-                />
-              )}
-            </form.AppField>
-          </FormLayout>
-          <form.AppForm>
-            <Stack
-              direction="horizontal"
-              hAlign="end"
-              vAlign="center"
-              gap={3}
-              wrap="wrap"
-            >
-              <form.FormError />
-              <form.SubmitButton
-                label="Update"
-                isPending={fetching}
-                requiresChanges
-              />
-            </Stack>
-          </form.AppForm>
-        </Stack>
-      </form>
-    </Stack>
+              <Stack gap={4}>
+                <FormLayout>
+                  <form.AppField
+                    name="rules"
+                    validators={{
+                      onBlur: ({ value }) => validateRules(value),
+                      onSubmit: ({ value }) => validateRules(value),
+                    }}
+                  >
+                    {(field) => (
+                      <field.TextArea
+                        label="Environment configuration"
+                        placeholder="Flag rule configuration for this environment..."
+                        rows={10}
+                        isLoading={flagEnvironments.fetching}
+                        formatOnBlur={formatRules}
+                      />
+                    )}
+                  </form.AppField>
+                </FormLayout>
+                <form.AppForm>
+                  <Stack
+                    direction="horizontal"
+                    hAlign="end"
+                    vAlign="center"
+                    gap={3}
+                    wrap="wrap"
+                  >
+                    <form.FormError />
+                    <form.SubmitButton
+                      label="Update"
+                      isPending={fetching}
+                      requiresChanges
+                    />
+                  </Stack>
+                </form.AppForm>
+              </Stack>
+            </form>
+          </LayoutContent>
+        }
+      />
+    </Card>
   );
 }

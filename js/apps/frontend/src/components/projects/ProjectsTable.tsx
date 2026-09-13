@@ -1,4 +1,5 @@
 import { proportional, Table } from "@astryxdesign/core/Table";
+import { Text } from "@astryxdesign/core/Text";
 import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
 import { LinkAnchor } from "../routing/link-components/LinkAnchor";
 
@@ -36,7 +37,7 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
               to="/o/$organizationId/project/$projectName"
               params={{ projectName: project.name }}
             >
-              {project.name}
+              <Text type="code">{project.name}</Text>
             </LinkAnchor>
           ),
         },

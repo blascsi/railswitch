@@ -65,17 +65,17 @@ function EnvironmentPage() {
 
   return (
     <Stack gap={3}>
-      <Heading level={1}>Environment details</Heading>
-      <Text type="supporting">Name</Text>
-      <Text>{environment.name}</Text>
-      <Text type="supporting">Owning project</Text>
-      <LinkAnchor
-        from="/o/$organizationId"
-        to="/o/$organizationId/project/$projectName"
-        params={{ projectName: environment.project.name }}
-      >
-        {environment.project.name}
-      </LinkAnchor>
+      <Heading level={1}>{environment.name}</Heading>
+      <Text>
+        in{" "}
+        <LinkAnchor
+          from="/o/$organizationId"
+          to="/o/$organizationId/project/$projectName"
+          params={{ projectName: environment.project.name }}
+        >
+          <Text type="code">{environment.project.name}</Text>
+        </LinkAnchor>
+      </Text>
     </Stack>
   );
 }

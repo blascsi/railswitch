@@ -9,7 +9,6 @@ import {
   flagsTable_flags,
 } from "../../../../../components/flags/FlagsTable";
 import { CenteredContent } from "../../../../../components/layout/CenteredContent";
-import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../../graphql/graphql";
 import { loaderQuery } from "../../../../../graphql/loaderQuery";
@@ -64,11 +63,12 @@ function FlagsPage() {
     <Stack gap={4}>
       <Stack direction="horizontal" hAlign="between" vAlign="center">
         <Heading level={1}>Flags</Heading>
-        <LinkActionButton
+        <LinkButton
           from="/o/$organizationId"
           to="/o/$organizationId/flags/create"
-          label="Create new flag"
+          label="New flag"
           icon={<AppIcon icon="add" size="sm" />}
+          variant="primary"
         />
       </Stack>
       <Card>

@@ -9,7 +9,6 @@ import {
   ProjectsTable,
   projectsTable_projects,
 } from "../../../../../components/projects/ProjectsTable";
-import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../../graphql/graphql";
 import { loaderQuery } from "../../../../../graphql/loaderQuery";
@@ -64,11 +63,12 @@ function ProjectsPage() {
     <Stack gap={4}>
       <Stack direction="horizontal" hAlign="between" vAlign="center">
         <Heading level={1}>Projects</Heading>
-        <LinkActionButton
+        <LinkButton
           from="/o/$organizationId"
           to="/o/$organizationId/projects/create"
-          label="Create new project"
+          label="New project"
           icon={<AppIcon icon="add" size="sm" />}
+          variant="primary"
         />
       </Stack>
       <Card>

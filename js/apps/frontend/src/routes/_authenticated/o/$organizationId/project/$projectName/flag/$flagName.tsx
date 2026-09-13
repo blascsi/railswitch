@@ -74,17 +74,17 @@ function FlagUpdatePage() {
   return (
     <Stack gap={4}>
       <Stack gap={3}>
-        <Heading level={1}>Update flag</Heading>
-        <Text type="supporting">Name</Text>
-        <Text>{flag.name}</Text>
-        <Text type="supporting">Owning project</Text>
-        <LinkAnchor
-          from="/o/$organizationId"
-          to="/o/$organizationId/project/$projectName"
-          params={{ projectName: flag.project.name }}
-        >
-          {flag.project.name}
-        </LinkAnchor>
+        <Heading level={1}>{flag.name}</Heading>
+        <Text>
+          in{" "}
+          <LinkAnchor
+            from="/o/$organizationId"
+            to="/o/$organizationId/project/$projectName"
+            params={{ projectName: flag.project.name }}
+          >
+            <Text type="code">{flag.project.name}</Text>
+          </LinkAnchor>
+        </Text>
       </Stack>
 
       {/* Keyed so the environment choice and unsaved rules do not follow us to

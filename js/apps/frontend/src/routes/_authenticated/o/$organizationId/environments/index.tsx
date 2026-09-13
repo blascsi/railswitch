@@ -9,7 +9,6 @@ import {
   environmentsTable_environments,
 } from "../../../../../components/environments/EnvironmentsTable";
 import { CenteredContent } from "../../../../../components/layout/CenteredContent";
-import { LinkActionButton } from "../../../../../components/routing/link-components/LinkActionButton";
 import { LinkButton } from "../../../../../components/routing/link-components/LinkButton";
 import { graphql } from "../../../../../graphql/graphql";
 import { loaderQuery } from "../../../../../graphql/loaderQuery";
@@ -65,11 +64,12 @@ function EnvironmentsPage() {
     <Stack gap={4}>
       <Stack direction="horizontal" hAlign="between" vAlign="center">
         <Heading level={1}>Environments</Heading>
-        <LinkActionButton
+        <LinkButton
           from="/o/$organizationId"
           to="/o/$organizationId/environments/create"
-          label="Create new environment"
+          label="New environment"
           icon={<AppIcon icon="add" size="sm" />}
+          variant="primary"
         />
       </Stack>
       <Card>
