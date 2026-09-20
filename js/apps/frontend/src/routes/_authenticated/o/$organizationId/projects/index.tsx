@@ -3,6 +3,7 @@ import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
+
 import { AppIcon } from "../../../../../components/AppIcon";
 import { CenteredContent } from "../../../../../components/layout/CenteredContent";
 import {
@@ -16,15 +17,15 @@ import { pageTitle } from "../../../../../utils/pageTitle";
 
 const ProjectsPageQuery = graphql(
   `
-  query ProjectsPage {
-    listProjects(sort: [{ field: NAME, order: ASC }]) {
-      count
-      results {
-        ...projectsTable_projects
+    query ProjectsPage {
+      listProjects(sort: [{ field: NAME, order: ASC }]) {
+        count
+        results {
+          ...projectsTable_projects
+        }
       }
     }
-  }
-`,
+  `,
   [projectsTable_projects],
 );
 

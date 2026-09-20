@@ -6,9 +6,10 @@ import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import {
   ErrorBoundary,
-  type FallbackProps,
   getErrorMessage,
+  type FallbackProps,
 } from "react-error-boundary";
+
 import { AppIcon } from "../AppIcon";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {

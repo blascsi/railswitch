@@ -2,6 +2,7 @@ import { useAppShellMobile } from "@astryxdesign/core/AppShell";
 import { Center } from "@astryxdesign/core/Center";
 import { useTopNavRenderMode } from "@astryxdesign/core/TopNav";
 import * as stylex from "@stylexjs/stylex";
+
 import { RailswitchLogo } from "../brand/RailswitchLogo";
 
 const styles = stylex.create({

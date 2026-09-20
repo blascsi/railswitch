@@ -1,20 +1,5 @@
 import { z } from "zod";
 
-const comparisonOperatorSchema = z.enum([
-  "eq",
-  "neq",
-  "lt",
-  "lte",
-  "gt",
-  "gte",
-  "contains",
-  "not_contains",
-  "exists",
-  "not_exists",
-  "is_true",
-  "is_false",
-]);
-
 const combinatorOperatorSchema = z.enum(["and", "or"]);
 
 const attributeConditionFields = {
@@ -115,4 +100,4 @@ export type Conditions = z.infer<typeof conditionsSchema>;
 export type Condition = z.infer<typeof conditionSchema>;
 export type AttributeCondition = z.infer<typeof attributeConditionSchema>;
 export type CombinatorOperator = z.infer<typeof combinatorOperatorSchema>;
-export type ComparisionOperator = z.infer<typeof comparisonOperatorSchema>;
+export type ComparisionOperator = AttributeCondition["operator"];

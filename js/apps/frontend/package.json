@@ -6,10 +6,14 @@
   "scripts": {
     "astryx": "node node_modules/@astryxdesign/cli/clients/cli/bin/astryx.mjs",
     "build": "vite build && tsc -b",
-    "check": "biome check --write",
-    "check:ci": "biome ci",
+    "check": "pnpm run lint; pnpm run format",
+    "check:ci": "pnpm run lint:ci && pnpm run format:ci",
     "codegen": "gql-tada generate output --tsconfig ./tsconfig.app.json && node scripts/generate-introspection.ts",
     "dev": "vite",
+    "format": "prettier --write src scripts",
+    "format:ci": "prettier --check src scripts",
+    "lint": "eslint src scripts --fix",
+    "lint:ci": "eslint src scripts",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -37,7 +41,6 @@
     "@astryxdesign/build": "catalog:",
     "@astryxdesign/cli": "catalog:",
     "@babel/core": "catalog:",
-    "@biomejs/biome": "catalog:",
     "@railswitch/config": "workspace:*",
     "@rolldown/plugin-babel": "catalog:",
     "@tanstack/router-plugin": "catalog:",
@@ -48,7 +51,9 @@
     "@urql/introspection": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
+    "eslint": "catalog:",
     "graphql": "catalog:",
+    "prettier": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

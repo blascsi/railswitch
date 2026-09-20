@@ -1,4 +1,5 @@
 import { EmptyState } from "@astryxdesign/core/EmptyState";
+
 import { AppIcon } from "../AppIcon";
 import { CenteredContent } from "../layout/CenteredContent";
 import { LinkButton } from "./link-components/LinkButton";

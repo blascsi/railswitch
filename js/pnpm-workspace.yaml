@@ -7,7 +7,8 @@ catalog:
   "@astryxdesign/cli": ^0.5.2
   "@astryxdesign/core": ^0.5.2
   "@babel/core": ^7.29.7
-  "@biomejs/biome": 2.5.1
+  "@eslint/js": ^10.0.1
+  '@ianvs/prettier-plugin-sort-imports': ^4.7.1
   "@phosphor-icons/react": ^2.1.10
   "@rolldown/plugin-babel": ^0.2.3
   '@sentry/react': ^10.73.0
@@ -25,16 +26,23 @@ catalog:
   "@urql/introspection": ^1.2.1
   "@vitejs/plugin-react": ^6.0.2
   babel-plugin-react-compiler: ^1.0.0
+  eslint: ^10.10.0
+  eslint-config-prettier: ^10.1.8
+  eslint-plugin-react-hooks: ^7.1.1
+  eslint-plugin-unused-imports: ^4.4.1
+  globals: ^17.12.0
   gql.tada: ^1.11.3
   graphql: ^16.14.2
   jotai: ^2.20.2
   jsonc-parser: ^3.3.1
   phoenix: ^1.8.9
+  prettier: ^3.9.6
   react: ^19.2.7
   react-dom: ^19.2.7
   react-error-boundary: ^6.1.2
   tsdown: ^0.22.9
   typescript: ~6.0.3
+  typescript-eslint: ^8.70.0
   urql: ^5.0.3
   urql-exhaustive-additional-typenames-exchange: ^0.1.2
   vite: ^8.1.0

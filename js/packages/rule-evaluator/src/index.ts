@@ -111,7 +111,7 @@ function evaluateComparisionOperator(
       return valueFromContext == null;
     }
     default: {
-      console.warn(`Unknown operator: ${operator}`);
+      console.warn("Unknown operator:", operator satisfies never);
       return false;
     }
   }
@@ -171,7 +171,7 @@ function evaluateCondition(context: Context, condition: Condition) {
       return evaluateAttributeCondition(context, condition);
     }
     default: {
-      console.warn(`Unknown condition type: ${condition.type}`);
+      console.warn("Unknown condition type:", condition.type satisfies never);
       return false;
     }
   }
@@ -216,7 +216,8 @@ function evaluateConditionGroup(
     }
     default: {
       console.warn(
-        `Unknown condition group combinator: ${conditionGroup.combinator}`,
+        "Unknown condition group combinator:",
+        conditionGroup.combinator satisfies never,
       );
       return false;
     }
@@ -236,7 +237,7 @@ function resolveResult(resultType: ResultType, result: RuleResult) {
       return result.value;
     }
     default: {
-      console.warn(`Unknown rule result type: ${result.type}`);
+      console.warn("Unknown rule result type:", result.type satisfies never);
       return undefined;
     }
   }

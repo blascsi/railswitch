@@ -8,9 +8,9 @@ import {
   SignOutIcon,
   TerminalIcon,
 } from "@phosphor-icons/react";
-import type { ReactNode } from "react";
-// biome-ignore lint/correctness/noUnusedImports: The Astryx CLI needs this import present
+// The Astryx CLI needs this import present
 import React from "react";
+
 import { iconProps } from "../neutral/icons";
 
 export type RailswitchIconName =
@@ -23,7 +23,10 @@ export type RailswitchIconName =
   | "signOut"
   | "notFound";
 
-export const railswitchIconRegistry: Record<RailswitchIconName, ReactNode> = {
+export const railswitchIconRegistry: Record<
+  RailswitchIconName,
+  React.ReactNode
+> = {
   project: <FolderIcon {...iconProps} />,
   environment: <TerminalIcon {...iconProps} />,
   flag: <FlagIcon {...iconProps} />,

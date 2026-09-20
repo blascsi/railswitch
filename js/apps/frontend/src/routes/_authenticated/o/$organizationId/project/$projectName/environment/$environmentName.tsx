@@ -2,6 +2,7 @@ import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+
 import { AppIcon } from "../../../../../../../components/AppIcon";
 import { CenteredContent } from "../../../../../../../components/layout/CenteredContent";
 import { LinkAnchor } from "../../../../../../../components/routing/link-components/LinkAnchor";
@@ -11,7 +12,10 @@ import { pageTitle } from "../../../../../../../utils/pageTitle";
 
 const EnvironmentPageQuery = graphql(`
   query EnvironmentPageQuery($projectName: String!, $environmentName: String!) {
-    getEnvironmentByName(projectName: $projectName, environmentName: $environmentName) {
+    getEnvironmentByName(
+      projectName: $projectName
+      environmentName: $environmentName
+    ) {
       name
       project {
         id

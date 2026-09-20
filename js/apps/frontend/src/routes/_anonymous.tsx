@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+
 import { currentUserAtom } from "../atoms/currentUser";
 import { store } from "../store";
 

@@ -1,6 +1,7 @@
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
+
 import { CreateProjectForm } from "../../../../../components/projects/CreateProjectForm";
 import { pageTitle } from "../../../../../utils/pageTitle";
 

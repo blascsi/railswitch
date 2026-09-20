@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "urql";
-import { type FragmentOf, graphql } from "../../graphql/graphql";
+
+import { graphql, type FragmentOf } from "../../graphql/graphql";
 import { getSubmissionErrors } from "../../utils/apiErrorMessage";
 import type { projectSelector_projects } from "../projects/projectOptions";
 import { FlagForm, type FlagFormValues } from "./FlagForm";
@@ -41,7 +42,7 @@ export function CreateFlagForm({ projects }: CreateFlagFormProps) {
     });
 
     if (data?.createFlag.result != null) {
-      navigate({
+      await navigate({
         to: "/o/$organizationId/project/$projectName/flag/$flagName",
         params: {
           projectName: data.createFlag.result.project.name,

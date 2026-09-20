@@ -2,8 +2,13 @@ import { FormLayout } from "@astryxdesign/core/FormLayout";
 import { Stack } from "@astryxdesign/core/Stack";
 import type { ReactNode } from "react";
 import z from "zod";
+
 import { useAppForm } from "../../forms/formHook";
-import type { SubmissionErrors } from "../../utils/apiErrorMessage";
+import {
+  noSubmissionErrors,
+  unexpectedSubmissionError,
+  type SubmissionErrors,
+} from "../../utils/apiErrorMessage";
 
 const authenticationSchema = z.object({
   email: z.string().trim().pipe(z.email("Enter a valid email address")),
@@ -75,10 +80,16 @@ export function AuthenticationForm({
       },
     },
     onSubmit: async ({ value, formApi }) => {
-      const failure = await onSubmit(schema.parse(value));
+      formApi.setErrorMap({ onSubmit: noSubmissionErrors });
 
-      if (failure != null) {
-        formApi.setErrorMap({ onSubmit: failure });
+      try {
+        const failure = await onSubmit(schema.parse(value));
+
+        if (failure != null) {
+          formApi.setErrorMap({ onSubmit: failure });
+        }
+      } catch {
+        formApi.setErrorMap({ onSubmit: unexpectedSubmissionError });
       }
     },
   });
@@ -87,7 +98,7 @@ export function AuthenticationForm({
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
     >
       <Stack gap={4}>

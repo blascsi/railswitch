@@ -1,7 +1,14 @@
 import { devtoolsExchange } from "@urql/devtools";
-import { Client, cacheExchange, type Exchange, fetchExchange } from "urql";
+import {
+  cacheExchange,
+  Client,
+  fetchExchange,
+  type CombinedError,
+  type Exchange,
+} from "urql";
 import { exhaustiveAdditionalTypenamesExchange } from "urql-exhaustive-additional-typenames-exchange";
 import { pipe, tap } from "wonka";
+
 import { currentUserAtom } from "../atoms/currentUser";
 import { clearSession } from "../auth/clearSession";
 import { store } from "../store";
@@ -17,6 +24,12 @@ const exhaustiveTypenamesExchange = exhaustiveAdditionalTypenamesExchange({
 // session ended — not the current one.
 let sessionGeneration = 0;
 
+function isUnauthorizedError(error: CombinedError | undefined) {
+  const response: unknown = error?.response;
+
+  return response instanceof Response && response.status === 401;
+}
+
 const sessionExchange =
   (generation: number): Exchange =>
   ({ forward }) =>
@@ -25,7 +38,7 @@ const sessionExchange =
       forward(operations$),
       tap((result) => {
         if (
-          result.error?.response?.status === 401 &&
+          isUnauthorizedError(result.error) &&
           generation === sessionGeneration
         ) {
           clearSession();

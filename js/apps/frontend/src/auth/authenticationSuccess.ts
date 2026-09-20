@@ -1,4 +1,4 @@
-import { type CurrentUser, currentUserAtom } from "../atoms/currentUser";
+import { currentUserAtom, type CurrentUser } from "../atoms/currentUser";
 import { resetGraphqlClients } from "../graphql/client";
 import { router } from "../router";
 import { store } from "../store";

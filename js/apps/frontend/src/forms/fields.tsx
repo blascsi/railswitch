@@ -10,6 +10,7 @@ import { TextArea, type TextAreaProps } from "@astryxdesign/core/TextArea";
 import { TextInput, type TextInputProps } from "@astryxdesign/core/TextInput";
 import { colorVars } from "@astryxdesign/core/theme/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
+
 import { AppIcon } from "../components/AppIcon";
 import { errorMessages, fieldErrorStatus } from "./fieldStatus";
 import { useFieldContext, useFormContext } from "./formContexts";
@@ -93,7 +94,7 @@ export function FormError() {
   const form = useFormContext();
 
   return (
-    <form.Subscribe selector={(state) => state.errors}>
+    <form.Subscribe selector={(state): readonly unknown[] => state.errors}>
       {(errors) => {
         const message = errorMessages(errors).join(" ");
 

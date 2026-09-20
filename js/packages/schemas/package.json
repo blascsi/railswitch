@@ -4,9 +4,13 @@
   "description": "The JSON Schemas used by the Railswitch project",
   "private": true,
   "scripts": {
-    "check": "biome check --write",
-    "check:ci": "biome ci",
+    "check": "pnpm run lint; pnpm run format",
+    "check:ci": "pnpm run lint:ci && pnpm run format:ci",
     "codegen": "node scripts/generate-json-schema.ts",
+    "format": "prettier --write .",
+    "format:ci": "prettier --check .",
+    "lint": "eslint --fix .",
+    "lint:ci": "eslint .",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.scripts.json"
   },
   "keywords": [
@@ -21,9 +25,10 @@
     }
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
     "@railswitch/config": "workspace:*",
     "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"
   }

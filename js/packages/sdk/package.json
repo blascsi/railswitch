@@ -5,8 +5,12 @@
   "private": true,
   "scripts": {
     "build": "tsdown",
-    "check": "biome check --write",
-    "check:ci": "biome ci",
+    "check": "pnpm run lint; pnpm run format",
+    "check:ci": "pnpm run lint:ci && pnpm run format:ci",
+    "format": "prettier --write .",
+    "format:ci": "prettier --check .",
+    "lint": "eslint --fix .",
+    "lint:ci": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -16,26 +20,32 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "default": "./dist/index.mjs"
+      "default": "./src/index.ts"
     }
   },
   "files": [
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    }
   },
   "dependencies": {
     "phoenix": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
     "@railswitch/config": "workspace:*",
     "@railswitch/rule-evaluator": "workspace:*",
     "@railswitch/schemas": "workspace:*",
     "@types/phoenix": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"
   }

@@ -1,6 +1,6 @@
 import { Link, type LinkProps } from "@astryxdesign/core/Link";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { type ComponentPropsWithoutRef, forwardRef } from "react";
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 
 type AstryxAnchorLinkProps = LinkProps &
   Omit<ComponentPropsWithoutRef<"a">, keyof LinkProps>;

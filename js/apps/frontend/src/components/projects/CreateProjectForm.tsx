@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "urql";
+
 import { graphql } from "../../graphql/graphql";
 import { getSubmissionErrors } from "../../utils/apiErrorMessage";
 import { ProjectForm, type ProjectFormValues } from "./ProjectForm";
@@ -29,7 +30,7 @@ export function CreateProjectForm() {
     });
 
     if (data?.createProject.result != null) {
-      navigate({
+      await navigate({
         to: "/o/$organizationId/project/$projectName",
         params: { projectName: data.createProject.result.name },
       });

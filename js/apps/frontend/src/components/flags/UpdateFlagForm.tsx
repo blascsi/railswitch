@@ -8,14 +8,17 @@ import {
   LayoutHeader,
 } from "@astryxdesign/core/Layout";
 import { HStack, Stack } from "@astryxdesign/core/Stack";
-import { rulesSchema } from "@railswitch/schemas";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "urql";
+
+import { rulesSchema } from "@railswitch/schemas";
+
 import { useAppForm } from "../../forms/formHook";
-import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
+import { graphql, readFragment, type FragmentOf } from "../../graphql/graphql";
 import {
   getSubmissionErrors,
   noSubmissionErrors,
+  unexpectedSubmissionError,
 } from "../../utils/apiErrorMessage";
 import {
   EnvironmentSelector,
@@ -24,22 +27,27 @@ import {
 
 export const updateFlagForm_flag = graphql(
   `
-  fragment updateFlagForm_flag on Flag {
-    id
-    project {
-      environments(sort: [{field: NAME, order: ASC}]) {
-        id
-        ...environmentSelector_environments
+    fragment updateFlagForm_flag on Flag {
+      id
+      project {
+        environments(sort: [{ field: NAME, order: ASC }]) {
+          id
+          ...environmentSelector_environments
+        }
       }
     }
-  }
-`,
+  `,
   [environmentSelector_environments],
 );
 
 const FlagEnvironmentQuery = graphql(`
-  query FlagEnvironmentQuery($flag: FlagEnvironmentFilterFlagId!, $environment: FlagEnvironmentFilterEnvironmentId!) {
-    listFlagEnvironments(filter: {environmentId: $environment, flagId: $flag}) {
+  query FlagEnvironmentQuery(
+    $flag: FlagEnvironmentFilterFlagId!
+    $environment: FlagEnvironmentFilterEnvironmentId!
+  ) {
+    listFlagEnvironments(
+      filter: { environmentId: $environment, flagId: $flag }
+    ) {
       results {
         id
         rules
@@ -49,7 +57,10 @@ const FlagEnvironmentQuery = graphql(`
 `);
 
 const UpdateFlagEnvironmentMutation = graphql(`
-  mutation UpdateFlagEnvironmentMutation($id: ID!, $input: UpdateFlagEnvironmentInput!) {
+  mutation UpdateFlagEnvironmentMutation(
+    $id: ID!
+    $input: UpdateFlagEnvironmentInput!
+  ) {
     updateFlagEnvironment(id: $id, input: $input) {
       result {
         id
@@ -116,22 +127,26 @@ export function UpdateFlagForm({ flag }: UpdateFlagFormProps) {
     onSubmit: async ({ value, formApi }) => {
       formApi.setErrorMap({ onSubmit: noSubmissionErrors });
 
-      const { data, error } = await updateRule({
-        id: flagEnvironmentId ?? "",
-        input: { rules: value.rules },
-      });
+      try {
+        const { data, error } = await updateRule({
+          id: flagEnvironmentId ?? "",
+          input: { rules: value.rules },
+        });
 
-      if (data?.updateFlagEnvironment.result != null) {
-        formApi.reset(value, { keepDefaultValues: true });
-        return;
+        if (data?.updateFlagEnvironment.result != null) {
+          formApi.reset(value, { keepDefaultValues: true });
+          return;
+        }
+
+        formApi.setErrorMap({
+          onSubmit: getSubmissionErrors(
+            error,
+            data?.updateFlagEnvironment.errors,
+          ),
+        });
+      } catch {
+        formApi.setErrorMap({ onSubmit: unexpectedSubmissionError });
       }
-
-      formApi.setErrorMap({
-        onSubmit: getSubmissionErrors(
-          error,
-          data?.updateFlagEnvironment.errors,
-        ),
-      });
     },
   });
 
@@ -182,7 +197,7 @@ export function UpdateFlagForm({ flag }: UpdateFlagFormProps) {
             <form
               onSubmit={(event) => {
                 event.preventDefault();
-                form.handleSubmit();
+                void form.handleSubmit();
               }}
             >
               <Stack gap={4}>

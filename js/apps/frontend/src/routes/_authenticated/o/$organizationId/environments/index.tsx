@@ -3,6 +3,7 @@ import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
+
 import { AppIcon } from "../../../../../components/AppIcon";
 import {
   EnvironmentsTable,
@@ -16,15 +17,15 @@ import { pageTitle } from "../../../../../utils/pageTitle";
 
 const EnvironmentsPageQuery = graphql(
   `
-  query EnvironmentsPage {
-    listEnvironments(sort: [{field: NAME, order: ASC}]) {
-      count
-      results {
-        ...environmentsTable_environments
+    query EnvironmentsPage {
+      listEnvironments(sort: [{ field: NAME, order: ASC }]) {
+        count
+        results {
+          ...environmentsTable_environments
+        }
       }
     }
-  }
-`,
+  `,
   [environmentsTable_environments],
 );
 

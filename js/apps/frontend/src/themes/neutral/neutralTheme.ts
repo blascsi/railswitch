@@ -29,6 +29,7 @@
  */
 
 import { defineSyntaxTheme, defineTheme } from "@astryxdesign/core/theme";
+
 import { neutralIconRegistry } from "./icons";
 
 /**

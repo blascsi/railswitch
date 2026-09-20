@@ -1,10 +1,12 @@
 import { FormLayout } from "@astryxdesign/core/FormLayout";
 import { Stack } from "@astryxdesign/core/Stack";
 import z from "zod";
+
 import { useAppForm } from "../../forms/formHook";
 import { lowercaseLettersAndUnderscoresSchema } from "../../schemas/lowercaseLettersAndUnderscoresSchema";
 import {
   noSubmissionErrors,
+  unexpectedSubmissionError,
   type SubmissionErrors,
 } from "../../utils/apiErrorMessage";
 
@@ -37,10 +39,14 @@ export function ProjectForm({
     onSubmit: async ({ value, formApi }) => {
       formApi.setErrorMap({ onSubmit: noSubmissionErrors });
 
-      const failure = await onSubmit(projectSchema.parse(value));
+      try {
+        const failure = await onSubmit(projectSchema.parse(value));
 
-      if (failure != null) {
-        formApi.setErrorMap({ onSubmit: failure });
+        if (failure != null) {
+          formApi.setErrorMap({ onSubmit: failure });
+        }
+      } catch {
+        formApi.setErrorMap({ onSubmit: unexpectedSubmissionError });
       }
     },
   });
@@ -49,7 +55,7 @@ export function ProjectForm({
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
     >
       <Stack gap={4}>

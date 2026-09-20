@@ -2,6 +2,7 @@ import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+
 import { AppIcon } from "../../../../../../../components/AppIcon";
 import {
   UpdateFlagForm,
@@ -15,18 +16,18 @@ import { pageTitle } from "../../../../../../../utils/pageTitle";
 
 const FlagUpdatePageQuery = graphql(
   `
-  query FlagUpdatePageQuery($projectName: String!, $flagName: String!) {
-    getFlagByName(projectName: $projectName, flagName: $flagName) {
-      id
-      name
-      project {
+    query FlagUpdatePageQuery($projectName: String!, $flagName: String!) {
+      getFlagByName(projectName: $projectName, flagName: $flagName) {
         id
         name
+        project {
+          id
+          name
+        }
+        ...updateFlagForm_flag
       }
-      ...updateFlagForm_flag
     }
-  }
-`,
+  `,
   [updateFlagForm_flag],
 );
 

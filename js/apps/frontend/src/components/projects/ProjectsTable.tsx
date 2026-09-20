@@ -1,6 +1,7 @@
 import { proportional, Table } from "@astryxdesign/core/Table";
 import { Text } from "@astryxdesign/core/Text";
-import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
+
+import { graphql, readFragment, type FragmentOf } from "../../graphql/graphql";
 import { LinkAnchor } from "../routing/link-components/LinkAnchor";
 
 export const projectsTable_projects = graphql(`

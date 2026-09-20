@@ -1,6 +1,7 @@
 import { Banner } from "@astryxdesign/core/Banner";
 import { Button } from "@astryxdesign/core/Button";
 import type { CombinedError } from "urql";
+
 import { getApiErrorMessage } from "../../utils/apiErrorMessage";
 
 type QueryErrorProps = {

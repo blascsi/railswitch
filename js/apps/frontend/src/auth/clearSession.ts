@@ -8,5 +8,5 @@ export function clearSession() {
   // otherwise carry the outgoing session's client onto that page.
   resetGraphqlClients();
   store.set(currentUserAtom, null);
-  router.invalidate();
+  void router.invalidate();
 }

@@ -1,5 +1,7 @@
 import { writeFileSync } from "node:fs";
+
 import { z } from "zod";
+
 import { rulesSchema } from "../src/rules.ts";
 
 const outputPath = new URL(

@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Provider } from "urql";
+
 import { organizationClient } from "../../../graphql/client";
 
 export const Route = createFileRoute("/_authenticated/o/$organizationId")({

@@ -1,10 +1,11 @@
-import { type Context, evaluateRules } from "@railswitch/rule-evaluator";
+import { Socket } from "phoenix";
+
+import { evaluateRules, type Context } from "@railswitch/rule-evaluator";
 import {
+  rulesSchema,
   type Rules,
   type RuleValueResult,
-  rulesSchema,
 } from "@railswitch/schemas";
-import { Socket } from "phoenix";
 
 export type { Context };
 
@@ -117,18 +118,18 @@ export function setupSdk(options: SDKOptions, globalContext: Context) {
     });
 
   return {
-    teardown() {
+    teardown: () => {
       environmentChannel.leave();
       socket.disconnect();
     },
-    setContextValue(key: string, value: unknown) {
+    setContextValue: (key: string, value: unknown) => {
       globalContext[key] = value;
     },
-    rsx<T extends FlagValue>(
+    rsx: <T extends FlagValue>(
       flagName: string,
       localContext: Context,
       defaultValue: T,
-    ): T {
+    ): T => {
       if (!connectionEstablished) {
         console.error(
           "Connection with the Railswitch SDK has not been established yet.",

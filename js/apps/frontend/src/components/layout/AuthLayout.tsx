@@ -4,6 +4,7 @@ import { HStack, Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import * as stylex from "@stylexjs/stylex";
 import type { ReactNode } from "react";
+
 import { AuthHeroPanel } from "./AuthHeroPanel";
 
 const styles = stylex.create({

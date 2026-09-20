@@ -1,6 +1,6 @@
 import { Button, type ButtonProps } from "@astryxdesign/core/Button";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { type ComponentPropsWithoutRef, forwardRef, type Ref } from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type Ref } from "react";
 
 type AstryxButtonLinkProps = ButtonProps &
   Omit<ComponentPropsWithoutRef<"a">, keyof ButtonProps>;

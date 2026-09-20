@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+
 import { currentUserAtom } from "../atoms/currentUser";
 import { AppShellLayout } from "../components/layout/AppShellLayout";
 import { graphql } from "../graphql/graphql";

@@ -1,5 +1,6 @@
 import { HStack } from "@astryxdesign/core/Stack";
 import * as stylex from "@stylexjs/stylex";
+
 import { RailswitchMark } from "./RailswitchMark";
 
 const styles = stylex.create({

@@ -14,7 +14,7 @@ export function OrganizationSelector({
   const organizations = authenticatedRoute.useLoaderData();
 
   const onSelectOrganization = (selected: string) => {
-    navigate({
+    void navigate({
       to: "/o/$organizationId",
       params: { organizationId: selected },
     });

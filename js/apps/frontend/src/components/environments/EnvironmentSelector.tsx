@@ -1,5 +1,6 @@
 import { Selector, type SelectorProps } from "@astryxdesign/core/Selector";
-import { type FragmentOf, graphql, readFragment } from "../../graphql/graphql";
+
+import { graphql, readFragment, type FragmentOf } from "../../graphql/graphql";
 
 export const environmentSelector_environments = graphql(`
   fragment environmentSelector_environments on Environment {

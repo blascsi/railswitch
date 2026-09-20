@@ -1,6 +1,7 @@
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
+
 import { CreateFlagForm } from "../../../../../components/flags/CreateFlagForm";
 import { projectSelector_projects } from "../../../../../components/projects/projectOptions";
 import { graphql } from "../../../../../graphql/graphql";
@@ -9,14 +10,14 @@ import { pageTitle } from "../../../../../utils/pageTitle";
 
 const FlagCreatePageQuery = graphql(
   `
-  query FlagCreatePage {
-    listProjects(sort: [{field: NAME, order: ASC}]) {
-      results {
-        ...projectSelector_projects
+    query FlagCreatePage {
+      listProjects(sort: [{ field: NAME, order: ASC }]) {
+        results {
+          ...projectSelector_projects
+        }
       }
     }
-  }
-`,
+  `,
   [projectSelector_projects],
 );
 

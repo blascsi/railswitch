@@ -1,6 +1,9 @@
 {
   "extends": "@railswitch/config/tsconfig.base.json",
   "compilerOptions": {
+    "lib": ["ES2023"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "types": ["node"],
     "allowImportingTsExtensions": true
   },

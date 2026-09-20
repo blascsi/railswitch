@@ -1,6 +1,7 @@
 import { createRootRoute, HeadContent, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Provider } from "urql";
+
 import { PageErrorBoundary } from "../components/layout/PageErrorBoundary";
 import { RouteProgress } from "../components/routing/RouteProgress";
 import { crossOrganizationClient } from "../graphql/client";

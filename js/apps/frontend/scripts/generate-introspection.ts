@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
+
 import { minifyIntrospectionQuery } from "@urql/introspection";
 import { buildSchema, introspectionFromSchema } from "graphql";
 

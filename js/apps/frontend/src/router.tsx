@@ -1,4 +1,5 @@
 import { createRouter } from "@tanstack/react-router";
+
 import { currentUserAtom } from "./atoms/currentUser";
 import { FullPageLoader } from "./components/feedback/FullPageLoader";
 import { NotFoundPage } from "./components/routing/NotFoundPage";
@@ -18,7 +19,7 @@ export const router = createRouter({
 // A session can end on any request's 401, from any route.
 store.sub(currentUserAtom, () => {
   if (store.get(currentUserAtom) == null) {
-    router.navigate({ to: "/login" });
+    void router.navigate({ to: "/login" });
   }
 });
 

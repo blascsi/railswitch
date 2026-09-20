@@ -4,8 +4,12 @@
   "description": "The rule evaluation logic for Railswitch flags",
   "private": true,
   "scripts": {
-    "check": "biome check --write",
-    "check:ci": "biome ci",
+    "check": "pnpm run lint; pnpm run format",
+    "check:ci": "pnpm run lint:ci && pnpm run format:ci",
+    "format": "prettier --write .",
+    "format:ci": "prettier --check .",
+    "lint": "eslint --fix .",
+    "lint:ci": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest watch"
@@ -24,10 +28,11 @@
     "@railswitch/schemas": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
     "@railswitch/config": "workspace:*",
     "@types/node": "catalog:",
+    "eslint": "catalog:",
     "jsonc-parser": "catalog:",
+    "prettier": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

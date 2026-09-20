@@ -15,6 +15,7 @@ import { getRouteApi, useParams } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
 import { useMutation } from "urql";
+
 import { currentUserAtom } from "../../atoms/currentUser";
 import { clearSession } from "../../auth/clearSession";
 import { graphql } from "../../graphql/graphql";
@@ -138,7 +139,7 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
                 <DropdownMenuItem
                   icon="signOut"
                   label="Sign Out"
-                  onClick={onSignOut}
+                  onClick={() => void onSignOut()}
                 />
               </DropdownMenu>
             </Stack>

@@ -1,7 +1,7 @@
 import {
-  type UseMatchRouteOptions,
   useMatchRoute,
   useRouterState,
+  type UseMatchRouteOptions,
 } from "@tanstack/react-router";
 
 /**

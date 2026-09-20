@@ -2,6 +2,7 @@ import { Text } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation } from "urql";
+
 import { onAuthenticationSuccess } from "../../auth/authenticationSuccess";
 import {
   AuthenticationForm,
@@ -10,7 +11,10 @@ import {
 import { AuthLayout } from "../../components/layout/AuthLayout";
 import { LinkAnchor } from "../../components/routing/link-components/LinkAnchor";
 import { graphql } from "../../graphql/graphql";
-import { getApiErrorMessage } from "../../utils/apiErrorMessage";
+import {
+  getApiErrorMessage,
+  unexpectedSubmissionError,
+} from "../../utils/apiErrorMessage";
 import { pageTitle } from "../../utils/pageTitle";
 
 const SignInMutation = graphql(`
@@ -41,8 +45,14 @@ function LoginPage() {
     const user = result.data?.signIn;
     if (user != null) {
       setIsEnteringApp(true);
-      await onAuthenticationSuccess(user);
-      return;
+
+      try {
+        await onAuthenticationSuccess(user);
+        return;
+      } catch {
+        setIsEnteringApp(false);
+        return unexpectedSubmissionError;
+      }
     }
 
     return {

@@ -1,5 +1,5 @@
-import { Token, type TokenProps } from "@astryxdesign/core/Token";
 import { typographyVars } from "@astryxdesign/core/theme/tokens.stylex";
+import { Token, type TokenProps } from "@astryxdesign/core/Token";
 import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({

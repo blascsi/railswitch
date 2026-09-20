@@ -29,6 +29,7 @@
  */
 
 import { defineSyntaxTheme, defineTheme } from "@astryxdesign/core/theme";
+
 import { neutralTheme } from "../neutral/neutralTheme";
 import { railswitchIconRegistry } from "./icons";
 

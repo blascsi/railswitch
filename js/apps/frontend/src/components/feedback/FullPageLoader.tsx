@@ -1,4 +1,5 @@
 import { Center } from "@astryxdesign/core/Center";
+
 import { PageLoader } from "./PageLoader";
 
 type FullPageLoaderProps = {

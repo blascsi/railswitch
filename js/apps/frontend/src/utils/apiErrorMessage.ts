@@ -18,6 +18,11 @@ export const noSubmissionErrors: SubmissionErrors = {
   fields: {},
 };
 
+export const unexpectedSubmissionError: SubmissionErrors = {
+  form: FALLBACK_MESSAGE,
+  fields: {},
+};
+
 function joinMessages(errors: readonly MutationError[]): string {
   const message = errors
     .map((item) => item.message)

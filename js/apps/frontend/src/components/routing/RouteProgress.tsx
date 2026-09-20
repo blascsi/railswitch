@@ -19,20 +19,22 @@ export function RouteProgress() {
     select: (state) =>
       state.isLoading || state.matches.some((match) => !!match.isFetching),
   });
-  const [isVisible, setIsVisible] = useState(false);
+  const [isDelayElapsed, setIsDelayElapsed] = useState(false);
 
   useEffect(() => {
     if (!isNavigating) {
-      setIsVisible(false);
       return;
     }
 
-    const timer = setTimeout(() => setIsVisible(true), SHOW_DELAY_MS);
+    const timer = setTimeout(() => setIsDelayElapsed(true), SHOW_DELAY_MS);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setIsDelayElapsed(false);
+    };
   }, [isNavigating]);
 
-  if (!isVisible) {
+  if (!isNavigating || !isDelayElapsed) {
     return null;
   }
 

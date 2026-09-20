@@ -1,4 +1,5 @@
 import { EmptyState } from "@astryxdesign/core/EmptyState";
+
 import { AppIcon } from "../AppIcon";
 import { CenteredContent } from "../layout/CenteredContent";
 import { OrganizationSelector } from "../OrganizationSelector";

@@ -1,4 +1,5 @@
 import { Icon, type IconName, type IconProps } from "@astryxdesign/core/Icon";
+
 import type { RailswitchIconName } from "../themes/railswitch/icons";
 
 type AppIconProps = Omit<IconProps, "icon"> & {

@@ -1,3 +1,4 @@
+export { rulesSchema } from "./rules.js";
 export type {
   AttributeCondition,
   CombinatorOperator,
@@ -7,7 +8,6 @@ export type {
   Conditions,
   Rule,
   RuleResult,
-  Rules,
   RuleValueResult,
+  Rules,
 } from "./rules.js";
-export { rulesSchema } from "./rules.js";

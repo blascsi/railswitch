@@ -1,8 +1,8 @@
-import type { IconRegistry } from "@astryxdesign/core/Icon";
+import type { IconName } from "@astryxdesign/core/Icon";
 import {
   ArrowDownIcon,
-  ArrowSquareOutIcon,
   ArrowsDownUpIcon,
+  ArrowSquareOutIcon,
   ArrowUpIcon,
   CalendarBlankIcon,
   CaretDoubleLeftIcon,
@@ -29,7 +29,7 @@ import {
   XCircleIcon,
   XIcon,
 } from "@phosphor-icons/react";
-// biome-ignore lint/correctness/noUnusedImports: The Astryx CLI needs this import present
+// The Astryx CLI needs this import present
 import React from "react";
 
 export const iconProps = {
@@ -37,7 +37,7 @@ export const iconProps = {
   "aria-hidden": true as const,
 };
 
-export const neutralIconRegistry: IconRegistry = {
+export const neutralIconRegistry: Record<IconName, React.ReactNode> = {
   close: <XIcon {...iconProps} />,
   chevronDown: <CaretDownIcon {...iconProps} />,
   chevronLeft: <CaretLeftIcon {...iconProps} />,

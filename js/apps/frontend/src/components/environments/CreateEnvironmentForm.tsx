@@ -1,12 +1,12 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "urql";
-import { type FragmentOf, graphql } from "../../graphql/graphql";
+
+import { graphql, type FragmentOf } from "../../graphql/graphql";
 import { getSubmissionErrors } from "../../utils/apiErrorMessage";
 import type { projectSelector_projects } from "../projects/projectOptions";
 import { EnvironmentForm, type EnvironmentFormValues } from "./EnvironmentForm";
 
-const CreateEnvironmentMutation = graphql(
-  `
+const CreateEnvironmentMutation = graphql(`
   mutation CreateEnvironmentMutation($input: CreateEnvironmentInput!) {
     createEnvironment(input: $input) {
       result {
@@ -23,8 +23,7 @@ const CreateEnvironmentMutation = graphql(
       }
     }
   }
-`,
-);
+`);
 
 type CreateEnvironmentFormProps = {
   projects: readonly FragmentOf<typeof projectSelector_projects>[];
@@ -47,7 +46,7 @@ export function CreateEnvironmentForm({
     });
 
     if (data?.createEnvironment.result != null) {
-      navigate({
+      await navigate({
         to: "/o/$organizationId/project/$projectName/environment/$environmentName",
         params: {
           projectName: data.createEnvironment.result.project.name,

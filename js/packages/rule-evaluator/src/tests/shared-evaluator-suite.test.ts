@@ -1,10 +1,13 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Rules } from "@railswitch/schemas";
+
 import { parse } from "jsonc-parser";
 import { describe, expect, it } from "vitest";
-import { type Context, evaluateRules } from "../index.js";
+
+import type { Rules } from "@railswitch/schemas";
+
+import { evaluateRules, type Context } from "../index.js";
 
 interface TestCase {
   description: string;
@@ -22,24 +25,22 @@ const files = (await readdir(fixturesDir)).filter((f) => f.endsWith(".jsonc"));
 
 const fixtures = await Promise.all(
   files.map(async (file) => {
-    const { testCases }: { testCases: TestCase[] } = parse(
+    const { testCases } = parse(
       await readFile(join(fixturesDir, file), "utf-8"),
-    );
+    ) as { testCases: TestCase[] };
     return { file, testCases };
   }),
 );
 
 for (const { file, testCases } of fixtures) {
   describe(file, () => {
-    it.each(testCases)("$description", ({
-      context,
-      configuration,
-      defaultValue,
-      expected,
-    }) => {
-      expect(evaluateRules(context, configuration, defaultValue)).toEqual(
-        expected,
-      );
-    });
+    it.each(testCases)(
+      "$description",
+      ({ context, configuration, defaultValue, expected }) => {
+        expect(evaluateRules(context, configuration, defaultValue)).toEqual(
+          expected,
+        );
+      },
+    );
   });
 }

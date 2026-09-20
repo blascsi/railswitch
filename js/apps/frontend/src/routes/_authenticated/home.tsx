@@ -3,6 +3,7 @@ import { Stack } from "@astryxdesign/core/Stack";
 import { Heading, Text } from "@astryxdesign/core/Text";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtomValue } from "jotai";
+
 import { currentUserAtom } from "../../atoms/currentUser";
 import { CenteredContent } from "../../components/layout/CenteredContent";
 import { pageTitle } from "../../utils/pageTitle";
