@@ -1,30 +1,57 @@
 import { z } from "zod";
 
-const combinatorOperatorSchema = z.enum(["and", "or"]);
+export const combinatorOperatorSchema = z.enum(["and", "or"]);
+
+export const valuelessOperatorSchema = z.enum([
+  "exists",
+  "not_exists",
+  "is_true",
+  "is_false",
+]);
+export const anyValueOperatorSchema = z.enum(["eq", "neq"]);
+export const numericOperatorSchema = z.enum(["lt", "lte", "gt", "gte"]);
+export const stringOperatorSchema = z.enum(["contains", "not_contains"]);
+
+export const attributeOperatorSchema = z.enum([
+  ...anyValueOperatorSchema.options,
+  ...numericOperatorSchema.options,
+  ...stringOperatorSchema.options,
+  ...valuelessOperatorSchema.options,
+]);
+
+export const conditionValueTypeSchema = z.enum(["string", "number", "boolean"]);
+
+export const ruleValueResultValueTypeSchema = z.enum([
+  "string",
+  "number",
+  "boolean",
+]);
 
 const attributeConditionFields = {
   type: z.literal("attribute"),
   attribute: z.string().trim().min(1),
 };
 
+const anyValueConditionSchema = z.strictObject({
+  ...attributeConditionFields,
+  operator: anyValueOperatorSchema,
+  value: z.union([z.string(), z.number(), z.boolean()]),
+});
+
 const attributeConditionSchema = z.discriminatedUnion("operator", [
   z.strictObject({
     ...attributeConditionFields,
-    operator: z.enum(["exists", "not_exists", "is_true", "is_false"]),
+    operator: valuelessOperatorSchema,
   }),
+  anyValueConditionSchema,
   z.strictObject({
     ...attributeConditionFields,
-    operator: z.enum(["eq", "neq"]),
-    value: z.union([z.string(), z.number(), z.boolean()]),
-  }),
-  z.strictObject({
-    ...attributeConditionFields,
-    operator: z.enum(["lt", "lte", "gt", "gte"]),
+    operator: numericOperatorSchema,
     value: z.number(),
   }),
   z.strictObject({
     ...attributeConditionFields,
-    operator: z.enum(["contains", "not_contains"]),
+    operator: stringOperatorSchema,
     value: z.string(),
   }),
 ]);
@@ -45,24 +72,28 @@ const conditionGroupSchema: z.ZodType<{
   conditions: conditionsSchema,
 });
 
-const resultValueSchemas = {
+const valueResultValueSchemas = {
   string: z.string(),
   number: z.number(),
   boolean: z.boolean(),
-};
+} satisfies Record<RuleValueResultValueType, z.ZodType>;
 
-function createValueResultSchemaForType<T extends ResultType>(type: T) {
+function createValueResultSchemaForType<T extends RuleValueResultValueType>(
+  type: T,
+) {
   return z.strictObject({
     type: z.literal("value"),
-    value: resultValueSchemas[type],
+    value: valueResultValueSchemas[type],
   });
 }
 
-function createResultSchemaForType<T extends ResultType>(type: T) {
+function createResultSchemaForType<T extends RuleValueResultValueType>(
+  type: T,
+) {
   return z.discriminatedUnion("type", [createValueResultSchemaForType(type)]);
 }
 
-function createRuleSchemaForType<T extends ResultType>(type: T) {
+function createRuleSchemaForType<T extends RuleValueResultValueType>(type: T) {
   return z.strictObject({
     description: z.string().optional(),
     enabled: z.boolean(),
@@ -71,7 +102,7 @@ function createRuleSchemaForType<T extends ResultType>(type: T) {
   });
 }
 
-function createRulesSchemaForType<T extends ResultType>(type: T) {
+function createRulesSchemaForType<T extends RuleValueResultValueType>(type: T) {
   return z.strictObject({
     resultType: z.literal(type),
     rules: z.array(createRuleSchemaForType(type)),
@@ -84,20 +115,27 @@ export const rulesSchema = z.discriminatedUnion("resultType", [
   createRulesSchemaForType("string"),
 ]);
 
-type ResultType = keyof typeof resultValueSchemas;
+export type RuleValueResultValueType = z.infer<
+  typeof ruleValueResultValueTypeSchema
+>;
 export type Rules = z.infer<typeof rulesSchema>;
 export type Rule = z.infer<
-  ReturnType<typeof createRuleSchemaForType<ResultType>>
+  ReturnType<typeof createRuleSchemaForType<RuleValueResultValueType>>
 >;
 export type RuleResult = z.infer<
-  ReturnType<typeof createResultSchemaForType<ResultType>>
+  ReturnType<typeof createResultSchemaForType<RuleValueResultValueType>>
 >;
 export type RuleValueResult = z.infer<
-  ReturnType<typeof createValueResultSchemaForType<ResultType>>
+  ReturnType<typeof createValueResultSchemaForType<RuleValueResultValueType>>
 >;
+export type RuleValueResultValue = RuleValueResult["value"];
 export type ConditionGroup = z.infer<typeof conditionGroupSchema>;
 export type Conditions = z.infer<typeof conditionsSchema>;
+export type ConditionOrGroup = Conditions[number];
 export type Condition = z.infer<typeof conditionSchema>;
 export type AttributeCondition = z.infer<typeof attributeConditionSchema>;
 export type CombinatorOperator = z.infer<typeof combinatorOperatorSchema>;
-export type ComparisionOperator = AttributeCondition["operator"];
+export type AttributeOperator = z.infer<typeof attributeOperatorSchema>;
+export type ConditionValueType = z.infer<typeof conditionValueTypeSchema>;
+export type AnyValueCondition = z.infer<typeof anyValueConditionSchema>;
+export type ConditionValue = AnyValueCondition["value"];

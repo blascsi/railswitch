@@ -1,13 +1,29 @@
-export { rulesSchema } from "./rules.js";
+export {
+  anyValueOperatorSchema,
+  attributeOperatorSchema,
+  combinatorOperatorSchema,
+  conditionValueTypeSchema,
+  numericOperatorSchema,
+  ruleValueResultValueTypeSchema,
+  rulesSchema,
+  stringOperatorSchema,
+  valuelessOperatorSchema,
+} from "./rules.js";
 export type {
+  AnyValueCondition,
   AttributeCondition,
+  AttributeOperator,
   CombinatorOperator,
-  ComparisionOperator,
   Condition,
+  ConditionValue,
+  ConditionValueType,
   ConditionGroup,
+  ConditionOrGroup,
   Conditions,
   Rule,
   RuleResult,
   RuleValueResult,
+  RuleValueResultValue,
+  RuleValueResultValueType,
   Rules,
 } from "./rules.js";

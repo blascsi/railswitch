@@ -4,12 +4,12 @@ import { evaluateRules, type Context } from "@railswitch/rule-evaluator";
 import {
   rulesSchema,
   type Rules,
-  type RuleValueResult,
+  type RuleValueResultValue,
 } from "@railswitch/schemas";
 
 export type { Context };
 
-export type FlagValue = RuleValueResult["value"];
+export type FlagValue = RuleValueResultValue;
 
 export interface SDKOptions {
   url: string;

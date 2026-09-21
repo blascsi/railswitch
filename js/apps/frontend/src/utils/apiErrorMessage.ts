@@ -1,4 +1,4 @@
-import type { CombinedError } from "urql";
+import { CombinedError } from "urql";
 
 const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
 const NETWORK_MESSAGE = "Could not reach the server. Please try again.";
@@ -32,7 +32,11 @@ function joinMessages(errors: readonly MutationError[]): string {
   return message || FALLBACK_MESSAGE;
 }
 
-export function getApiErrorMessage(error: CombinedError): string {
+export function getApiErrorMessage(error: unknown): string {
+  if (!(error instanceof CombinedError)) {
+    return FALLBACK_MESSAGE;
+  }
+
   return error.networkError
     ? NETWORK_MESSAGE
     : joinMessages(error.graphQLErrors);

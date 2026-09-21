@@ -1,6 +1,6 @@
 import type {
   AttributeCondition,
-  ComparisionOperator,
+  AttributeOperator,
   Condition,
   ConditionGroup,
   Rule,
@@ -15,15 +15,15 @@ export interface Context {
   [key: string]: unknown;
 }
 
-const NO_VALUE_COMPARISION_OPERATORS: ComparisionOperator[] = [
+const VALUELESS_OPERATORS: AttributeOperator[] = [
   "is_true",
   "is_false",
   "exists",
   "not_exists",
 ] as const;
 
-function evaluateComparisionOperator(
-  operator: ComparisionOperator,
+function evaluateAttributeOperator(
+  operator: AttributeOperator,
   valueFromContext: unknown,
   valueFromRule: unknown,
 ): boolean {
@@ -149,7 +149,7 @@ function evaluateAttributeCondition(
   // Value is not defined, for an operator that requires it, so the flag has no way of evaluating to true
   if (
     valueFromRule === undefined &&
-    !NO_VALUE_COMPARISION_OPERATORS.includes(attributeCondition.operator)
+    !VALUELESS_OPERATORS.includes(attributeCondition.operator)
   ) {
     return false;
   }
@@ -158,7 +158,7 @@ function evaluateAttributeCondition(
     context,
     attributeCondition.attribute,
   );
-  return evaluateComparisionOperator(
+  return evaluateAttributeOperator(
     attributeCondition.operator,
     valueFromContextAttribute,
     valueFromRule,
