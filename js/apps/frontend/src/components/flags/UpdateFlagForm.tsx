@@ -5,9 +5,12 @@ import {
   Card,
   Layout,
   LayoutContent,
+  LayoutFooter,
   LayoutHeader,
 } from "@astryxdesign/core/Layout";
 import { HStack, Stack } from "@astryxdesign/core/Stack";
+import { colorVars } from "@astryxdesign/core/theme/tokens.stylex";
+import * as stylex from "@stylexjs/stylex";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "urql";
 
@@ -73,6 +76,16 @@ const UpdateFlagEnvironmentMutation = graphql(`
     }
   }
 `);
+
+const styles = stylex.create({
+  headerFooter: {
+    backgroundColor: colorVars["--color-background-muted"],
+  },
+  verticalDivider: {
+    height: "auto",
+    alignSelf: "stretch",
+  },
+});
 
 function formatRules(rules: string) {
   try {
@@ -163,43 +176,39 @@ export function UpdateFlagForm({ flag }: UpdateFlagFormProps) {
 
   return (
     <Card>
-      <Layout
-        header={
-          <LayoutHeader hasDivider>
-            <HStack gap={2}>
-              <FieldLabel inputID="environment_selector" label="Environment" />
-              <EnvironmentSelector
-                id="environment_selector"
-                label=""
-                isLabelHidden={true}
-                environments={environments}
-                value={selectedEnvironment ?? undefined}
-                onChange={setSelectedEnvironment}
-              />
-              <Divider orientation="vertical" variant="strong" />
-              <FieldLabel
-                inputID="environment_selector_2"
-                label="Environment"
-              />
-              <EnvironmentSelector
-                id="environment_selector_2"
-                label=""
-                isLabelHidden={true}
-                environments={environments}
-                value={selectedEnvironment ?? undefined}
-                onChange={setSelectedEnvironment}
-              />
-            </HStack>
-          </LayoutHeader>
-        }
-        content={
-          <LayoutContent>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                void form.handleSubmit();
-              }}
-            >
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void form.handleSubmit();
+        }}
+      >
+        <Layout
+          header={
+            <LayoutHeader hasDivider xstyle={styles.headerFooter}>
+              <HStack gap={2}>
+                <FieldLabel
+                  inputID="environment_selector"
+                  label="Environment"
+                />
+                <EnvironmentSelector
+                  id="environment_selector"
+                  label=""
+                  isLabelHidden={true}
+                  environments={environments}
+                  value={selectedEnvironment ?? undefined}
+                  onChange={setSelectedEnvironment}
+                />
+                <Divider
+                  orientation="vertical"
+                  variant="strong"
+                  xstyle={styles.verticalDivider}
+                />
+                {/* TODO: Return type selector */}
+              </HStack>
+            </LayoutHeader>
+          }
+          content={
+            <LayoutContent>
               <Stack gap={4}>
                 <FormLayout>
                   <form.AppField
@@ -220,27 +229,31 @@ export function UpdateFlagForm({ flag }: UpdateFlagFormProps) {
                     )}
                   </form.AppField>
                 </FormLayout>
-                <form.AppForm>
-                  <Stack
-                    direction="horizontal"
-                    hAlign="end"
-                    vAlign="center"
-                    gap={3}
-                    wrap="wrap"
-                  >
-                    <form.FormError />
-                    <form.SubmitButton
-                      label="Update"
-                      isPending={fetching}
-                      requiresChanges
-                    />
-                  </Stack>
-                </form.AppForm>
               </Stack>
-            </form>
-          </LayoutContent>
-        }
-      />
+            </LayoutContent>
+          }
+          footer={
+            <LayoutFooter hasDivider xstyle={styles.headerFooter}>
+              <form.AppForm>
+                <Stack
+                  direction="horizontal"
+                  hAlign="end"
+                  vAlign="center"
+                  gap={3}
+                  wrap="wrap"
+                >
+                  <form.FormError />
+                  <form.SubmitButton
+                    label="Update"
+                    isPending={fetching}
+                    requiresChanges
+                  />
+                </Stack>
+              </form.AppForm>
+            </LayoutFooter>
+          }
+        />
+      </form>
     </Card>
   );
 }
