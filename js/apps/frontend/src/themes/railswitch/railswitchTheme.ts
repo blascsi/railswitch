@@ -358,6 +358,18 @@ export const railswitchTheme = defineTheme({
     },
     "switch-thumb": {
       base: { borderRadius: "var(--radius-inner)" },
+      "checked+size:md": {
+        width: "16px",
+        height: "16px",
+        transform: "translateX(16px)",
+        ':is([dir="rtl"] *)': { transform: "translateX(-16px)" },
+      },
+      "checked+size:sm": {
+        width: "14px",
+        height: "14px",
+        transform: "translateX(14px)",
+        ':is([dir="rtl"] *)': { transform: "translateX(-14px)" },
+      },
     },
     "radio-indicator": {
       base: { borderRadius: "var(--radius-inner)" },
