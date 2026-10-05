@@ -12,6 +12,7 @@ export const router = createRouter({
   defaultPreload: "intent",
   defaultPendingComponent: FullPageLoader,
   defaultPendingMs: 2000,
+  defaultStaleReloadMode: "blocking",
   defaultNotFoundComponent: NotFoundPage,
   defaultErrorComponent: RouteQueryError,
 });
