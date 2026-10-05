@@ -58,10 +58,12 @@ function ProjectEditPage() {
   const { project } = loaderData;
 
   return (
-    <Stack gap={3}>
+    <Stack gap={4}>
       <Heading level={1}>Project details</Heading>
-      <Text type="supporting">Name</Text>
-      <Text>{project.name}</Text>
+      <Stack gap={3}>
+        <Text type="supporting">Name</Text>
+        <Text>{project.name}</Text>
+      </Stack>
     </Stack>
   );
 }

@@ -24,8 +24,9 @@ import { Route as AuthenticatedOOrganizationIdFlagsCreateRouteImport } from './r
 import { Route as AuthenticatedOOrganizationIdProjectsIndexRouteImport } from './routes/_authenticated/o/$organizationId/projects/index'
 import { Route as AuthenticatedOOrganizationIdProjectsCreateRouteImport } from './routes/_authenticated/o/$organizationId/projects/create'
 import { Route as AuthenticatedOOrganizationIdProjectProjectNameIndexRouteImport } from './routes/_authenticated/o/$organizationId/project/$projectName/index'
-import { Route as AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRouteImport } from './routes/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName'
 import { Route as AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRouteImport } from './routes/_authenticated/o/$organizationId/project/$projectName/flag/$flagName'
+import { Route as AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRouteImport } from './routes/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/index'
+import { Route as AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRouteImport } from './routes/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -109,20 +110,28 @@ const AuthenticatedOOrganizationIdProjectProjectNameIndexRoute =
     path: '/project/$projectName/',
     getParentRoute: () => AuthenticatedOOrganizationIdRoute,
   } as any)
-const AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute =
-  AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRouteImport.update(
-    {
-      id: '/project/$projectName/environment/$environmentName',
-      path: '/project/$projectName/environment/$environmentName',
-      getParentRoute: () => AuthenticatedOOrganizationIdRoute,
-    } as any,
-  )
 const AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute =
   AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRouteImport.update({
     id: '/project/$projectName/flag/$flagName',
     path: '/project/$projectName/flag/$flagName',
     getParentRoute: () => AuthenticatedOOrganizationIdRoute,
   } as any)
+const AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute =
+  AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRouteImport.update(
+    {
+      id: '/project/$projectName/environment/$environmentName/',
+      path: '/project/$projectName/environment/$environmentName/',
+      getParentRoute: () => AuthenticatedOOrganizationIdRoute,
+    } as any,
+  )
+const AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute =
+  AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRouteImport.update(
+    {
+      id: '/project/$projectName/environment/$environmentName/create_api_key',
+      path: '/project/$projectName/environment/$environmentName/create_api_key',
+      getParentRoute: () => AuthenticatedOOrganizationIdRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -138,8 +147,9 @@ export interface FileRoutesByFullPath {
   '/o/$organizationId/flags/': typeof AuthenticatedOOrganizationIdFlagsIndexRoute
   '/o/$organizationId/projects/': typeof AuthenticatedOOrganizationIdProjectsIndexRoute
   '/o/$organizationId/project/$projectName/': typeof AuthenticatedOOrganizationIdProjectProjectNameIndexRoute
-  '/o/$organizationId/project/$projectName/environment/$environmentName': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute
   '/o/$organizationId/project/$projectName/flag/$flagName': typeof AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute
+  '/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute
+  '/o/$organizationId/project/$projectName/environment/$environmentName/': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -154,8 +164,9 @@ export interface FileRoutesByTo {
   '/o/$organizationId/flags': typeof AuthenticatedOOrganizationIdFlagsIndexRoute
   '/o/$organizationId/projects': typeof AuthenticatedOOrganizationIdProjectsIndexRoute
   '/o/$organizationId/project/$projectName': typeof AuthenticatedOOrganizationIdProjectProjectNameIndexRoute
-  '/o/$organizationId/project/$projectName/environment/$environmentName': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute
   '/o/$organizationId/project/$projectName/flag/$flagName': typeof AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute
+  '/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute
+  '/o/$organizationId/project/$projectName/environment/$environmentName': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -174,8 +185,9 @@ export interface FileRoutesById {
   '/_authenticated/o/$organizationId/flags/': typeof AuthenticatedOOrganizationIdFlagsIndexRoute
   '/_authenticated/o/$organizationId/projects/': typeof AuthenticatedOOrganizationIdProjectsIndexRoute
   '/_authenticated/o/$organizationId/project/$projectName/': typeof AuthenticatedOOrganizationIdProjectProjectNameIndexRoute
-  '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute
   '/_authenticated/o/$organizationId/project/$projectName/flag/$flagName': typeof AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute
+  '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute
+  '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/': typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -193,8 +205,9 @@ export interface FileRouteTypes {
     | '/o/$organizationId/flags/'
     | '/o/$organizationId/projects/'
     | '/o/$organizationId/project/$projectName/'
-    | '/o/$organizationId/project/$projectName/environment/$environmentName'
     | '/o/$organizationId/project/$projectName/flag/$flagName'
+    | '/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key'
+    | '/o/$organizationId/project/$projectName/environment/$environmentName/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,8 +222,9 @@ export interface FileRouteTypes {
     | '/o/$organizationId/flags'
     | '/o/$organizationId/projects'
     | '/o/$organizationId/project/$projectName'
-    | '/o/$organizationId/project/$projectName/environment/$environmentName'
     | '/o/$organizationId/project/$projectName/flag/$flagName'
+    | '/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key'
+    | '/o/$organizationId/project/$projectName/environment/$environmentName'
   id:
     | '__root__'
     | '/'
@@ -228,8 +242,9 @@ export interface FileRouteTypes {
     | '/_authenticated/o/$organizationId/flags/'
     | '/_authenticated/o/$organizationId/projects/'
     | '/_authenticated/o/$organizationId/project/$projectName/'
-    | '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName'
     | '/_authenticated/o/$organizationId/project/$projectName/flag/$flagName'
+    | '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key'
+    | '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -345,18 +360,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameIndexRouteImport
       parentRoute: typeof AuthenticatedOOrganizationIdRoute
     }
-    '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName': {
-      id: '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName'
-      path: '/project/$projectName/environment/$environmentName'
-      fullPath: '/o/$organizationId/project/$projectName/environment/$environmentName'
-      preLoaderRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRouteImport
-      parentRoute: typeof AuthenticatedOOrganizationIdRoute
-    }
     '/_authenticated/o/$organizationId/project/$projectName/flag/$flagName': {
       id: '/_authenticated/o/$organizationId/project/$projectName/flag/$flagName'
       path: '/project/$projectName/flag/$flagName'
       fullPath: '/o/$organizationId/project/$projectName/flag/$flagName'
       preLoaderRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRouteImport
+      parentRoute: typeof AuthenticatedOOrganizationIdRoute
+    }
+    '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/': {
+      id: '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/'
+      path: '/project/$projectName/environment/$environmentName'
+      fullPath: '/o/$organizationId/project/$projectName/environment/$environmentName/'
+      preLoaderRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRouteImport
+      parentRoute: typeof AuthenticatedOOrganizationIdRoute
+    }
+    '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key': {
+      id: '/_authenticated/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key'
+      path: '/project/$projectName/environment/$environmentName/create_api_key'
+      fullPath: '/o/$organizationId/project/$projectName/environment/$environmentName/create_api_key'
+      preLoaderRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRouteImport
       parentRoute: typeof AuthenticatedOOrganizationIdRoute
     }
   }
@@ -385,8 +407,9 @@ interface AuthenticatedOOrganizationIdRouteChildren {
   AuthenticatedOOrganizationIdFlagsIndexRoute: typeof AuthenticatedOOrganizationIdFlagsIndexRoute
   AuthenticatedOOrganizationIdProjectsIndexRoute: typeof AuthenticatedOOrganizationIdProjectsIndexRoute
   AuthenticatedOOrganizationIdProjectProjectNameIndexRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameIndexRoute
-  AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute
   AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute
+  AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute
+  AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute: typeof AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute
 }
 
 const AuthenticatedOOrganizationIdRouteChildren: AuthenticatedOOrganizationIdRouteChildren =
@@ -407,10 +430,12 @@ const AuthenticatedOOrganizationIdRouteChildren: AuthenticatedOOrganizationIdRou
       AuthenticatedOOrganizationIdProjectsIndexRoute,
     AuthenticatedOOrganizationIdProjectProjectNameIndexRoute:
       AuthenticatedOOrganizationIdProjectProjectNameIndexRoute,
-    AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute:
-      AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameRoute,
     AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute:
       AuthenticatedOOrganizationIdProjectProjectNameFlagFlagNameRoute,
+    AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute:
+      AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameCreate_api_keyRoute,
+    AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute:
+      AuthenticatedOOrganizationIdProjectProjectNameEnvironmentEnvironmentNameIndexRoute,
   }
 
 const AuthenticatedOOrganizationIdRouteWithChildren =
