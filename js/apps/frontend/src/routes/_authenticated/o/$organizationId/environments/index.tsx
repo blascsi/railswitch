@@ -46,7 +46,7 @@ function EnvironmentsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<AppIcon icon="environment" size="lg" />}
+          icon={<AppIcon icon="terminal" size="lg" />}
           title="No environments found"
           description="Please double check if you are in the right organization, or start by creating a new environment"
           actions={
@@ -69,7 +69,7 @@ function EnvironmentsPage() {
           from="/o/$organizationId"
           to="/o/$organizationId/environments/create"
           label="New environment"
-          icon={<AppIcon icon="add" size="sm" />}
+          icon={<AppIcon icon="plus" size="sm" />}
           variant="primary"
         />
       </Stack>

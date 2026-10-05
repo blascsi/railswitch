@@ -55,7 +55,7 @@ function EnvironmentNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<AppIcon icon="environment" size="lg" />}
+        icon={<AppIcon icon="terminal" size="lg" />}
         title="Environment not found"
         description="Please double check if you are in the right organization"
       />

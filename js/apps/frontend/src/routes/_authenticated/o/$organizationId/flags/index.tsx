@@ -68,7 +68,7 @@ function FlagsPage() {
           from="/o/$organizationId"
           to="/o/$organizationId/flags/create"
           label="New flag"
-          icon={<AppIcon icon="add" size="sm" />}
+          icon={<AppIcon icon="plus" size="sm" />}
           variant="primary"
         />
       </Stack>

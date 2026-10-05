@@ -24,7 +24,7 @@ export function OrganizationSelector({
     <Selector
       label="Organizations"
       isLabelHidden
-      startIcon="organization"
+      startIcon="buildings"
       placeholder="Select an organization"
       options={organizations.map((organization) => ({
         label: organization.name,

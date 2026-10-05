@@ -225,20 +225,20 @@ export function RuleEditorCondition({
         items={[
           {
             label: "Move condition up",
-            icon: <AppIcon icon="chevronUp" />,
+            icon: <AppIcon icon="caretUp" />,
             isDisabled: conditionIndex === 0,
             onClick: () => moveCondition("up"),
           },
           {
             label: "Move condition down",
-            icon: <AppIcon icon="chevronDown" />,
+            icon: <AppIcon icon="caretDown" />,
             isDisabled: conditionIndex === conditionsCount - 1,
             onClick: () => moveCondition("down"),
           },
           { type: "divider" },
           {
             label: "Delete rule",
-            icon: <AppIcon icon="trash" />,
+            icon: <AppIcon icon="trashSimple" />,
             variant: "destructive",
             onClick: deleteCondition,
           },

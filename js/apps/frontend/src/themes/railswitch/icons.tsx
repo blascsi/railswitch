@@ -1,6 +1,7 @@
 import {
   ArrowCounterClockwiseIcon,
   BuildingsIcon,
+  CaretDownIcon,
   CaretUpIcon,
   CompassIcon,
   FlagIcon,
@@ -17,31 +18,33 @@ import React from "react";
 import { iconProps } from "../neutral/icons";
 
 export type RailswitchIconName =
-  | "project"
-  | "environment"
+  | "arrowCounterClockwise"
+  | "buildings"
+  | "caretDown"
+  | "caretUp"
+  | "compass"
   | "flag"
-  | "organization"
-  | "add"
-  | "home"
+  | "folder"
+  | "house"
+  | "plus"
   | "signOut"
-  | "notFound"
-  | "trash"
-  | "chevronUp"
-  | "arrowCounterClockwise";
+  | "terminal"
+  | "trashSimple";
 
 export const railswitchIconRegistry: Record<
   RailswitchIconName,
   React.ReactNode
 > = {
-  project: <FolderIcon {...iconProps} />,
-  environment: <TerminalIcon {...iconProps} />,
-  flag: <FlagIcon {...iconProps} />,
-  organization: <BuildingsIcon {...iconProps} />,
-  add: <PlusIcon {...iconProps} />,
-  home: <HouseIcon {...iconProps} />,
-  signOut: <SignOutIcon {...iconProps} />,
-  notFound: <CompassIcon {...iconProps} />,
-  trash: <TrashSimpleIcon {...iconProps} />,
-  chevronUp: <CaretUpIcon {...iconProps} />,
   arrowCounterClockwise: <ArrowCounterClockwiseIcon {...iconProps} />,
+  buildings: <BuildingsIcon {...iconProps} />,
+  caretDown: <CaretDownIcon {...iconProps} />,
+  caretUp: <CaretUpIcon {...iconProps} />,
+  compass: <CompassIcon {...iconProps} />,
+  flag: <FlagIcon {...iconProps} />,
+  folder: <FolderIcon {...iconProps} />,
+  house: <HouseIcon {...iconProps} />,
+  plus: <PlusIcon {...iconProps} />,
+  signOut: <SignOutIcon {...iconProps} />,
+  terminal: <TerminalIcon {...iconProps} />,
+  trashSimple: <TrashSimpleIcon {...iconProps} />,
 };

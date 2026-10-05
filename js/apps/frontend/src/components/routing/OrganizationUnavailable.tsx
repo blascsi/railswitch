@@ -8,7 +8,7 @@ export function OrganizationUnavailable() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<AppIcon icon="organization" size="lg" />}
+        icon={<AppIcon icon="buildings" size="lg" />}
         title="Organization unavailable"
         description="It may have been deleted, or you may no longer be a member."
         actions={<OrganizationSelector />}

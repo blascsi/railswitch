@@ -8,7 +8,7 @@ export function NotFoundPage() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<AppIcon icon="notFound" size="lg" />}
+        icon={<AppIcon icon="compass" size="lg" />}
         title="Page not found"
         description="The page you are looking for does not exist, or it may have been moved"
         actions={<LinkButton to="/home" label="Go to home" />}

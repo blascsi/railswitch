@@ -262,14 +262,14 @@ export function RuleEditorRule({
               <HStack gap={2}>
                 <Button
                   label="Add condition"
-                  icon={<AppIcon icon="add" />}
+                  icon={<AppIcon icon="plus" />}
                   onClick={addNewCondition}
                 >
                   Condition
                 </Button>
                 <Button
                   label="Add condition group"
-                  icon={<AppIcon icon="add" />}
+                  icon={<AppIcon icon="plus" />}
                   onClick={addNewConditionGroup}
                 >
                   Group
@@ -305,7 +305,7 @@ export function RuleEditorRule({
               <ButtonGroup label="Rule movement controls">
                 <Tooltip content="Move rule down">
                   <IconButton
-                    icon={<AppIcon icon="chevronDown" />}
+                    icon={<AppIcon icon="caretDown" />}
                     label="Move rule down"
                     isDisabled={ruleIndex === rulesCount - 1}
                     onClick={() => moveRule("down")}
@@ -313,7 +313,7 @@ export function RuleEditorRule({
                 </Tooltip>
                 <Tooltip content="Move rule up">
                   <IconButton
-                    icon={<AppIcon icon="chevronUp" />}
+                    icon={<AppIcon icon="caretUp" />}
                     label="Move rule up"
                     isDisabled={ruleIndex === 0}
                     onClick={() => moveRule("up")}
@@ -349,7 +349,7 @@ export function RuleEditorRule({
                 <Tooltip content="Delete rule">
                   <IconButton
                     variant="ghost"
-                    icon={<AppIcon icon="trash" />}
+                    icon={<AppIcon icon="trashSimple" />}
                     label="Delete rule"
                     isDisabled={rulesCount === 1}
                     onClick={deleteRule}
@@ -364,9 +364,9 @@ export function RuleEditorRule({
                     variant="ghost"
                     icon={
                       isOpen ? (
-                        <AppIcon icon="chevronUp" />
+                        <AppIcon icon="caretUp" />
                       ) : (
-                        <AppIcon icon="chevronDown" />
+                        <AppIcon icon="caretDown" />
                       )
                     }
                     label={toggleRuleLabel}

@@ -45,7 +45,7 @@ function ProjectNotFound() {
   return (
     <CenteredContent>
       <EmptyState
-        icon={<AppIcon icon="project" size="lg" />}
+        icon={<AppIcon icon="folder" size="lg" />}
         title="Project not found"
         description="Please double check if you are in the right organization"
       />

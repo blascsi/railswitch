@@ -151,13 +151,13 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
           <NavbarLink
             to="/home"
             label="Home"
-            icon="home"
+            icon="house"
             isSelected={isHomeActive}
           />
           {organizationParams == null ? (
             <>
-              <SideNavItem label="Projects" icon="project" isDisabled />
-              <SideNavItem label="Environments" icon="environment" isDisabled />
+              <SideNavItem label="Projects" icon="folder" isDisabled />
+              <SideNavItem label="Environments" icon="terminal" isDisabled />
               <SideNavItem label="Flags" icon="flag" isDisabled />
             </>
           ) : (
@@ -166,14 +166,14 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
                 to="/o/$organizationId/projects"
                 params={organizationParams}
                 label="Projects"
-                icon="project"
+                icon="folder"
                 isSelected={isProjectsActive}
               />
               <NavbarLink
                 to="/o/$organizationId/environments"
                 params={organizationParams}
                 label="Environments"
-                icon="environment"
+                icon="terminal"
                 isSelected={isEnvironmentsActive}
               />
               <NavbarLink

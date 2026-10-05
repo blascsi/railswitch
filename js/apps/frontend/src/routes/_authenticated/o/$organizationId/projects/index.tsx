@@ -45,7 +45,7 @@ function ProjectsPage() {
     return (
       <CenteredContent>
         <EmptyState
-          icon={<AppIcon icon="project" size="lg" />}
+          icon={<AppIcon icon="folder" size="lg" />}
           title="No projects found"
           description="Please double check if you are in the right organization, or start by creating some projects."
           actions={
@@ -68,7 +68,7 @@ function ProjectsPage() {
           from="/o/$organizationId"
           to="/o/$organizationId/projects/create"
           label="New project"
-          icon={<AppIcon icon="add" size="sm" />}
+          icon={<AppIcon icon="plus" size="sm" />}
           variant="primary"
         />
       </Stack>

@@ -137,20 +137,20 @@ export function RuleEditorConditionGroup({
               items={[
                 {
                   label: "Move group up",
-                  icon: <AppIcon icon="chevronUp" />,
+                  icon: <AppIcon icon="caretUp" />,
                   isDisabled: groupIndex === 0,
                   onClick: () => moveGroup("up"),
                 },
                 {
                   label: "Move group down",
-                  icon: <AppIcon icon="chevronDown" />,
+                  icon: <AppIcon icon="caretDown" />,
                   isDisabled: groupIndex === conditionsCount - 1,
                   onClick: () => moveGroup("down"),
                 },
                 { type: "divider" },
                 {
                   label: "Delete group",
-                  icon: <AppIcon icon="trash" />,
+                  icon: <AppIcon icon="trashSimple" />,
                   variant: "destructive",
                   onClick: deleteGroup,
                 },
@@ -176,13 +176,13 @@ export function RuleEditorConditionGroup({
             <Button
               label="Add nested condition"
               size="sm"
-              icon={<AppIcon icon="add" />}
+              icon={<AppIcon icon="plus" />}
               onClick={addNestedCondition}
             />
             <Button
               label="Add nested group"
               size="sm"
-              icon={<AppIcon icon="add" />}
+              icon={<AppIcon icon="plus" />}
               onClick={addNestedConditionGroup}
             />
           </HStack>

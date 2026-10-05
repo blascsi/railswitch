@@ -188,7 +188,7 @@ export function RuleEditor({ value, onChange }: RuleEditorProps) {
       ))}
       <Button
         label="Add rule"
-        icon={<AppIcon icon="add" />}
+        icon={<AppIcon icon="plus" />}
         onClick={addNewRule}
       />
       <Card variant="muted">
