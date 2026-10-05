@@ -50,6 +50,26 @@ defmodule RailswitchBackendWeb.SdkSocketTest do
 
       assert :error = connect(SdkSocket, %{"api_key" => ctx.plaintext_key})
     end
+
+    test "marks the API key as used", ctx do
+      assert ctx.api_key.last_used == nil
+
+      {:ok, _socket} = connect(SdkSocket, %{"api_key" => ctx.plaintext_key})
+
+      api_key =
+        Flags.get_environment_api_key_by_id!(ctx.api_key.id, tenant: ctx.org.id, actor: ctx.user)
+
+      assert %DateTime{} = api_key.last_used
+    end
+
+    test "does not mark the API key as used when the connection is refused", ctx do
+      :error = connect(SdkSocket, %{"api_key" => "railswitch_not_a_real_key"})
+
+      api_key =
+        Flags.get_environment_api_key_by_id!(ctx.api_key.id, tenant: ctx.org.id, actor: ctx.user)
+
+      assert api_key.last_used == nil
+    end
   end
 
   describe "id/1" do

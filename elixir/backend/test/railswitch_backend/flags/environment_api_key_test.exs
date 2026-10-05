@@ -106,6 +106,38 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
     end
   end
 
+  describe "mark_as_used_now" do
+    setup ctx do
+      api_key =
+        generate(FlagsGenerator.api_key(tenant: ctx.org.id, environment_id: ctx.environment.id))
+
+      %{api_key: api_key}
+    end
+
+    test "the system can mark it as used", ctx do
+      assert {:ok, api_key} =
+               Flags.mark_environment_api_key_as_used_now(ctx.api_key,
+                 tenant: ctx.org.id,
+                 authorize?: false
+               )
+
+      assert %DateTime{} = api_key.last_used
+    end
+
+    test "a member cannot mark it as used", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.mark_environment_api_key_as_used_now(ctx.api_key,
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+    end
+
+    test "a request without an actor cannot mark it as used", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.mark_environment_api_key_as_used_now(ctx.api_key, tenant: ctx.org.id)
+    end
+  end
+
   describe "destroy" do
     test "deletes the api key", ctx do
       api_key =

@@ -81,6 +81,7 @@ defmodule RailswitchBackend.Flags do
       define :get_environment_api_key_by_id, action: :read, get_by: :id
       define :create_environment_api_key, action: :create
       define :delete_environment_api_key, action: :destroy
+      define :mark_environment_api_key_as_used_now, action: :mark_as_used_now
     end
   end
 end

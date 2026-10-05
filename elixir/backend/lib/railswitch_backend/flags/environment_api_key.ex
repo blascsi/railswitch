@@ -11,6 +11,8 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
 
   alias RailswitchBackend.Orgs.Validations.RelationshipInTenant
 
+  @system_actions [:mark_as_used_now]
+
   graphql do
     type :environment_api_key
   end
@@ -41,11 +43,20 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
         allow_nil? false
       end
     end
+
+    update :mark_as_used_now do
+      change atomic_update(:last_used, expr(now()))
+    end
   end
 
   policies do
     bypass always() do
       authorize_if AshAuthentication.Checks.AshAuthenticationInteraction
+    end
+
+    policy action(@system_actions) do
+      description "System actions can only be run by the system, and never allowed to be run by actors"
+      forbid_if always()
     end
 
     policy always() do
@@ -77,6 +88,10 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKey do
 
     attribute :name, :ci_string do
       allow_nil? false
+      public? true
+    end
+
+    attribute :last_used, :datetime do
       public? true
     end
 

@@ -14,6 +14,7 @@ defmodule RailswitchBackendWeb.SdkSocket do
 
   alias AshAuthentication.Info
   alias AshAuthentication.Strategy
+  alias RailswitchBackend.Flags
   alias RailswitchBackend.Flags.Environment
 
   channel "environment", RailswitchBackendWeb.EnvironmentChannel
@@ -24,6 +25,11 @@ defmodule RailswitchBackendWeb.SdkSocket do
 
     case Strategy.action(strategy, :sign_in, %{api_key: api_key}) do
       {:ok, environment} ->
+        Flags.mark_environment_api_key_as_used_now(environment.__metadata__.api_key.id,
+          tenant: environment.organization_id,
+          authorize?: false
+        )
+
         {:ok,
          assign(socket,
            environment_id: environment.id,
