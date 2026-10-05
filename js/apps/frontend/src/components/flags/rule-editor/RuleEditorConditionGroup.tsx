@@ -25,6 +25,8 @@ import { RuleEditorConditionOrGroup } from "./RuleEditorConditionOrGroup";
 
 type RuleEditorConditionGroupProps = {
   conditionGroup: ConditionGroup;
+  groupIndex: number;
+  conditionsCount: number;
   updateGroup: (newGroup: ConditionGroup) => void;
   deleteGroup: () => void;
   moveGroup: (dir: ArrayMoveDirection) => void;
@@ -41,6 +43,8 @@ const styles = stylex.create({
 
 export function RuleEditorConditionGroup({
   conditionGroup,
+  groupIndex,
+  conditionsCount,
   updateGroup,
   deleteGroup,
   moveGroup,
@@ -134,11 +138,13 @@ export function RuleEditorConditionGroup({
                 {
                   label: "Move group up",
                   icon: <AppIcon icon="chevronUp" />,
+                  isDisabled: groupIndex === 0,
                   onClick: () => moveGroup("up"),
                 },
                 {
                   label: "Move group down",
                   icon: <AppIcon icon="chevronDown" />,
+                  isDisabled: groupIndex === conditionsCount - 1,
                   onClick: () => moveGroup("down"),
                 },
                 { type: "divider" },
@@ -155,6 +161,8 @@ export function RuleEditorConditionGroup({
             <RuleEditorConditionOrGroup
               key={index}
               conditionOrGroup={conditionOrGroup}
+              conditionOrGroupIndex={index}
+              conditionsCount={conditionGroup.conditions.length}
               updateConditionOrGroup={(newConditionOrGroup) =>
                 updateNestedConditionOrGroup(index, newConditionOrGroup)
               }

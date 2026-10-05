@@ -27,6 +27,8 @@ import {
 
 type RuleEditorConditionProps = {
   condition: Condition;
+  conditionIndex: number;
+  conditionsCount: number;
   updateCondition: (newCondition: Condition) => void;
   deleteCondition: () => void;
   moveCondition: (dir: ArrayMoveDirection) => void;
@@ -151,6 +153,8 @@ function renderAnyValueInput(
 
 export function RuleEditorCondition({
   condition,
+  conditionIndex,
+  conditionsCount,
   updateCondition,
   deleteCondition,
   moveCondition,
@@ -222,11 +226,13 @@ export function RuleEditorCondition({
           {
             label: "Move condition up",
             icon: <AppIcon icon="chevronUp" />,
+            isDisabled: conditionIndex === 0,
             onClick: () => moveCondition("up"),
           },
           {
             label: "Move condition down",
             icon: <AppIcon icon="chevronDown" />,
+            isDisabled: conditionIndex === conditionsCount - 1,
             onClick: () => moveCondition("down"),
           },
           { type: "divider" },

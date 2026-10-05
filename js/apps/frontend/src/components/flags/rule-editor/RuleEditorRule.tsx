@@ -245,6 +245,8 @@ export function RuleEditorRule({
                   <RuleEditorConditionOrGroup
                     key={index}
                     conditionOrGroup={conditionOrGroup}
+                    conditionOrGroupIndex={index}
+                    conditionsCount={rule.conditions.conditions.length}
                     updateConditionOrGroup={(newConditionOrGroup) =>
                       updateNestedConditionOrGroup(index, newConditionOrGroup)
                     }

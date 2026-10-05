@@ -6,6 +6,8 @@ import { RuleEditorConditionGroup } from "./RuleEditorConditionGroup";
 
 type RuleEditorConditionOrGroupProps = {
   conditionOrGroup: ConditionOrGroup;
+  conditionOrGroupIndex: number;
+  conditionsCount: number;
   updateConditionOrGroup: (newData: ConditionOrGroup) => void;
   deleteConditionOrGroup: () => void;
   moveConditionOrGroup: (dir: ArrayMoveDirection) => void;
@@ -13,6 +15,8 @@ type RuleEditorConditionOrGroupProps = {
 
 export function RuleEditorConditionOrGroup({
   conditionOrGroup,
+  conditionOrGroupIndex,
+  conditionsCount,
   updateConditionOrGroup,
   deleteConditionOrGroup,
   moveConditionOrGroup,
@@ -21,6 +25,8 @@ export function RuleEditorConditionOrGroup({
     return (
       <RuleEditorConditionGroup
         conditionGroup={conditionOrGroup}
+        groupIndex={conditionOrGroupIndex}
+        conditionsCount={conditionsCount}
         updateGroup={updateConditionOrGroup}
         deleteGroup={deleteConditionOrGroup}
         moveGroup={moveConditionOrGroup}
@@ -30,6 +36,8 @@ export function RuleEditorConditionOrGroup({
     return (
       <RuleEditorCondition
         condition={conditionOrGroup}
+        conditionIndex={conditionOrGroupIndex}
+        conditionsCount={conditionsCount}
         updateCondition={updateConditionOrGroup}
         deleteCondition={deleteConditionOrGroup}
         moveCondition={moveConditionOrGroup}
