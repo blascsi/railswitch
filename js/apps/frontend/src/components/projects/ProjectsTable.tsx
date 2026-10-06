@@ -1,3 +1,4 @@
+import { Card } from "@astryxdesign/core/Card";
 import { proportional, Table } from "@astryxdesign/core/Table";
 import { Text } from "@astryxdesign/core/Text";
 
@@ -24,25 +25,27 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
   const rows = readFragment(projectsTable_projects, projects);
 
   return (
-    <Table<ProjectRow>
-      data={[...rows]}
-      idKey="id"
-      columns={[
-        {
-          key: "name",
-          header: "Name",
-          width: proportional(1),
-          renderCell: (project) => (
-            <LinkAnchor
-              from="/o/$organizationId"
-              to="/o/$organizationId/project/$projectName"
-              params={{ projectName: project.name }}
-            >
-              <Text type="code">{project.name}</Text>
-            </LinkAnchor>
-          ),
-        },
-      ]}
-    />
+    <Card>
+      <Table<ProjectRow>
+        data={[...rows]}
+        idKey="id"
+        columns={[
+          {
+            key: "name",
+            header: "Name",
+            width: proportional(1),
+            renderCell: (project) => (
+              <LinkAnchor
+                from="/o/$organizationId"
+                to="/o/$organizationId/project/$projectName"
+                params={{ projectName: project.name }}
+              >
+                <Text type="code">{project.name}</Text>
+              </LinkAnchor>
+            ),
+          },
+        ]}
+      />
+    </Card>
   );
 }

@@ -1,4 +1,3 @@
-import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
@@ -72,9 +71,7 @@ function FlagsPage() {
           variant="primary"
         />
       </Stack>
-      <Card>
-        <FlagsTable flags={listFlags?.results ?? []} />
-      </Card>
+      <FlagsTable flags={listFlags?.results ?? []} />
     </Stack>
   );
 }

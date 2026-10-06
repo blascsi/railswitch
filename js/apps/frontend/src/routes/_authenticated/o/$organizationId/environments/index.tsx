@@ -1,4 +1,3 @@
-import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
@@ -73,9 +72,7 @@ function EnvironmentsPage() {
           variant="primary"
         />
       </Stack>
-      <Card>
-        <EnvironmentsTable environments={listEnvironments?.results ?? []} />
-      </Card>
+      <EnvironmentsTable environments={listEnvironments?.results ?? []} />
     </Stack>
   );
 }

@@ -1,3 +1,4 @@
+import { Card } from "@astryxdesign/core/Card";
 import { proportional, Table } from "@astryxdesign/core/Table";
 import { Text } from "@astryxdesign/core/Text";
 
@@ -30,39 +31,41 @@ export function FlagsTable({ flags }: FlagsTableProps) {
   const rows = readFragment(flagsTable_flags, flags);
 
   return (
-    <Table<FlagRow>
-      data={[...rows]}
-      idKey="id"
-      columns={[
-        {
-          key: "name",
-          header: "Name",
-          width: proportional(1),
-          renderCell: (flag) => (
-            <LinkAnchor
-              from="/o/$organizationId"
-              to="/o/$organizationId/project/$projectName/flag/$flagName"
-              params={{ projectName: flag.project.name, flagName: flag.name }}
-            >
-              <Text type="code">{flag.name}</Text>
-            </LinkAnchor>
-          ),
-        },
-        {
-          key: "project",
-          header: "Project",
-          width: proportional(1),
-          renderCell: (flag) => (
-            <LinkAnchor
-              from="/o/$organizationId"
-              to="/o/$organizationId/project/$projectName"
-              params={{ projectName: flag.project.name }}
-            >
-              <MonospaceToken label={flag.project.name} />
-            </LinkAnchor>
-          ),
-        },
-      ]}
-    />
+    <Card>
+      <Table<FlagRow>
+        data={[...rows]}
+        idKey="id"
+        columns={[
+          {
+            key: "name",
+            header: "Name",
+            width: proportional(1),
+            renderCell: (flag) => (
+              <LinkAnchor
+                from="/o/$organizationId"
+                to="/o/$organizationId/project/$projectName/flag/$flagName"
+                params={{ projectName: flag.project.name, flagName: flag.name }}
+              >
+                <Text type="code">{flag.name}</Text>
+              </LinkAnchor>
+            ),
+          },
+          {
+            key: "project",
+            header: "Project",
+            width: proportional(1),
+            renderCell: (flag) => (
+              <LinkAnchor
+                from="/o/$organizationId"
+                to="/o/$organizationId/project/$projectName"
+                params={{ projectName: flag.project.name }}
+              >
+                <MonospaceToken label={flag.project.name} />
+              </LinkAnchor>
+            ),
+          },
+        ]}
+      />
+    </Card>
   );
 }

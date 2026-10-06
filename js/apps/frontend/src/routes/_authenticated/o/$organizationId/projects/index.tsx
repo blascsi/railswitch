@@ -1,4 +1,3 @@
-import { Card } from "@astryxdesign/core/Card";
 import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Stack } from "@astryxdesign/core/Stack";
 import { Heading } from "@astryxdesign/core/Text";
@@ -72,9 +71,7 @@ function ProjectsPage() {
           variant="primary"
         />
       </Stack>
-      <Card>
-        <ProjectsTable projects={listProjects?.results ?? []} />
-      </Card>
+      <ProjectsTable projects={listProjects?.results ?? []} />
     </Stack>
   );
 }
