@@ -4,6 +4,8 @@ defmodule RailswitchBackend.Accounts.UserTest do
   """
   use RailswitchBackend.DataCase, async: true
 
+  import Ash.Generator
+
   alias Ash.Error.Forbidden
   alias AshAuthentication.Info
   alias AshAuthentication.Strategy
@@ -12,6 +14,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
   alias RailswitchBackend.Accounts.User
   alias RailswitchBackend.Orgs
   alias RailswitchBackend.Orgs.Membership
+  alias RailswitchBackend.OrgsGenerator
 
   require Ash.Query
 
@@ -31,14 +34,6 @@ defmodule RailswitchBackend.Accounts.UserTest do
     test "returns an auth token in metadata" do
       user = Accounts.register_user!(unique_email(), @password, @password)
       assert is_binary(user.__metadata__.token)
-    end
-
-    test "creates a personal organization owned by the user" do
-      user = Accounts.register_user!("bob@example.com", @password, @password)
-
-      assert [membership] = owned_memberships(user)
-      assert membership.role == :owner
-      assert membership.organization.name == "bob's organization"
     end
 
     test "requires a matching password confirmation" do
@@ -255,6 +250,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
   describe "destroy" do
     test "deletes a user who solely owns no organizations" do
       user = Accounts.register_user!(unique_email(), @password, @password)
+      _org = generate(OrgsGenerator.organization(actor: user))
       [membership] = owned_memberships(user)
 
       # Give up the only organization the registration created, otherwise the
@@ -268,6 +264,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
 
     test "blocks deletion while the user is the only owner of an organization" do
       user = Accounts.register_user!(unique_email(), @password, @password)
+      _org = generate(OrgsGenerator.organization(actor: user))
 
       assert {:error, error} = Accounts.delete_user(user, actor: user)
       assert Exception.message(error) =~ "only owner"

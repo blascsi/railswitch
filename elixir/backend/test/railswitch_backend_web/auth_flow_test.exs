@@ -11,6 +11,7 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Orgs.Membership
   alias RailswitchBackend.Orgs.Organization
+  alias RailswitchBackend.OrgsGenerator
   alias RailswitchBackendWeb.Plugs.RememberMe
 
   require Ash.Query
@@ -160,6 +161,7 @@ defmodule RailswitchBackendWeb.AuthFlowTest do
     test "deletion is blocked while the user solely owns an organization", %{conn: conn} do
       email = "delblocked@example.com"
       user = generate(AccountsGenerator.user(email: email))
+      _org = generate(OrgsGenerator.organization(actor: user))
 
       conn =
         conn
