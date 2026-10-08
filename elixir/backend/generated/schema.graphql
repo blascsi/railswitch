@@ -3,6 +3,12 @@ schema {
   query: RootQueryType
 }
 
+enum MembershipStatus {
+  ACCEPTED
+  DECLINED
+  PENDING
+}
+
 enum MembershipRole {
   MEMBER
   OWNER
@@ -124,6 +130,7 @@ type AddMemberResult {
 
 input AddMemberInput {
   role: MembershipRole
+  status: MembershipStatus
   userId: ID!
   organizationId: ID!
 }
@@ -131,6 +138,7 @@ input AddMemberInput {
 enum MembershipSortField {
   ID
   ROLE
+  STATUS
   USER_ID
 }
 
@@ -160,6 +168,19 @@ input MembershipFilterUserId {
   greaterThanOrEqual: ID
   isDistinctFrom: ID
   isNotDistinctFrom: ID
+}
+
+input MembershipFilterStatus {
+  isNil: Boolean
+  eq: MembershipStatus
+  notEq: MembershipStatus
+  in: [MembershipStatus!]
+  lessThan: MembershipStatus
+  greaterThan: MembershipStatus
+  lessThanOrEqual: MembershipStatus
+  greaterThanOrEqual: MembershipStatus
+  isDistinctFrom: MembershipStatus
+  isNotDistinctFrom: MembershipStatus
 }
 
 input MembershipFilterRole {
@@ -194,6 +215,7 @@ input MembershipFilterInput {
   not: [MembershipFilterInput!]
   id: MembershipFilterId
   role: MembershipFilterRole
+  status: MembershipFilterStatus
   userId: MembershipFilterUserId
 }
 
@@ -205,6 +227,7 @@ input MembershipSortInput {
 type Membership {
   id: ID!
   role: MembershipRole!
+  status: MembershipStatus!
   userId: ID!
   user: User!
 }

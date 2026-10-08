@@ -20,9 +20,11 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
 
-      membership = Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      membership =
+        Orgs.add_member!(org.id, member.id, actor: owner)
 
       assert membership.role == :member
+      assert membership.status == :pending
       assert membership.organization_id == org.id
       assert membership.user_id == member.id
     end
@@ -31,7 +33,8 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
 
-      membership = Orgs.add_member!(org.id, member.id, :owner, actor: owner)
+      membership =
+        Orgs.add_member!(org.id, member.id, %{role: :owner}, actor: owner)
 
       assert membership.role == :owner
     end
@@ -40,9 +43,9 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
 
-      Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      Orgs.add_member!(org.id, member.id, actor: owner)
 
-      assert {:error, error} = Orgs.add_member(org.id, member.id, :member, authorize?: false)
+      assert {:error, error} = Orgs.add_member(org.id, member.id, authorize?: false)
       assert Exception.message(error) =~ "This user is already a member of this organization"
     end
   end
@@ -51,7 +54,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "an owner can promote a member to owner" do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
-      membership = Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      membership = Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
 
       assert {:ok, updated} =
                Orgs.change_member_role(membership, :owner, actor: owner)
@@ -62,7 +65,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "an owner can be demoted while another owner remains" do
       {owner, org, owner_membership} = org_with_owner()
       second = generate(AccountsGenerator.user())
-      Orgs.add_member!(org.id, second.id, :owner, actor: owner)
+      Orgs.add_member!(org.id, second.id, %{role: :owner, status: :accepted}, actor: owner)
 
       assert {:ok, updated} =
                Orgs.change_member_role(owner_membership, :member, actor: owner)
@@ -84,7 +87,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "an owner can remove a member" do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
-      membership = Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      membership = Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
 
       assert :ok = Orgs.remove_member(membership, actor: owner)
       assert is_nil(membership_for(org, member))
@@ -93,7 +96,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "a member can remove themselves" do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
-      membership = Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      membership = Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
 
       assert :ok = Orgs.remove_member(membership, actor: member)
     end
@@ -101,7 +104,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "an owner can leave while another owner remains" do
       {owner, org, owner_membership} = org_with_owner()
       second = generate(AccountsGenerator.user())
-      Orgs.add_member!(org.id, second.id, :owner, actor: owner)
+      Orgs.add_member!(org.id, second.id, %{role: :owner, status: :accepted}, actor: owner)
 
       assert :ok = Orgs.remove_member(owner_membership, actor: owner)
     end
@@ -129,7 +132,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "members of an organization can see each other's memberships" do
       {owner, org, owner_membership} = org_with_owner()
       member = generate(AccountsGenerator.user())
-      member_membership = Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      member_membership = Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
 
       # The member can see the owner's membership because they share the org.
       assert {:ok, ids} =
@@ -152,12 +155,12 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     test "only owners can add members" do
       {owner, org, _} = org_with_owner()
       member = generate(AccountsGenerator.user())
-      Orgs.add_member!(org.id, member.id, :member, actor: owner)
+      Orgs.add_member!(org.id, member.id, actor: owner)
 
       outsider = generate(AccountsGenerator.user())
 
       assert {:error, %Forbidden{}} =
-               Orgs.add_member(org.id, outsider.id, :member, actor: member)
+               Orgs.add_member(org.id, outsider.id, actor: member)
     end
 
     test "a member cannot remove another member" do
@@ -165,8 +168,8 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
       member_a = generate(AccountsGenerator.user())
       member_b = generate(AccountsGenerator.user())
 
-      Orgs.add_member!(org.id, member_a.id, :member, actor: owner)
-      membership_b = Orgs.add_member!(org.id, member_b.id, :member, actor: owner)
+      Orgs.add_member!(org.id, member_a.id, %{status: :accepted}, actor: owner)
+      membership_b = Orgs.add_member!(org.id, member_b.id, %{status: :accepted}, actor: owner)
 
       assert {:error, %Forbidden{}} = Orgs.remove_member(membership_b, actor: member_a)
     end
@@ -176,8 +179,8 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
       member = generate(AccountsGenerator.user())
       target = generate(AccountsGenerator.user())
 
-      Orgs.add_member!(org.id, member.id, :member, actor: owner)
-      target_membership = Orgs.add_member!(org.id, target.id, :member, actor: owner)
+      Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
+      target_membership = Orgs.add_member!(org.id, target.id, %{status: :accepted}, actor: owner)
 
       assert {:error, %Forbidden{}} =
                Orgs.change_member_role(target_membership, :owner, actor: member)

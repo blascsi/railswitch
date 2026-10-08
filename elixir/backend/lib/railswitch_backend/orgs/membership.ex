@@ -31,7 +31,7 @@ defmodule RailswitchBackend.Orgs.Membership do
 
     create :create do
       primary? true
-      accept [:role]
+      accept [:role, :status]
 
       argument :user_id, :uuid, allow_nil?: false
       argument :organization_id, :uuid, allow_nil?: false
@@ -93,6 +93,12 @@ defmodule RailswitchBackend.Orgs.Membership do
 
     attribute :role, RailswitchBackend.Orgs.Membership.Types.Role do
       default :member
+      allow_nil? false
+      public? true
+    end
+
+    attribute :status, RailswitchBackend.Orgs.Membership.Types.Status do
+      default :pending
       allow_nil? false
       public? true
     end

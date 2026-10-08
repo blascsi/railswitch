@@ -11,7 +11,8 @@ defmodule RailswitchBackend.Orgs.Organization.Changes.AddOwnerMembership do
   @impl true
   def change(changeset, _opts, %{actor: actor}) do
     Ash.Changeset.after_action(changeset, fn _changeset, org ->
-      RailswitchBackend.Orgs.add_member!(org.id, actor.id, :owner, authorize?: false)
+      RailswitchBackend.Orgs.add_member!(org.id, actor.id, %{role: :owner, status: :accepted}, authorize?: false)
+
       {:ok, org}
     end)
   end

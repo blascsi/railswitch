@@ -29,6 +29,7 @@ defmodule RailswitchBackend.Orgs.OrganizationTest do
       assert [membership] = memberships_of(org)
       assert membership.user_id == owner.id
       assert membership.role == :owner
+      assert membership.status == :accepted
     end
   end
 

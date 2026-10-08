@@ -34,7 +34,10 @@ defmodule RailswitchBackend.Orgs do
     end
 
     resource Membership do
-      define :add_member, action: :create, args: [:organization_id, :user_id, :role]
+      define :add_member,
+        action: :create,
+        args: [:organization_id, :user_id]
+
       define :list_memberships, action: :read
       define :remove_member, action: :destroy
       define :change_member_role, action: :change_role, args: [:role]

@@ -26,8 +26,10 @@ defmodule RailswitchBackend.OrgsGenerator do
   end
 
   @doc """
-  Builds a `:create` changeset for a membership. Pass `:organization_id`,
-  `:user_id`, and optionally `:role` (defaults to `:member`).
+  Builds a `:create` changeset for an accepted membership. Pass `:organization_id`,
+  `:user_id`, and optionally:
+  - `:role` (defaults to `:member`).
+  - `:status` (defaults to `:accepted`)
   """
   def membership(opts \\ []) do
     {action_opts, overrides} = Keyword.split(opts, @action_opts)
@@ -36,7 +38,7 @@ defmodule RailswitchBackend.OrgsGenerator do
       RailswitchBackend.Orgs.Membership,
       :create,
       [
-        defaults: [role: :member],
+        defaults: [role: :member, status: :accepted],
         overrides: overrides
       ] ++ Keyword.put_new(action_opts, :authorize?, false)
     )
