@@ -51,6 +51,12 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
   }
   """
 
+  @current_user_organizations """
+  query {
+    currentUser { organizations { id } }
+  }
+  """
+
   @list_memberships """
   query {
     listMemberships {
@@ -150,6 +156,71 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       conn = gql(authed(conn, outsider), @get_organization, %{"id" => org.id})
 
       assert %{"data" => %{"getOrganization" => nil}} = json(conn)
+    end
+  end
+
+  describe "owners without an accepted membership" do
+    setup ctx do
+      owner = generate(AccountsGenerator.user())
+      org = generate(OrgsGenerator.organization(actor: owner))
+      invitee = generate(AccountsGenerator.user())
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: invitee.id,
+          role: :owner,
+          status: ctx.status
+        )
+      )
+
+      %{org: org, invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "an owner with a #{status} membership does not see the organization in listOrganizations",
+           %{conn: conn} = ctx do
+        conn = gql(authed(conn, ctx.invitee), @list_organizations)
+
+        assert %{"data" => %{"listOrganizations" => %{"results" => []}}} = json(conn)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership cannot fetch the organization by id",
+           %{conn: conn} = ctx do
+        conn = gql(authed(conn, ctx.invitee), @get_organization, %{"id" => ctx.org.id})
+
+        assert %{"data" => %{"getOrganization" => nil}} = json(conn)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership does not see the organization among their own organizations",
+           %{conn: conn} = ctx do
+        conn = gql(authed(conn, ctx.invitee), @current_user_organizations)
+
+        assert %{"data" => %{"currentUser" => %{"organizations" => []}}} = json(conn)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership cannot rename the organization",
+           %{conn: conn} = ctx do
+        conn =
+          gql(authed(conn, ctx.invitee), @update_organization, %{
+            "id" => ctx.org.id,
+            "name" => "Taken"
+          })
+
+        assert %{"data" => %{"updateOrganization" => %{"result" => nil}}} = json(conn)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership cannot delete the organization",
+           %{conn: conn} = ctx do
+        conn = gql(authed(conn, ctx.invitee), @delete_organization, %{"id" => ctx.org.id})
+
+        assert %{"data" => %{"deleteOrganization" => %{"result" => nil}}} = json(conn)
+      end
     end
   end
 

@@ -52,12 +52,12 @@ defmodule RailswitchBackend.Orgs.Organization do
 
     policy action_type(:read) do
       description "Members of an organization can read it"
-      authorize_if expr(exists(memberships, user_id == ^actor(:id)))
+      authorize_if expr(exists(accepted_memberships, user_id == ^actor(:id)))
     end
 
     policy action_type([:update, :destroy]) do
       description "Only owners can update or delete an organization"
-      authorize_if expr(exists(memberships, user_id == ^actor(:id) and role == :owner))
+      authorize_if expr(exists(accepted_memberships, user_id == ^actor(:id) and role == :owner))
     end
   end
 
@@ -73,12 +73,15 @@ defmodule RailswitchBackend.Orgs.Organization do
   end
 
   relationships do
-    has_many :memberships, Membership
+    has_many :accepted_memberships, Membership do
+      filter expr(status == :accepted)
+    end
 
     has_many :projects, RailswitchBackend.Flags.Project
 
     many_to_many :users, RailswitchBackend.Accounts.User do
       through Membership
+      join_relationship :accepted_memberships
       source_attribute_on_join_resource :organization_id
       destination_attribute_on_join_resource :user_id
     end

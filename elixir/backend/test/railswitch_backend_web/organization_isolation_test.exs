@@ -254,6 +254,33 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
     end
   end
 
+  describe "a user without an accepted membership is not a member" do
+    setup ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: ctx.ours.id,
+          user_id: invitee.id,
+          status: ctx.status
+        )
+      )
+
+      %{invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "a user with a #{status} membership of the scoped organization gets not_organization_member",
+           ctx do
+        conn = gql(scoped_to(ctx.invitee, ctx.ours), @list_projects, %{})
+
+        assert %{"errors" => [error]} = json(conn)
+        assert error["extensions"]["code"] == "not_organization_member"
+      end
+    end
+  end
+
   describe "a malformed organization id is refusable, not a crash" do
     # `SetTenant` cannot turn a malformed value into a tenant, so the request
     # arrives without one and has to be refused with a code, not a 400.

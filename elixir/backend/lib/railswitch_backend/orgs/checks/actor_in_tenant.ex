@@ -42,7 +42,7 @@ defmodule RailswitchBackend.Orgs.Checks.ActorInTenant do
 
   defp member?(actor, tenant) do
     Membership
-    |> Ash.Query.filter(organization_id == ^tenant and user_id == ^actor.id)
+    |> Ash.Query.filter(organization_id == ^tenant and user_id == ^actor.id and status == :accepted)
     |> Ash.exists?(authorize?: false)
   end
 end

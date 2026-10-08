@@ -318,18 +318,21 @@ defmodule RailswitchBackend.Accounts.User do
   end
 
   relationships do
-    has_many :memberships, Membership
+    has_many :accepted_memberships, Membership do
+      filter expr(status == :accepted)
+    end
 
     many_to_many :organizations, RailswitchBackend.Orgs.Organization do
       public? true
       through Membership
+      join_relationship :accepted_memberships
       source_attribute_on_join_resource :user_id
       destination_attribute_on_join_resource :organization_id
     end
   end
 
   aggregates do
-    list :organization_ids, :memberships, :organization_id
+    list :organization_ids, :accepted_memberships, :organization_id
   end
 
   identities do

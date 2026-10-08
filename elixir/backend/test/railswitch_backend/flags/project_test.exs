@@ -17,7 +17,11 @@ defmodule RailswitchBackend.Flags.ProjectTest do
     org = generate(OrgsGenerator.organization(actor: user))
     outsider = generate(AccountsGenerator.user())
 
-    %{user: user, org: org, outsider: outsider}
+    %{
+      user: user,
+      org: org,
+      outsider: outsider
+    }
   end
 
   describe "create" do
@@ -113,6 +117,58 @@ defmodule RailswitchBackend.Flags.ProjectTest do
 
       assert {:error, %Forbidden{}} =
                Flags.delete_project(project, tenant: ctx.org.id)
+    end
+  end
+
+  describe "users without an accepted membership" do
+    setup ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: ctx.org.id,
+          user_id: invitee.id,
+          status: ctx.status
+        )
+      )
+
+      %{invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "a user with a #{status} membership cannot create a project", ctx do
+        assert {:error, %Forbidden{}} =
+                 Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot read projects", ctx do
+        Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.list_projects(tenant: ctx.org.id, actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "get_project_by_org_id_and_name does not return the project to a user with a #{status} membership",
+           ctx do
+        project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.get_project_by_org_id_and_name(project.name,
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot destroy a project", ctx do
+        project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+
+        assert {:error, %Forbidden{}} =
+                 Flags.delete_project(project, tenant: ctx.org.id, actor: ctx.invitee)
+      end
     end
   end
 end

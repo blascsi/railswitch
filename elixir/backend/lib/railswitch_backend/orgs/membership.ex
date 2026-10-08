@@ -62,14 +62,19 @@ defmodule RailswitchBackend.Orgs.Membership do
       description "Members see all memberships in the org, and users always see their own memberships"
       forbid_unless ActorInTenant
       authorize_if expr(user_id == ^actor(:id))
-      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
+      authorize_if expr(exists(organization.accepted_memberships, user_id == ^actor(:id)))
     end
 
     policy action_type([:create, :update]) do
       description "Owners can manage memberships"
       forbid_unless ActorInTenant
 
-      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id) and role == :owner))
+      authorize_if expr(
+                     exists(
+                       organization.accepted_memberships,
+                       user_id == ^actor(:id) and role == :owner
+                     )
+                   )
     end
 
     policy action_type(:destroy) do
@@ -78,7 +83,12 @@ defmodule RailswitchBackend.Orgs.Membership do
 
       authorize_if expr(user_id == ^actor(:id))
 
-      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id) and role == :owner))
+      authorize_if expr(
+                     exists(
+                       organization.accepted_memberships,
+                       user_id == ^actor(:id) and role == :owner
+                     )
+                   )
     end
   end
 

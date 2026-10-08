@@ -247,14 +247,42 @@ defmodule RailswitchBackend.Accounts.UserTest do
     end
   end
 
+  describe "organization relationships" do
+    setup do
+      owner = Accounts.register_user!(unique_email(), @password, @password)
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      accepted_org = generate(OrgsGenerator.organization(actor: owner))
+      pending_org = generate(OrgsGenerator.organization(actor: owner))
+      declined_org = generate(OrgsGenerator.organization(actor: owner))
+
+      Orgs.add_member!(accepted_org.id, user.id, %{status: :accepted}, actor: owner)
+      Orgs.add_member!(pending_org.id, user.id, actor: owner)
+      Orgs.add_member!(declined_org.id, user.id, %{status: :declined}, actor: owner)
+
+      %{user: user, accepted_org: accepted_org}
+    end
+
+    test "organizations only lists organizations with an accepted membership", ctx do
+      user = Ash.load!(ctx.user, :organizations, authorize?: false)
+
+      assert Enum.map(user.organizations, & &1.id) == [ctx.accepted_org.id]
+    end
+  end
+
   describe "destroy" do
-    test "deletes a user who solely owns no organizations" do
+    test "deletes a user" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+
+      assert :ok = Accounts.delete_user(user, actor: user)
+
+      assert {:error, _} = Accounts.sign_in_user(to_string(user.email), @password)
+    end
+
+    test "deletes a user who deletes all their organizations" do
       user = Accounts.register_user!(unique_email(), @password, @password)
       _org = generate(OrgsGenerator.organization(actor: user))
       [membership] = owned_memberships(user)
 
-      # Give up the only organization the registration created, otherwise the
-      # solely-owned-organization guard blocks the account deletion.
       Orgs.delete_organization!(membership.organization, actor: user)
 
       assert :ok = Accounts.delete_user(user, actor: user)
@@ -265,6 +293,19 @@ defmodule RailswitchBackend.Accounts.UserTest do
     test "blocks deletion while the user is the only owner of an organization" do
       user = Accounts.register_user!(unique_email(), @password, @password)
       _org = generate(OrgsGenerator.organization(actor: user))
+
+      assert {:error, error} = Accounts.delete_user(user, actor: user)
+      assert Exception.message(error) =~ "only owner"
+    end
+
+    test "blocks deletion while no other owners have accepted their memberships yet" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      pending_user = Accounts.register_user!(unique_email(), @password, @password)
+      declined_user = Accounts.register_user!(unique_email(), @password, @password)
+      org = generate(OrgsGenerator.organization(actor: user))
+
+      Orgs.add_member!(org.id, pending_user.id, %{role: :owner}, actor: user)
+      Orgs.add_member!(org.id, declined_user.id, %{role: :owner, status: :declined}, actor: user)
 
       assert {:error, error} = Accounts.delete_user(user, actor: user)
       assert Exception.message(error) =~ "only owner"

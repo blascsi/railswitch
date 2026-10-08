@@ -7,6 +7,8 @@ defmodule RailswitchBackend.Orgs.OrganizationTest do
   import Ash.Generator
 
   alias Ash.Error.Forbidden
+  alias Ash.Error.Invalid
+  alias Ash.Error.Query.NotFound
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Orgs
   alias RailswitchBackend.Orgs.Membership
@@ -86,7 +88,7 @@ defmodule RailswitchBackend.Orgs.OrganizationTest do
       outsider = generate(AccountsGenerator.user())
       org = Orgs.create_organization!("Hidden", actor: owner)
 
-      assert {:error, %Ash.Error.Invalid{errors: [%Ash.Error.Query.NotFound{}]}} =
+      assert {:error, %Invalid{errors: [%NotFound{}]}} =
                Orgs.get_organization(org.id, actor: outsider)
     end
 
@@ -128,6 +130,68 @@ defmodule RailswitchBackend.Orgs.OrganizationTest do
       )
 
       assert {:error, %Forbidden{}} = Orgs.delete_organization(org, actor: member)
+    end
+  end
+
+  describe "owners without an accepted membership" do
+    setup ctx do
+      owner = generate(AccountsGenerator.user())
+      invitee = generate(AccountsGenerator.user())
+      org = Orgs.create_organization!("Acme", actor: owner)
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: invitee.id,
+          role: :owner,
+          status: ctx.status
+        )
+      )
+
+      %{org: org, invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "an owner with a #{status} membership does not see the organization in their list",
+           ctx do
+        assert {:ok, []} = Orgs.list_organizations(actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership cannot get the organization", ctx do
+        assert {:error, %Invalid{errors: [%NotFound{}]}} =
+                 Orgs.get_organization(ctx.org.id, actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership cannot update the organization", ctx do
+        assert {:error, %Forbidden{}} =
+                 Orgs.update_organization(ctx.org, "Taken", actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "an owner with a #{status} membership cannot delete the organization", ctx do
+        assert {:error, %Forbidden{}} = Orgs.delete_organization(ctx.org, actor: ctx.invitee)
+      end
+    end
+  end
+
+  describe "user relationships" do
+    test "only lists users with an accepted membership" do
+      owner = generate(AccountsGenerator.user())
+      member = generate(AccountsGenerator.user())
+      pending_user = generate(AccountsGenerator.user())
+      declined_user = generate(AccountsGenerator.user())
+      org = Orgs.create_organization!("Acme", actor: owner)
+
+      Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
+      Orgs.add_member!(org.id, pending_user.id, actor: owner)
+      Orgs.add_member!(org.id, declined_user.id, %{status: :declined}, actor: owner)
+
+      org = Ash.load!(org, :users, authorize?: false)
+
+      assert org.users |> Enum.map(& &1.id) |> Enum.sort() == Enum.sort([owner.id, member.id])
     end
   end
 

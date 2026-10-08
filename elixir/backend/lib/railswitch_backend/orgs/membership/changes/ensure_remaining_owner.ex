@@ -38,7 +38,7 @@ defmodule RailswitchBackend.Orgs.Membership.Changes.EnsureRemainingOwner do
 
     owners =
       RailswitchBackend.Orgs.Membership
-      |> Ash.Query.filter(organization_id == ^membership.organization_id and role == :owner)
+      |> Ash.Query.filter(organization_id == ^membership.organization_id and role == :owner and status == :accepted)
       # deterministic lock order avoids deadlocks
       |> Ash.Query.sort(:id)
       |> Ash.Query.lock(:for_update)

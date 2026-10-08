@@ -21,7 +21,13 @@ defmodule RailswitchBackend.Flags.FlagTest do
     environment = generate(FlagsGenerator.environment(tenant: org.id, project_id: project.id))
     outsider = generate(AccountsGenerator.user())
 
-    %{user: user, org: org, project: project, environment: environment, outsider: outsider}
+    %{
+      user: user,
+      org: org,
+      project: project,
+      environment: environment,
+      outsider: outsider
+    }
   end
 
   describe "create" do
@@ -172,6 +178,75 @@ defmodule RailswitchBackend.Flags.FlagTest do
 
       assert {:error, %Forbidden{}} =
                Flags.delete_flag(flag, tenant: ctx.org.id)
+    end
+  end
+
+  describe "users without an accepted membership" do
+    setup ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: ctx.org.id,
+          user_id: invitee.id,
+          status: ctx.status
+        )
+      )
+
+      %{invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "a user with a #{status} membership cannot create a flag", ctx do
+        assert {:error, %Forbidden{}} =
+                 Flags.create_flag(%{name: "checkout", project_id: ctx.project.id},
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+
+        assert {:ok, []} = Flags.list_flags(tenant: ctx.org.id, actor: ctx.user)
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot list flags", ctx do
+        Flags.create_flag!(%{name: "checkout", project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.list_flags(tenant: ctx.org.id, actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "get_flag_by_project_and_flag_name does not return the flag for a user with a #{status} membership",
+           ctx do
+        flag =
+          Flags.create_flag!(%{name: "checkout", project_id: ctx.project.id},
+            tenant: ctx.org.id,
+            actor: ctx.user
+          )
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.get_flag_by_project_and_flag_name(
+                   %{project_name: ctx.project.name, flag_name: flag.name},
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot destroy a flag", ctx do
+        flag =
+          Flags.create_flag!(%{name: "checkout", project_id: ctx.project.id},
+            tenant: ctx.org.id,
+            actor: ctx.user
+          )
+
+        assert {:error, %Forbidden{}} =
+                 Flags.delete_flag(flag, tenant: ctx.org.id, actor: ctx.invitee)
+      end
     end
   end
 end

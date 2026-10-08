@@ -89,7 +89,7 @@ defmodule RailswitchBackend.Flags.Environment do
     policy always() do
       description "Only members of the owning organization can act on environments"
       forbid_unless RailswitchBackend.Orgs.Checks.ActorInTenant
-      authorize_if expr(exists(organization.memberships, user_id == ^actor(:id)))
+      authorize_if expr(exists(organization.accepted_memberships, user_id == ^actor(:id)))
     end
   end
 

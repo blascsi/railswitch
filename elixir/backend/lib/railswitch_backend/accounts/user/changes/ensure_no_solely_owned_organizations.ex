@@ -41,7 +41,7 @@ defmodule RailswitchBackend.Accounts.User.Changes.EnsureNoSolelyOwnedOrganizatio
   defp solely_owned_org_ids(user_id, actor) do
     owned_org_ids =
       Membership
-      |> Ash.Query.filter(user_id == ^user_id and role == :owner)
+      |> Ash.Query.filter(user_id == ^user_id and role == :owner and status == :accepted)
       |> Ash.read!(actor: actor)
       |> Enum.map(& &1.organization_id)
 
@@ -51,7 +51,7 @@ defmodule RailswitchBackend.Accounts.User.Changes.EnsureNoSolelyOwnedOrganizatio
 
       org_ids ->
         Membership
-        |> Ash.Query.filter(organization_id in ^org_ids and role == :owner)
+        |> Ash.Query.filter(organization_id in ^org_ids and role == :owner and status == :accepted)
         # deterministic lock order avoids deadlocks
         |> Ash.Query.sort(:id)
         |> Ash.Query.lock(:for_update)

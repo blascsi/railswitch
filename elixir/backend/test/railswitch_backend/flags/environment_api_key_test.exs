@@ -25,7 +25,13 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
     outsider = generate(AccountsGenerator.user())
 
-    %{user: user, org: org, project: project, environment: environment, outsider: outsider}
+    %{
+      user: user,
+      org: org,
+      project: project,
+      environment: environment,
+      outsider: outsider
+    }
   end
 
   describe "create" do
@@ -175,6 +181,66 @@ defmodule RailswitchBackend.Flags.EnvironmentApiKeyTest do
 
       assert {:error, %Forbidden{}} =
                Flags.delete_environment_api_key(api_key, tenant: ctx.org.id)
+    end
+  end
+
+  describe "users without an accepted membership" do
+    setup ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: ctx.org.id,
+          user_id: invitee.id,
+          status: ctx.status
+        )
+      )
+
+      %{invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "a user with a #{status} membership cannot create an api key", ctx do
+        assert {:error, %Forbidden{}} =
+                 Flags.create_environment_api_key(
+                   %{name: "test_key", environment_id: ctx.environment.id},
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot look up the api key by id", ctx do
+        api_key =
+          Flags.create_environment_api_key!(
+            %{name: "test_key", environment_id: ctx.environment.id},
+            tenant: ctx.org.id,
+            actor: ctx.user
+          )
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.get_environment_api_key_by_id(api_key.id,
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot delete the api key", ctx do
+        api_key =
+          Flags.create_environment_api_key!(
+            %{name: "test_key", environment_id: ctx.environment.id},
+            tenant: ctx.org.id,
+            actor: ctx.user
+          )
+
+        assert {:error, %Forbidden{}} =
+                 Flags.delete_environment_api_key(api_key,
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
     end
   end
 end

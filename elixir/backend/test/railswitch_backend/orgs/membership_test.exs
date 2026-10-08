@@ -10,6 +10,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
   alias Ash.Error.Forbidden
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Orgs
+  alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.Orgs.Membership
   alias RailswitchBackend.OrgsGenerator
 
@@ -81,6 +82,21 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
 
       assert Exception.message(error) =~ "at least one owner"
     end
+
+    test "demoting the last owner is blocked when no other owners have accepted their memberships yet" do
+      pending_owner = generate(AccountsGenerator.user())
+      declined_owner = generate(AccountsGenerator.user())
+      {owner, org, owner_membership} = org_with_owner()
+
+      Orgs.add_member!(org.id, pending_owner.id, %{role: :owner}, actor: owner)
+
+      Orgs.add_member!(org.id, declined_owner.id, %{role: :owner, status: :declined}, actor: owner)
+
+      assert {:error, error} =
+               Orgs.change_member_role(owner_membership, :member, actor: owner)
+
+      assert Exception.message(error) =~ "at least one owner"
+    end
   end
 
   describe "destroy" do
@@ -111,6 +127,19 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
 
     test "removing the last owner is blocked" do
       {owner, _org, owner_membership} = org_with_owner()
+
+      assert {:error, error} = Orgs.remove_member(owner_membership, actor: owner)
+      assert Exception.message(error) =~ "at least one owner"
+    end
+
+    test "the last owner cannot leave when no other owners have accepted their memberships yet" do
+      pending_owner = generate(AccountsGenerator.user())
+      declined_owner = generate(AccountsGenerator.user())
+      {owner, org, owner_membership} = org_with_owner()
+
+      Orgs.add_member!(org.id, pending_owner.id, %{role: :owner}, actor: owner)
+
+      Orgs.add_member!(org.id, declined_owner.id, %{role: :owner, status: :declined}, actor: owner)
 
       assert {:error, error} = Orgs.remove_member(owner_membership, actor: owner)
       assert Exception.message(error) =~ "at least one owner"
@@ -184,6 +213,58 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
 
       assert {:error, %Forbidden{}} =
                Orgs.change_member_role(target_membership, :owner, actor: member)
+    end
+  end
+
+  describe "users without an accepted membership" do
+    setup ctx do
+      {owner, org, owner_membership} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+
+      invitee_membership =
+        generate(
+          OrgsGenerator.membership(
+            organization_id: org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
+      %{
+        owner: owner,
+        org: org,
+        owner_membership: owner_membership,
+        invitee: invitee,
+        invitee_membership: invitee_membership
+      }
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "a user with a #{status} membership querying with the organization as tenant is not a member",
+           ctx do
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Orgs.list_memberships(tenant: ctx.org.id, actor: ctx.invitee)
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership and preloaded organization ids querying with the organization as tenant is not a member",
+           ctx do
+        invitee = Ash.load!(ctx.invitee, :organization_ids, authorize?: false)
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Orgs.list_memberships(tenant: ctx.org.id, actor: invitee)
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership sees only their own membership of the organization",
+           ctx do
+        assert {:ok, seen} = Orgs.list_memberships(actor: ctx.invitee)
+
+        seen_ids = Enum.map(seen, & &1.id)
+        assert ctx.invitee_membership.id in seen_ids
+        refute ctx.owner_membership.id in seen_ids
+      end
     end
   end
 

@@ -171,4 +171,43 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
       assert condition["attribute"] == "plan"
     end
   end
+
+  describe "users without an accepted membership" do
+    setup ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: ctx.org.id,
+          user_id: invitee.id,
+          status: ctx.status
+        )
+      )
+
+      %{invitee: invitee}
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "a user with a #{status} membership cannot list flag environments", ctx do
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.list_flag_environments(
+                   query: [filter: [id: ctx.flag_environment.id]],
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
+
+      @tag status: status
+      test "a user with a #{status} membership cannot update the rules", ctx do
+        assert {:error, %Forbidden{}} =
+                 Flags.update_flag_environment(
+                   ctx.flag_environment,
+                   %{rules: FlagsGenerator.disabled_rules()},
+                   tenant: ctx.org.id,
+                   actor: ctx.invitee
+                 )
+      end
+    end
+  end
 end
