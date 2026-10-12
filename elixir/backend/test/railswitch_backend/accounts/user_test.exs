@@ -255,9 +255,23 @@ defmodule RailswitchBackend.Accounts.UserTest do
       pending_org = generate(OrgsGenerator.organization(actor: owner))
       declined_org = generate(OrgsGenerator.organization(actor: owner))
 
-      Orgs.add_member!(accepted_org.id, user.id, %{status: :accepted}, actor: owner)
-      Orgs.add_member!(pending_org.id, user.id, actor: owner)
-      Orgs.add_member!(declined_org.id, user.id, %{status: :declined}, actor: owner)
+      generate(OrgsGenerator.membership(organization_id: accepted_org.id, user_id: user.id))
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: pending_org.id,
+          user_id: user.id,
+          status: :pending
+        )
+      )
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: declined_org.id,
+          user_id: user.id,
+          status: :declined
+        )
+      )
 
       %{user: user, accepted_org: accepted_org}
     end
@@ -304,8 +318,23 @@ defmodule RailswitchBackend.Accounts.UserTest do
       declined_user = Accounts.register_user!(unique_email(), @password, @password)
       org = generate(OrgsGenerator.organization(actor: user))
 
-      Orgs.add_member!(org.id, pending_user.id, %{role: :owner}, actor: user)
-      Orgs.add_member!(org.id, declined_user.id, %{role: :owner, status: :declined}, actor: user)
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: pending_user.id,
+          role: :owner,
+          status: :pending
+        )
+      )
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: declined_user.id,
+          role: :owner,
+          status: :declined
+        )
+      )
 
       assert {:error, error} = Accounts.delete_user(user, actor: user)
       assert Exception.message(error) =~ "only owner"

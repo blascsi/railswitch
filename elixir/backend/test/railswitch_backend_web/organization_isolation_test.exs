@@ -14,7 +14,6 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags.EnvironmentApiKey
   alias RailswitchBackend.FlagsGenerator
-  alias RailswitchBackend.Orgs.Membership
   alias RailswitchBackend.Orgs.Validations.ArgumentIsTenant
   alias RailswitchBackend.Orgs.Validations.RelationshipInTenant
   alias RailswitchBackend.OrgsGenerator
@@ -44,15 +43,6 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
   @create_environment """
   mutation CreateEnvironment($name: String!, $projectId: ID!) {
     createEnvironment(input: {name: $name, projectId: $projectId}) {
-      result { id }
-      errors { code message fields }
-    }
-  }
-  """
-
-  @add_member """
-  mutation AddMember($userId: ID!, $organizationId: ID!) {
-    addMember(input: {userId: $userId, organizationId: $organizationId, role: MEMBER}) {
       result { id }
       errors { code message fields }
     }
@@ -177,40 +167,6 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
 
       assert %{"data" => %{"createFlag" => %{"errors" => [], "result" => result}}} = json(conn)
       assert result["id"]
-    end
-  end
-
-  describe "an argument naming an organization must match the scope" do
-    test "addMember cannot write into an organization other than the scoped one", ctx do
-      newcomer = generate(AccountsGenerator.user())
-
-      conn =
-        gql(scoped_to(ctx.insider, ctx.ours), @add_member, %{
-          "userId" => newcomer.id,
-          "organizationId" => ctx.theirs.id
-        })
-
-      assert %{"data" => %{"addMember" => payload}} = json(conn)
-      assert payload["result"] == nil
-
-      assert [%{"code" => "invalid_attribute", "fields" => ["organization_id"]}] =
-               payload["errors"]
-
-      assert Membership
-             |> Ash.Query.filter(organization_id == ^ctx.theirs.id and user_id == ^newcomer.id)
-             |> Ash.read!(authorize?: false) == []
-    end
-
-    test "addMember into the scoped organization still works", ctx do
-      newcomer = generate(AccountsGenerator.user())
-
-      conn =
-        gql(scoped_to(ctx.insider, ctx.ours), @add_member, %{
-          "userId" => newcomer.id,
-          "organizationId" => ctx.ours.id
-        })
-
-      assert %{"data" => %{"addMember" => %{"errors" => []}}} = json(conn)
     end
   end
 

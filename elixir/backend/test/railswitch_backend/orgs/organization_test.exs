@@ -185,9 +185,23 @@ defmodule RailswitchBackend.Orgs.OrganizationTest do
       declined_user = generate(AccountsGenerator.user())
       org = Orgs.create_organization!("Acme", actor: owner)
 
-      Orgs.add_member!(org.id, member.id, %{status: :accepted}, actor: owner)
-      Orgs.add_member!(org.id, pending_user.id, actor: owner)
-      Orgs.add_member!(org.id, declined_user.id, %{status: :declined}, actor: owner)
+      generate(OrgsGenerator.membership(organization_id: org.id, user_id: member.id))
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: pending_user.id,
+          status: :pending
+        )
+      )
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: declined_user.id,
+          status: :declined
+        )
+      )
 
       org = Ash.load!(org, :users, authorize?: false)
 

@@ -75,15 +75,6 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
   }
   """
 
-  @add_member """
-  mutation AddMember($userId: ID!, $organizationId: ID!) {
-    addMember(input: {userId: $userId, organizationId: $organizationId, role: MEMBER}) {
-      result { id role }
-      errors { code message }
-    }
-  }
-  """
-
   @change_member_role """
   mutation ChangeMemberRole($id: ID!) {
     changeMemberRole(id: $id, input: {role: OWNER}) {
@@ -303,24 +294,6 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
   end
 
   describe "membership management via the API" do
-    test "an owner can add a member", %{conn: conn} do
-      owner = generate(AccountsGenerator.user())
-      org = generate(OrgsGenerator.organization(actor: owner))
-      member = generate(AccountsGenerator.user())
-
-      conn =
-        gql(authed(conn, owner), @add_member, %{
-          "userId" => member.id,
-          "organizationId" => org.id
-        })
-
-      assert %{"data" => %{"addMember" => %{"errors" => []}}} = json(conn)
-
-      assert Membership
-             |> Ash.Query.filter(organization_id == ^org.id and user_id == ^member.id)
-             |> Ash.read_one!(authorize?: false)
-    end
-
     test "listing memberships can include each member's email and id", %{conn: conn} do
       member_email = "member@example.com"
       owner = generate(AccountsGenerator.user(email: "owner@example.com"))
@@ -340,25 +313,6 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
       assert member.id in user_ids
 
       refute conn.resp_body =~ "hashed_password"
-    end
-
-    test "a non-owner cannot add a member", %{conn: conn} do
-      owner = generate(AccountsGenerator.user())
-      org = generate(OrgsGenerator.organization(actor: owner))
-      member = generate(AccountsGenerator.user())
-
-      generate(OrgsGenerator.membership(organization_id: org.id, user_id: member.id, actor: owner))
-
-      outsider = generate(AccountsGenerator.user())
-
-      conn =
-        gql(authed(conn, member), @add_member, %{
-          "userId" => outsider.id,
-          "organizationId" => org.id
-        })
-
-      assert %{"data" => %{"addMember" => %{"result" => nil, "errors" => errors}}} = json(conn)
-      assert Enum.any?(errors, &(&1["code"] == "forbidden"))
     end
 
     test "an owner can change a member's role", %{conn: conn} do

@@ -12,6 +12,8 @@ defmodule RailswitchBackend.Orgs.Membership do
   alias RailswitchBackend.Orgs.Membership.Changes.EnsureRemainingOwner
   alias RailswitchBackend.Orgs.Validations.ArgumentIsTenant
 
+  @system_actions [:create]
+
   graphql do
     type :membership
   end
@@ -58,36 +60,46 @@ defmodule RailswitchBackend.Orgs.Membership do
   end
 
   policies do
+    policy action(@system_actions) do
+      description "System actions are forbidden to call by users"
+      forbid_if always()
+    end
+
     policy action_type(:read) do
       description "Members see all memberships in the org, and users always see their own memberships"
       forbid_unless ActorInTenant
       authorize_if expr(user_id == ^actor(:id))
-      authorize_if expr(exists(organization.accepted_memberships, user_id == ^actor(:id)))
+
+      authorize_if expr(
+                     status == :accepted and
+                       exists(organization.accepted_memberships, user_id == ^actor(:id))
+                   )
     end
 
-    policy action_type([:create, :update]) do
-      description "Owners can manage memberships"
+    policy action(:change_role) do
+      description "Owners can change the role of accepted members"
       forbid_unless ActorInTenant
 
       authorize_if expr(
-                     exists(
-                       organization.accepted_memberships,
-                       user_id == ^actor(:id) and role == :owner
-                     )
+                     status == :accepted and
+                       exists(
+                         organization.accepted_memberships,
+                         user_id == ^actor(:id) and role == :owner
+                       )
                    )
     end
 
     policy action_type(:destroy) do
-      description "Anyone can remove themselves from an Organization, and owners can remove anyone from an Organization"
+      description "Accepted members can leave, and owners can remove accepted members"
       forbid_unless ActorInTenant
-
-      authorize_if expr(user_id == ^actor(:id))
+      authorize_if expr(status == :accepted and user_id == ^actor(:id))
 
       authorize_if expr(
-                     exists(
-                       organization.accepted_memberships,
-                       user_id == ^actor(:id) and role == :owner
-                     )
+                     status == :accepted and
+                       exists(
+                         organization.accepted_memberships,
+                         user_id == ^actor(:id) and role == :owner
+                       )
                    )
     end
   end
