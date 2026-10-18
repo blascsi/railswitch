@@ -106,6 +106,24 @@ type RemoveMemberResult {
   errors: [MutationError!]!
 }
 
+"The result of the :decline_invitation mutation"
+type DeclineInvitationResult {
+  "The successful result of the mutation"
+  result: Membership
+
+  "Any errors generated, if the mutation failed"
+  errors: [MutationError!]!
+}
+
+"The result of the :accept_invitation mutation"
+type AcceptInvitationResult {
+  "The successful result of the mutation"
+  result: Membership
+
+  "Any errors generated, if the mutation failed"
+  errors: [MutationError!]!
+}
+
 "The result of the :change_member_role mutation"
 type ChangeMemberRoleResult {
   "The successful result of the mutation"
@@ -145,6 +163,7 @@ enum MembershipSortField {
   ROLE
   STATUS
   USER_ID
+  ORGANIZATION_NAME
 }
 
 "A keyset page of :membership"
@@ -160,6 +179,24 @@ type KeysetPageOfMembership {
 
   "The last keyset in the results"
   endKeyset: String
+}
+
+input MembershipFilterOrganizationName {
+  isNil: Boolean
+  eq: String
+  notEq: String
+  in: [String!]
+  lessThan: String
+  greaterThan: String
+  lessThanOrEqual: String
+  greaterThanOrEqual: String
+  contains: String
+  isDistinctFrom: String
+  isNotDistinctFrom: String
+  stringEndsWith: String
+  stringStartsWith: String
+  like: String
+  ilike: String
 }
 
 input MembershipFilterUserId {
@@ -222,6 +259,7 @@ input MembershipFilterInput {
   role: MembershipFilterRole
   status: MembershipFilterStatus
   userId: MembershipFilterUserId
+  organizationName: MembershipFilterOrganizationName
 }
 
 input MembershipSortInput {
@@ -235,6 +273,7 @@ type Membership {
   status: MembershipStatus!
   userId: ID!
   user: User!
+  organizationName: String
 }
 
 "The result of the :delete_organization mutation"
@@ -1145,6 +1184,26 @@ type RootQueryType {
     last: Int
   ): KeysetPageOfMembership
 
+  listMyInvitations(
+    "How to sort the records in the response"
+    sort: [MembershipSortInput]
+
+    "A filter to limit the results"
+    filter: MembershipFilterInput
+
+    "The number of records to return from the beginning. Maximum 250"
+    first: Int
+
+    "Show records before the specified keyset."
+    before: String
+
+    "Show records after the specified keyset."
+    after: String
+
+    "The number of records to return to the end. Maximum 250"
+    last: Int
+  ): KeysetPageOfMembership
+
   "The currently signed-in user."
   currentUser: User
 }
@@ -1179,6 +1238,10 @@ type RootMutationType {
   inviteMember(input: InviteMemberInput!): Boolean!
 
   changeMemberRole(id: ID!, input: ChangeMemberRoleInput): ChangeMemberRoleResult!
+
+  acceptInvitation(id: ID!): AcceptInvitationResult!
+
+  declineInvitation(id: ID!): DeclineInvitationResult!
 
   removeMember(id: ID!): RemoveMemberResult!
 

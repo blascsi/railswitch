@@ -11,6 +11,7 @@ defmodule RailswitchBackend.Orgs do
       get Organization, :get_organization, :read
       list Organization, :list_organizations, :read
       list Membership, :list_memberships, :read
+      list Membership, :list_my_invitations, :my_invitations
     end
 
     mutations do
@@ -21,6 +22,8 @@ defmodule RailswitchBackend.Orgs do
       create Membership, :add_member, :create
       action Membership, :invite_member, :invite
       update Membership, :change_member_role, :change_role
+      update Membership, :accept_invitation, :accept
+      update Membership, :decline_invitation, :decline
       destroy Membership, :remove_member, :destroy
     end
   end
@@ -41,8 +44,11 @@ defmodule RailswitchBackend.Orgs do
 
       define :invite_member, action: :invite, args: [:email]
       define :list_memberships, action: :read
+      define :list_my_invitations, action: :my_invitations
       define :remove_member, action: :destroy
       define :change_member_role, action: :change_role, args: [:role]
+      define :accept_invitation, action: :accept
+      define :decline_invitation, action: :decline
     end
   end
 end

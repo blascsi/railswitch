@@ -139,6 +139,71 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
     end
   end
 
+  @list_my_invitations """
+  query {
+    listMyInvitations { results { id role status organizationName } }
+  }
+  """
+
+  @accept_invitation """
+  mutation AcceptInvitation($id: ID!) {
+    acceptInvitation(id: $id) {
+      result { id status }
+      errors { code message }
+    }
+  }
+  """
+
+  describe "invitation flow" do
+    test "an invited user finds, accepts and joins the organization", %{conn: conn} do
+      owner = generate(AccountsGenerator.user())
+      org = generate(OrgsGenerator.organization(name: "Acme", actor: owner))
+      invitee = generate(AccountsGenerator.user())
+
+      invite_conn =
+        conn
+        |> authed(owner)
+        |> put_req_header("x-organization-id", org.id)
+        |> gql(@invite_member, %{"email" => to_string(invitee.email)})
+
+      assert %{"data" => %{"inviteMember" => true}} = json(invite_conn)
+
+      list_conn = gql(authed(build_conn(), invitee), @list_my_invitations)
+
+      assert %{
+               "data" => %{
+                 "listMyInvitations" => %{
+                   "results" => [
+                     %{
+                       "id" => invitation_id,
+                       "role" => "MEMBER",
+                       "status" => "PENDING",
+                       "organizationName" => "Acme"
+                     }
+                   ]
+                 }
+               }
+             } = json(list_conn)
+
+      accept_conn =
+        gql(authed(build_conn(), invitee), @accept_invitation, %{"id" => invitation_id})
+
+      assert %{
+               "data" => %{
+                 "acceptInvitation" => %{
+                   "result" => %{"id" => ^invitation_id, "status" => "ACCEPTED"},
+                   "errors" => []
+                 }
+               }
+             } = json(accept_conn)
+
+      orgs_conn = gql(authed(build_conn(), invitee), @list_organizations)
+
+      assert %{"data" => %{"listOrganizations" => %{"results" => results}}} = json(orgs_conn)
+      assert org.id in Enum.map(results, & &1["id"])
+    end
+  end
+
   describe "createOrganization mutation" do
     test "an authenticated user creates an organization and becomes its owner", %{conn: conn} do
       user = generate(AccountsGenerator.user())

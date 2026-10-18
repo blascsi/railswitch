@@ -42,6 +42,11 @@ defmodule RailswitchBackend.Orgs.Membership do
       run RailswitchBackend.Orgs.Membership.Actions.Invite
     end
 
+    read :my_invitations do
+      filter expr(user_id == ^actor(:id) and status in [:pending, :declined])
+      pagination required?: false, offset?: true, keyset?: true, countable: true
+    end
+
     create :create do
       primary? true
       accept [:role, :status]
@@ -53,6 +58,18 @@ defmodule RailswitchBackend.Orgs.Membership do
 
       change set_attribute(:user_id, arg(:user_id))
       change set_attribute(:organization_id, arg(:organization_id))
+    end
+
+    update :accept do
+      accept []
+      validate attribute_in(:status, [:pending, :declined])
+      change set_attribute(:status, :accepted)
+    end
+
+    update :decline do
+      accept []
+      validate attribute_equals(:status, :pending)
+      change set_attribute(:status, :declined)
     end
 
     update :change_role do
@@ -91,6 +108,11 @@ defmodule RailswitchBackend.Orgs.Membership do
       description "Accepted owners can invite users to their organization"
       forbid_unless ActorInTenant
       authorize_if RailswitchBackend.Orgs.Checks.ActorOwnsTenant
+    end
+
+    policy action([:accept, :decline]) do
+      description "The invited user can accept or decline the invitation"
+      authorize_if expr(user_id == ^actor(:id))
     end
 
     policy action(:change_role) do
@@ -153,6 +175,12 @@ defmodule RailswitchBackend.Orgs.Membership do
 
     belongs_to :organization, RailswitchBackend.Orgs.Organization do
       allow_nil? false
+    end
+  end
+
+  calculations do
+    calculate :organization_name, :string, expr(organization.name) do
+      public? true
     end
   end
 

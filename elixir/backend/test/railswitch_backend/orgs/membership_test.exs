@@ -8,6 +8,7 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
   import Ash.Generator
 
   alias Ash.Error.Forbidden
+  alias Ash.Error.Invalid
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Orgs
   alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
@@ -153,6 +154,129 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
         end
 
       assert Enum.uniq(results) == [:ok]
+    end
+  end
+
+  describe "accept" do
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "an invitee accepts a #{status} invitation", ctx do
+        {_owner, org, _} = org_with_owner()
+        invitee = generate(AccountsGenerator.user())
+        membership = add_membership(org, invitee, status: ctx.status)
+
+        assert {:ok, accepted} = Orgs.accept_invitation(membership, actor: invitee)
+        assert accepted.status == :accepted
+      end
+    end
+
+    test "after accepting, the invitee is a member of the organization" do
+      {_owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      membership = add_membership(org, invitee, status: :pending)
+
+      assert {:ok, _} = Orgs.accept_invitation(membership, actor: invitee)
+
+      assert {:ok, orgs} = Orgs.list_organizations(actor: invitee)
+      assert org.id in Enum.map(orgs, & &1.id)
+      assert {:ok, _} = Orgs.list_memberships(tenant: org.id, actor: invitee)
+    end
+
+    test "an accepted membership cannot be accepted again" do
+      {_owner, org, _} = org_with_owner()
+      member = generate(AccountsGenerator.user())
+      membership = add_membership(org, member)
+
+      assert {:error, %Invalid{}} = Orgs.accept_invitation(membership, actor: member)
+    end
+
+    test "only the invited user can accept" do
+      {owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      outsider = generate(AccountsGenerator.user())
+      membership = add_membership(org, invitee, status: :pending)
+
+      for actor <- [owner, outsider] do
+        assert {:error, %Forbidden{}} = Orgs.accept_invitation(membership, actor: actor)
+      end
+
+      assert membership_for(org, invitee).status == :pending
+    end
+  end
+
+  describe "decline" do
+    test "an invitee declines a pending invitation" do
+      {_owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      membership = add_membership(org, invitee, status: :pending)
+
+      assert {:ok, declined} = Orgs.decline_invitation(membership, actor: invitee)
+      assert declined.status == :declined
+    end
+
+    test "after declining, the organization stays invisible to the invitee" do
+      {_owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      membership = add_membership(org, invitee, status: :pending)
+
+      assert {:ok, _} = Orgs.decline_invitation(membership, actor: invitee)
+
+      assert {:ok, []} = Orgs.list_organizations(actor: invitee)
+    end
+
+    for status <- [:declined, :accepted] do
+      @tag status: status
+      test "a #{status} membership cannot be declined", ctx do
+        {_owner, org, _} = org_with_owner()
+        invitee = generate(AccountsGenerator.user())
+        membership = add_membership(org, invitee, status: ctx.status)
+
+        assert {:error, %Invalid{}} = Orgs.decline_invitation(membership, actor: invitee)
+        assert membership_for(org, invitee).status == ctx.status
+      end
+    end
+
+    test "only the invited user can decline" do
+      {owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      outsider = generate(AccountsGenerator.user())
+      membership = add_membership(org, invitee, status: :pending)
+
+      for actor <- [owner, outsider] do
+        assert {:error, %Forbidden{}} = Orgs.decline_invitation(membership, actor: actor)
+      end
+
+      assert membership_for(org, invitee).status == :pending
+    end
+  end
+
+  describe "my_invitations" do
+    test "lists the actor's pending and declined memberships across organizations" do
+      {_, pending_org, _} = org_with_owner()
+      {_, declined_org, _} = org_with_owner()
+      {_, accepted_org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      other = generate(AccountsGenerator.user())
+
+      pending = add_membership(pending_org, invitee, status: :pending)
+      declined = add_membership(declined_org, invitee, status: :declined)
+      add_membership(accepted_org, invitee, status: :accepted)
+      add_membership(pending_org, other, status: :pending)
+
+      assert {:ok, invitations} = Orgs.list_my_invitations(actor: invitee)
+
+      assert Enum.sort(Enum.map(invitations, & &1.id)) == Enum.sort([pending.id, declined.id])
+    end
+
+    test "includes the organization name the invitee cannot otherwise read" do
+      {_owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+      add_membership(org, invitee, status: :pending)
+
+      assert {:ok, [invitation]} =
+               Orgs.list_my_invitations(actor: invitee, load: [:organization_name])
+
+      assert invitation.organization_name == org.name
     end
   end
 
