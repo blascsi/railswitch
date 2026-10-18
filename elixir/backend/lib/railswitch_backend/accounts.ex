@@ -45,6 +45,7 @@ defmodule RailswitchBackend.Accounts do
 
       define :get_current_user, action: :current_user
       define :get_user_by_id, action: :read, get_by: [:id]
+      define :get_user_by_email, action: :get_by_email, args: [:email]
 
       define :change_password,
         action: :change_password,

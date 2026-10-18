@@ -28,6 +28,134 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     end
   end
 
+  describe "invite" do
+    test "an owner invites an existing user as a pending membership with the given role" do
+      {owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+
+      assert :ok =
+               Orgs.invite_member(invitee.email, %{role: :owner}, actor: owner, tenant: org.id)
+
+      membership = membership_for(org, invitee)
+      assert membership.status == :pending
+      assert membership.role == :owner
+    end
+
+    test "the role defaults to member" do
+      {owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+
+      assert :ok = Orgs.invite_member(invitee.email, actor: owner, tenant: org.id)
+
+      assert membership_for(org, invitee).role == :member
+    end
+
+    test "the email is matched case-insensitively" do
+      {owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user(email: "invitee@example.com"))
+
+      assert :ok = Orgs.invite_member("InViTeE@Example.COM", actor: owner, tenant: org.id)
+
+      assert membership_for(org, invitee).status == :pending
+    end
+
+    test "an unknown email succeeds without creating a membership" do
+      {owner, org, owner_membership} = org_with_owner()
+
+      assert :ok = Orgs.invite_member("nobody@example.com", actor: owner, tenant: org.id)
+
+      assert Enum.map(memberships_of(org), & &1.id) == [owner_membership.id]
+    end
+
+    for status <- [:pending, :accepted, :declined] do
+      @tag status: status
+      test "inviting a user with a #{status} membership leaves it unchanged", ctx do
+        {owner, org, _} = org_with_owner()
+        invitee = generate(AccountsGenerator.user())
+        add_membership(org, invitee, status: ctx.status)
+
+        assert :ok =
+                 Orgs.invite_member(invitee.email, %{role: :owner}, actor: owner, tenant: org.id)
+
+        membership = membership_for(org, invitee)
+        assert membership.status == ctx.status
+        assert membership.role == :member
+      end
+    end
+
+    test "an owner inviting themselves leaves their membership unchanged" do
+      {owner, org, _} = org_with_owner()
+
+      assert :ok = Orgs.invite_member(owner.email, actor: owner, tenant: org.id)
+
+      membership = membership_for(org, owner)
+      assert membership.status == :accepted
+      assert membership.role == :owner
+    end
+
+    test "a member who is not an owner cannot invite" do
+      {_owner, org, _} = org_with_owner()
+      member = generate(AccountsGenerator.user())
+      add_membership(org, member)
+      invitee = generate(AccountsGenerator.user())
+
+      assert {:error, %Forbidden{}} =
+               Orgs.invite_member(invitee.email, actor: member, tenant: org.id)
+
+      assert is_nil(membership_for(org, invitee))
+    end
+
+    for role <- [:member, :owner] do
+      @tag role: role
+      test "a pending #{role} invitee cannot invite", ctx do
+        {_owner, org, _} = org_with_owner()
+        pending = generate(AccountsGenerator.user())
+        add_membership(org, pending, role: ctx.role, status: :pending)
+        invitee = generate(AccountsGenerator.user())
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Orgs.invite_member(invitee.email, actor: pending, tenant: org.id)
+
+        assert is_nil(membership_for(org, invitee))
+      end
+    end
+
+    test "inviting without a tenant fails" do
+      {owner, org, _} = org_with_owner()
+      invitee = generate(AccountsGenerator.user())
+
+      assert {:error, _} = Orgs.invite_member(invitee.email, actor: owner)
+
+      assert is_nil(membership_for(org, invitee))
+    end
+
+    test "the result does not reveal whether a membership was created" do
+      {owner, org, _} = org_with_owner()
+      new_user = generate(AccountsGenerator.user())
+      pending = generate(AccountsGenerator.user())
+      accepted = generate(AccountsGenerator.user())
+      declined = generate(AccountsGenerator.user())
+
+      add_membership(org, pending, status: :pending)
+      add_membership(org, accepted, status: :accepted)
+      add_membership(org, declined, status: :declined)
+
+      results =
+        for email <- [
+              new_user.email,
+              "nobody@example.com",
+              pending.email,
+              accepted.email,
+              declined.email,
+              owner.email
+            ] do
+          Orgs.invite_member(email, actor: owner, tenant: org.id)
+        end
+
+      assert Enum.uniq(results) == [:ok]
+    end
+  end
+
   describe "change_role" do
     test "an owner can promote a member to owner" do
       {owner, org, _} = org_with_owner()
@@ -292,6 +420,12 @@ defmodule RailswitchBackend.Orgs.MembershipTest do
     Membership
     |> Ash.Query.filter(organization_id == ^org.id and user_id == ^user.id)
     |> Ash.read_one!(authorize?: false)
+  end
+
+  defp memberships_of(org) do
+    Membership
+    |> Ash.Query.filter(organization_id == ^org.id)
+    |> Ash.read!(authorize?: false)
   end
 
   defp add_membership(org, user, overrides \\ []) do

@@ -10,6 +10,7 @@ defmodule RailswitchBackend.Orgs.Membership do
 
   alias RailswitchBackend.Orgs.Checks.ActorInTenant
   alias RailswitchBackend.Orgs.Membership.Changes.EnsureRemainingOwner
+  alias RailswitchBackend.Orgs.Membership.Types.Role
   alias RailswitchBackend.Orgs.Validations.ArgumentIsTenant
 
   @system_actions [:create]
@@ -30,6 +31,16 @@ defmodule RailswitchBackend.Orgs.Membership do
 
   actions do
     defaults [:read]
+
+    action :invite do
+      argument :email, :ci_string, allow_nil?: false
+
+      argument :role, Role,
+        allow_nil?: false,
+        default: :member
+
+      run RailswitchBackend.Orgs.Membership.Actions.Invite
+    end
 
     create :create do
       primary? true
@@ -66,7 +77,7 @@ defmodule RailswitchBackend.Orgs.Membership do
     end
 
     policy action_type(:read) do
-      description "Members see all memberships in the org, and users always see their own memberships"
+      description "Users see their own memberships, accepted members see the org's accepted memberships"
       forbid_unless ActorInTenant
       authorize_if expr(user_id == ^actor(:id))
 
@@ -74,6 +85,12 @@ defmodule RailswitchBackend.Orgs.Membership do
                      status == :accepted and
                        exists(organization.accepted_memberships, user_id == ^actor(:id))
                    )
+    end
+
+    policy action(:invite) do
+      description "Accepted owners can invite users to their organization"
+      forbid_unless ActorInTenant
+      authorize_if RailswitchBackend.Orgs.Checks.ActorOwnsTenant
     end
 
     policy action(:change_role) do
@@ -113,7 +130,7 @@ defmodule RailswitchBackend.Orgs.Membership do
   attributes do
     uuid_v7_primary_key :id
 
-    attribute :role, RailswitchBackend.Orgs.Membership.Types.Role do
+    attribute :role, Role do
       default :member
       allow_nil? false
       public? true

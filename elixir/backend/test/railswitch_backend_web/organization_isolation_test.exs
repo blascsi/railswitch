@@ -14,6 +14,7 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags.EnvironmentApiKey
   alias RailswitchBackend.FlagsGenerator
+  alias RailswitchBackend.Orgs.Membership
   alias RailswitchBackend.Orgs.Validations.ArgumentIsTenant
   alias RailswitchBackend.Orgs.Validations.RelationshipInTenant
   alias RailswitchBackend.OrgsGenerator
@@ -50,6 +51,12 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
   """
 
   @list_projects "query { listProjects { results { id } } }"
+
+  @invite_member """
+  mutation InviteMember($email: String!) {
+    inviteMember(input: {email: $email})
+  }
+  """
 
   setup do
     insider = generate(AccountsGenerator.user())
@@ -237,6 +244,33 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
     end
   end
 
+  describe "an invitation lands in the scoped organization" do
+    test "the membership is created in the scoped organization only", ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      conn =
+        gql(scoped_to(ctx.insider, ctx.ours), @invite_member, %{
+          "email" => to_string(invitee.email)
+        })
+
+      assert %{"data" => %{"inviteMember" => true}} = json(conn)
+      assert organization_ids_of(invitee) == [ctx.ours.id]
+    end
+
+    test "inviting into another organization is refused", ctx do
+      invitee = generate(AccountsGenerator.user())
+
+      conn =
+        gql(scoped_to(ctx.insider, ctx.theirs), @invite_member, %{
+          "email" => to_string(invitee.email)
+        })
+
+      assert %{"errors" => [error]} = json(conn)
+      assert error["extensions"]["code"] == "not_organization_member"
+      assert organization_ids_of(invitee) == []
+    end
+  end
+
   describe "a malformed organization id is refusable, not a crash" do
     # `SetTenant` cannot turn a malformed value into a tenant, so the request
     # arrives without one and has to be refused with a code, not a 400.
@@ -367,6 +401,13 @@ defmodule RailswitchBackendWeb.OrganizationIsolationTest do
       "name" => "probe_flag",
       "projectId" => project_id
     }).resp_body
+  end
+
+  defp organization_ids_of(user) do
+    Membership
+    |> Ash.Query.filter(user_id == ^user.id)
+    |> Ash.read!(authorize?: false)
+    |> Enum.map(& &1.organization_id)
   end
 
   defp scoped_to(user, organization) do

@@ -19,6 +19,7 @@ defmodule RailswitchBackend.Orgs do
       destroy Organization, :delete_organization, :destroy
 
       create Membership, :add_member, :create
+      action Membership, :invite_member, :invite
       update Membership, :change_member_role, :change_role
       destroy Membership, :remove_member, :destroy
     end
@@ -38,6 +39,7 @@ defmodule RailswitchBackend.Orgs do
         action: :create,
         args: [:organization_id, :user_id]
 
+      define :invite_member, action: :invite, args: [:email]
       define :list_memberships, action: :read
       define :remove_member, action: :destroy
       define :change_member_role, action: :change_role, args: [:role]

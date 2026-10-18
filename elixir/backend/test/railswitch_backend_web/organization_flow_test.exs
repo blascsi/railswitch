@@ -93,6 +93,52 @@ defmodule RailswitchBackendWeb.OrganizationFlowTest do
   }
   """
 
+  @invite_member """
+  mutation InviteMember($email: String!, $role: MembershipRole) {
+    inviteMember(input: {email: $email, role: $role})
+  }
+  """
+
+  describe "inviteMember mutation" do
+    test "an owner invites a user by email", %{conn: conn} do
+      owner = generate(AccountsGenerator.user())
+      org = generate(OrgsGenerator.organization(actor: owner))
+      invitee = generate(AccountsGenerator.user())
+
+      conn =
+        conn
+        |> authed(owner)
+        |> put_req_header("x-organization-id", org.id)
+        |> gql(@invite_member, %{"email" => to_string(invitee.email), "role" => "OWNER"})
+
+      assert json(conn) == %{"data" => %{"inviteMember" => true}}
+
+      membership =
+        Membership
+        |> Ash.Query.filter(organization_id == ^org.id and user_id == ^invitee.id)
+        |> Ash.read_one!(authorize?: false)
+
+      assert membership.status == :pending
+      assert membership.role == :owner
+    end
+
+    test "inviting an unknown email looks the same as inviting a real user", %{conn: conn} do
+      owner = generate(AccountsGenerator.user())
+      org = generate(OrgsGenerator.organization(actor: owner))
+      invitee = generate(AccountsGenerator.user())
+
+      invite = fn email ->
+        conn
+        |> authed(owner)
+        |> put_req_header("x-organization-id", org.id)
+        |> gql(@invite_member, %{"email" => email})
+        |> Map.fetch!(:resp_body)
+      end
+
+      assert invite.(to_string(invitee.email)) == invite.("nobody@example.com")
+    end
+  end
+
   describe "createOrganization mutation" do
     test "an authenticated user creates an organization and becomes its owner", %{conn: conn} do
       user = generate(AccountsGenerator.user())

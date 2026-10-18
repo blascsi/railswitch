@@ -119,6 +119,11 @@ input ChangeMemberRoleInput {
   role: MembershipRole
 }
 
+input InviteMemberInput {
+  email: String!
+  role: MembershipRole
+}
+
 "The result of the :add_member mutation"
 type AddMemberResult {
   "The successful result of the mutation"
@@ -1170,6 +1175,8 @@ type RootMutationType {
   deleteOrganization(id: ID!): DeleteOrganizationResult!
 
   addMember(input: AddMemberInput!): AddMemberResult!
+
+  inviteMember(input: InviteMemberInput!): Boolean!
 
   changeMemberRole(id: ID!, input: ChangeMemberRoleInput): ChangeMemberRoleResult!
 
