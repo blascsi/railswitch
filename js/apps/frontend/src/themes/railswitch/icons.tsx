@@ -4,6 +4,7 @@ import {
   CaretDownIcon,
   CaretUpIcon,
   CompassIcon,
+  EnvelopeIcon,
   FlagIcon,
   FolderIcon,
   HouseIcon,
@@ -23,6 +24,7 @@ export type RailswitchIconName =
   | "caretDown"
   | "caretUp"
   | "compass"
+  | "envelope"
   | "flag"
   | "folder"
   | "house"
@@ -40,6 +42,7 @@ export const railswitchIconRegistry: Record<
   caretDown: <CaretDownIcon {...iconProps} />,
   caretUp: <CaretUpIcon {...iconProps} />,
   compass: <CompassIcon {...iconProps} />,
+  envelope: <EnvelopeIcon {...iconProps} />,
   flag: <FlagIcon {...iconProps} />,
   folder: <FolderIcon {...iconProps} />,
   house: <HouseIcon {...iconProps} />,

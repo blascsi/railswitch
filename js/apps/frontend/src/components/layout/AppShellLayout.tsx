@@ -50,6 +50,9 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
     : null;
 
   const isHomeActive = useIsRouteActive([{ to: "/home" }]);
+  const isOrganizationsActive = useIsRouteActive([
+    { to: "/organizations", fuzzy: true },
+  ]);
   const isProjectsActive = useIsRouteActive(
     organizationParams == null
       ? []
@@ -153,6 +156,12 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
             label="Home"
             icon="house"
             isSelected={isHomeActive}
+          />
+          <NavbarLink
+            to="/organizations"
+            label="Organizations"
+            icon="buildings"
+            isSelected={isOrganizationsActive}
           />
           {organizationParams == null ? (
             <>

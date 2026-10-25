@@ -26,6 +26,7 @@ export function OrganizationSelector({
       isLabelHidden
       startIcon="buildings"
       placeholder="Select an organization"
+      emptyText="No organizations yet"
       options={organizations.map((organization) => ({
         label: organization.name,
         value: organization.id,

@@ -16,6 +16,8 @@ import { Route as AnonymousLoginRouteImport } from './routes/_anonymous/login'
 import { Route as AnonymousSignupRouteImport } from './routes/_anonymous/signup'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedOOrganizationIdRouteImport } from './routes/_authenticated/o/$organizationId'
+import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations/index'
+import { Route as AuthenticatedOrganizationsCreateRouteImport } from './routes/_authenticated/organizations/create'
 import { Route as AuthenticatedOOrganizationIdIndexRouteImport } from './routes/_authenticated/o/$organizationId/index'
 import { Route as AuthenticatedOOrganizationIdEnvironmentsIndexRouteImport } from './routes/_authenticated/o/$organizationId/environments/index'
 import { Route as AuthenticatedOOrganizationIdEnvironmentsCreateRouteImport } from './routes/_authenticated/o/$organizationId/environments/create'
@@ -60,6 +62,18 @@ const AuthenticatedOOrganizationIdRoute =
   AuthenticatedOOrganizationIdRouteImport.update({
     id: '/o/$organizationId',
     path: '/o/$organizationId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOrganizationsIndexRoute =
+  AuthenticatedOrganizationsIndexRouteImport.update({
+    id: '/organizations/',
+    path: '/organizations/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOrganizationsCreateRoute =
+  AuthenticatedOrganizationsCreateRouteImport.update({
+    id: '/organizations/create',
+    path: '/organizations/create',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedOOrganizationIdIndexRoute =
@@ -139,6 +153,8 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedHomeRoute
   '/o/$organizationId': typeof AuthenticatedOOrganizationIdRouteWithChildren
+  '/organizations/create': typeof AuthenticatedOrganizationsCreateRoute
+  '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
   '/o/$organizationId/': typeof AuthenticatedOOrganizationIdIndexRoute
   '/o/$organizationId/environments/create': typeof AuthenticatedOOrganizationIdEnvironmentsCreateRoute
   '/o/$organizationId/flags/create': typeof AuthenticatedOOrganizationIdFlagsCreateRoute
@@ -156,6 +172,8 @@ export interface FileRoutesByTo {
   '/login': typeof AnonymousLoginRoute
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/organizations/create': typeof AuthenticatedOrganizationsCreateRoute
+  '/organizations': typeof AuthenticatedOrganizationsIndexRoute
   '/o/$organizationId': typeof AuthenticatedOOrganizationIdIndexRoute
   '/o/$organizationId/environments/create': typeof AuthenticatedOOrganizationIdEnvironmentsCreateRoute
   '/o/$organizationId/flags/create': typeof AuthenticatedOOrganizationIdFlagsCreateRoute
@@ -177,6 +195,8 @@ export interface FileRoutesById {
   '/_anonymous/signup': typeof AnonymousSignupRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/o/$organizationId': typeof AuthenticatedOOrganizationIdRouteWithChildren
+  '/_authenticated/organizations/create': typeof AuthenticatedOrganizationsCreateRoute
+  '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
   '/_authenticated/o/$organizationId/': typeof AuthenticatedOOrganizationIdIndexRoute
   '/_authenticated/o/$organizationId/environments/create': typeof AuthenticatedOOrganizationIdEnvironmentsCreateRoute
   '/_authenticated/o/$organizationId/flags/create': typeof AuthenticatedOOrganizationIdFlagsCreateRoute
@@ -197,6 +217,8 @@ export interface FileRouteTypes {
     | '/signup'
     | '/home'
     | '/o/$organizationId'
+    | '/organizations/create'
+    | '/organizations/'
     | '/o/$organizationId/'
     | '/o/$organizationId/environments/create'
     | '/o/$organizationId/flags/create'
@@ -214,6 +236,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/home'
+    | '/organizations/create'
+    | '/organizations'
     | '/o/$organizationId'
     | '/o/$organizationId/environments/create'
     | '/o/$organizationId/flags/create'
@@ -234,6 +258,8 @@ export interface FileRouteTypes {
     | '/_anonymous/signup'
     | '/_authenticated/home'
     | '/_authenticated/o/$organizationId'
+    | '/_authenticated/organizations/create'
+    | '/_authenticated/organizations/'
     | '/_authenticated/o/$organizationId/'
     | '/_authenticated/o/$organizationId/environments/create'
     | '/_authenticated/o/$organizationId/flags/create'
@@ -302,6 +328,20 @@ declare module '@tanstack/react-router' {
       path: '/o/$organizationId'
       fullPath: '/o/$organizationId'
       preLoaderRoute: typeof AuthenticatedOOrganizationIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/organizations/': {
+      id: '/_authenticated/organizations/'
+      path: '/organizations'
+      fullPath: '/organizations/'
+      preLoaderRoute: typeof AuthenticatedOrganizationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/organizations/create': {
+      id: '/_authenticated/organizations/create'
+      path: '/organizations/create'
+      fullPath: '/organizations/create'
+      preLoaderRoute: typeof AuthenticatedOrganizationsCreateRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/o/$organizationId/': {
@@ -446,12 +486,16 @@ const AuthenticatedOOrganizationIdRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedOOrganizationIdRoute: typeof AuthenticatedOOrganizationIdRouteWithChildren
+  AuthenticatedOrganizationsCreateRoute: typeof AuthenticatedOrganizationsCreateRoute
+  AuthenticatedOrganizationsIndexRoute: typeof AuthenticatedOrganizationsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedOOrganizationIdRoute:
     AuthenticatedOOrganizationIdRouteWithChildren,
+  AuthenticatedOrganizationsCreateRoute: AuthenticatedOrganizationsCreateRoute,
+  AuthenticatedOrganizationsIndexRoute: AuthenticatedOrganizationsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
