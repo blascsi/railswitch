@@ -352,6 +352,7 @@ input OrganizationFilterInput {
   not: [OrganizationFilterInput!]
   id: OrganizationFilterId
   name: OrganizationFilterName
+  acceptedMemberships: MembershipFilterInput
 }
 
 input OrganizationSortInput {
@@ -362,6 +363,19 @@ input OrganizationSortInput {
 type Organization {
   id: ID!
   name: String!
+  acceptedMemberships(
+    "How to sort the records in the response"
+    sort: [MembershipSortInput]
+
+    "A filter to limit the results"
+    filter: MembershipFilterInput
+
+    "The number of records to return."
+    limit: Int
+
+    "The number of records to skip."
+    offset: Int
+  ): [Membership!]!
 }
 
 "The result of the :delete_environment_api_key mutation"

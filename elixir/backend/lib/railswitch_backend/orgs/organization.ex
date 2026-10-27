@@ -75,6 +75,7 @@ defmodule RailswitchBackend.Orgs.Organization do
   relationships do
     has_many :accepted_memberships, Membership do
       filter expr(status == :accepted)
+      public? true
     end
 
     has_many :projects, RailswitchBackend.Flags.Project
