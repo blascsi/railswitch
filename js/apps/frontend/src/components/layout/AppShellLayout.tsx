@@ -52,6 +52,7 @@ export function AppShellLayout({ children }: AppShellLayoutProps) {
   const isHomeActive = useIsRouteActive([{ to: "/home" }]);
   const isOrganizationsActive = useIsRouteActive([
     { to: "/organizations", fuzzy: true },
+    { to: "/organizations/$organizationId" },
   ]);
   const isProjectsActive = useIsRouteActive(
     organizationParams == null

@@ -3,6 +3,7 @@ import { proportional, Table } from "@astryxdesign/core/Table";
 import { Text } from "@astryxdesign/core/Text";
 
 import { graphql, readFragment, type FragmentOf } from "../../graphql/graphql";
+import { LinkAnchor } from "../routing/link-components/LinkAnchor";
 
 export const organizationsTable_organizations = graphql(`
   fragment organizationsTable_organizations on Organization {
@@ -33,7 +34,14 @@ export function OrganizationsTable({ organizations }: OrganizationsTableProps) {
             key: "name",
             header: "Name",
             width: proportional(1),
-            renderCell: (organizations) => <Text>{organizations.name}</Text>,
+            renderCell: (organization) => (
+              <LinkAnchor
+                to="/organizations/$organizationId"
+                params={{ organizationId: organization.id }}
+              >
+                <Text>{organization.name}</Text>
+              </LinkAnchor>
+            ),
           },
         ]}
       />

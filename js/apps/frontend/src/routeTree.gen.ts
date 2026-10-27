@@ -17,6 +17,7 @@ import { Route as AnonymousSignupRouteImport } from './routes/_anonymous/signup'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedOOrganizationIdRouteImport } from './routes/_authenticated/o/$organizationId'
 import { Route as AuthenticatedOrganizationsIndexRouteImport } from './routes/_authenticated/organizations/index'
+import { Route as AuthenticatedOrganizationsOrganizationIdRouteImport } from './routes/_authenticated/organizations/$organizationId'
 import { Route as AuthenticatedOrganizationsCreateRouteImport } from './routes/_authenticated/organizations/create'
 import { Route as AuthenticatedOOrganizationIdIndexRouteImport } from './routes/_authenticated/o/$organizationId/index'
 import { Route as AuthenticatedOOrganizationIdEnvironmentsIndexRouteImport } from './routes/_authenticated/o/$organizationId/environments/index'
@@ -68,6 +69,12 @@ const AuthenticatedOrganizationsIndexRoute =
   AuthenticatedOrganizationsIndexRouteImport.update({
     id: '/organizations/',
     path: '/organizations/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedOrganizationsOrganizationIdRoute =
+  AuthenticatedOrganizationsOrganizationIdRouteImport.update({
+    id: '/organizations/$organizationId',
+    path: '/organizations/$organizationId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedOrganizationsCreateRoute =
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedHomeRoute
   '/o/$organizationId': typeof AuthenticatedOOrganizationIdRouteWithChildren
+  '/organizations/$organizationId': typeof AuthenticatedOrganizationsOrganizationIdRoute
   '/organizations/create': typeof AuthenticatedOrganizationsCreateRoute
   '/organizations/': typeof AuthenticatedOrganizationsIndexRoute
   '/o/$organizationId/': typeof AuthenticatedOOrganizationIdIndexRoute
@@ -172,6 +180,7 @@ export interface FileRoutesByTo {
   '/login': typeof AnonymousLoginRoute
   '/signup': typeof AnonymousSignupRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/organizations/$organizationId': typeof AuthenticatedOrganizationsOrganizationIdRoute
   '/organizations/create': typeof AuthenticatedOrganizationsCreateRoute
   '/organizations': typeof AuthenticatedOrganizationsIndexRoute
   '/o/$organizationId': typeof AuthenticatedOOrganizationIdIndexRoute
@@ -195,6 +204,7 @@ export interface FileRoutesById {
   '/_anonymous/signup': typeof AnonymousSignupRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/o/$organizationId': typeof AuthenticatedOOrganizationIdRouteWithChildren
+  '/_authenticated/organizations/$organizationId': typeof AuthenticatedOrganizationsOrganizationIdRoute
   '/_authenticated/organizations/create': typeof AuthenticatedOrganizationsCreateRoute
   '/_authenticated/organizations/': typeof AuthenticatedOrganizationsIndexRoute
   '/_authenticated/o/$organizationId/': typeof AuthenticatedOOrganizationIdIndexRoute
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/home'
     | '/o/$organizationId'
+    | '/organizations/$organizationId'
     | '/organizations/create'
     | '/organizations/'
     | '/o/$organizationId/'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/home'
+    | '/organizations/$organizationId'
     | '/organizations/create'
     | '/organizations'
     | '/o/$organizationId'
@@ -258,6 +270,7 @@ export interface FileRouteTypes {
     | '/_anonymous/signup'
     | '/_authenticated/home'
     | '/_authenticated/o/$organizationId'
+    | '/_authenticated/organizations/$organizationId'
     | '/_authenticated/organizations/create'
     | '/_authenticated/organizations/'
     | '/_authenticated/o/$organizationId/'
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       path: '/organizations'
       fullPath: '/organizations/'
       preLoaderRoute: typeof AuthenticatedOrganizationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/organizations/$organizationId': {
+      id: '/_authenticated/organizations/$organizationId'
+      path: '/organizations/$organizationId'
+      fullPath: '/organizations/$organizationId'
+      preLoaderRoute: typeof AuthenticatedOrganizationsOrganizationIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/organizations/create': {
@@ -486,6 +506,7 @@ const AuthenticatedOOrganizationIdRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedOOrganizationIdRoute: typeof AuthenticatedOOrganizationIdRouteWithChildren
+  AuthenticatedOrganizationsOrganizationIdRoute: typeof AuthenticatedOrganizationsOrganizationIdRoute
   AuthenticatedOrganizationsCreateRoute: typeof AuthenticatedOrganizationsCreateRoute
   AuthenticatedOrganizationsIndexRoute: typeof AuthenticatedOrganizationsIndexRoute
 }
@@ -494,6 +515,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedOOrganizationIdRoute:
     AuthenticatedOOrganizationIdRouteWithChildren,
+  AuthenticatedOrganizationsOrganizationIdRoute:
+    AuthenticatedOrganizationsOrganizationIdRoute,
   AuthenticatedOrganizationsCreateRoute: AuthenticatedOrganizationsCreateRoute,
   AuthenticatedOrganizationsIndexRoute: AuthenticatedOrganizationsIndexRoute,
 }
