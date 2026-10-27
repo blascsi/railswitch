@@ -180,6 +180,7 @@ defmodule RailswitchBackend.Orgs.Membership do
 
   calculations do
     calculate :organization_name, :string, expr(organization.name) do
+      allow_nil? false
       public? true
     end
   end

@@ -273,7 +273,7 @@ type Membership {
   status: MembershipStatus!
   userId: ID!
   user: User!
-  organizationName: String
+  organizationName: String!
 }
 
 "The result of the :delete_organization mutation"
