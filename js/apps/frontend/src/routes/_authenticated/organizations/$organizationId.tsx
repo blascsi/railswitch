@@ -1,20 +1,19 @@
 import { EmptyState } from "@astryxdesign/core/EmptyState";
-import { Heading } from "@astryxdesign/core/Heading";
-import { VStack } from "@astryxdesign/core/VStack";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useAtomValue } from "jotai";
 import { Provider } from "urql";
 
+import { currentUserAtom } from "../../../atoms/currentUser";
 import { AppIcon } from "../../../components/AppIcon";
 import { CenteredContent } from "../../../components/layout/CenteredContent";
-import { OrganizationMemberInviteInput } from "../../../components/memberships/OrganizationMemberInviteInput";
 import {
-  OrganizationMembersTable,
-  organizationMembersTable_members,
-} from "../../../components/organizations/OrganizationMembersTable";
+  OrganizationDetails,
+  organizationDetails_organization,
+} from "../../../components/organizations/OrganizationDetails";
 import {
-  UpdateOrganizationForm,
-  updateOrganizationForm_organization,
-} from "../../../components/organizations/UpdateOrganizationForm";
+  OrganizationEditPage,
+  organizationEditPage_organization,
+} from "../../../components/organizations/OrganizationEditPage";
 import { organizationClient } from "../../../graphql/client";
 import { graphql } from "../../../graphql/graphql";
 import { loaderQuery } from "../../../graphql/loaderQuery";
@@ -25,14 +24,18 @@ const OrganizationPageQuery = graphql(
     query OrganizationPageQuery($id: ID!) {
       getOrganization(id: $id) {
         name
-        ...updateOrganizationForm_organization
+        ...organizationEditPage_organization
+        ...organizationDetails_organization
         acceptedMemberships {
-          ...organizationMembersTable_members
+          role
+          user {
+            id
+          }
         }
       }
     }
   `,
-  [updateOrganizationForm_organization, organizationMembersTable_members],
+  [organizationEditPage_organization, organizationDetails_organization],
 );
 
 export const Route = createFileRoute(
@@ -54,7 +57,7 @@ export const Route = createFileRoute(
   head: ({ loaderData }) => ({
     meta: [{ title: pageTitle(loaderData?.organization?.name) }],
   }),
-  component: OrganizationEditPage,
+  component: OrganizationPage,
   notFoundComponent: OrganizationNotFound,
 });
 
@@ -70,24 +73,24 @@ function OrganizationNotFound() {
   );
 }
 
-function OrganizationEditPage() {
+function OrganizationPage() {
   const loaderData = Route.useLoaderData();
   const { organization } = loaderData;
   const { organizationId } = Route.useParams();
+  const currentUser = useAtomValue(currentUserAtom);
+
+  const isOwner = (organization.acceptedMemberships ?? []).some(
+    (membership) =>
+      membership.user.id === currentUser?.id && membership.role === "OWNER",
+  );
 
   return (
     <Provider value={organizationClient(organizationId)}>
-      <VStack gap={4}>
-        <Heading level={1}>Organization details</Heading>
-        <VStack gap={3}>
-          <UpdateOrganizationForm organization={organization} />
-          <Heading level={2}>Members</Heading>
-          <OrganizationMemberInviteInput />
-          <OrganizationMembersTable
-            members={organization.acceptedMemberships ?? []}
-          />
-        </VStack>
-      </VStack>
+      {isOwner ? (
+        <OrganizationEditPage organization={organization} />
+      ) : (
+        <OrganizationDetails organization={organization} />
+      )}
     </Provider>
   );
 }
