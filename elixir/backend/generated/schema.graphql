@@ -142,22 +142,6 @@ input InviteMemberInput {
   role: MembershipRole
 }
 
-"The result of the :add_member mutation"
-type AddMemberResult {
-  "The successful result of the mutation"
-  result: Membership
-
-  "Any errors generated, if the mutation failed"
-  errors: [MutationError!]!
-}
-
-input AddMemberInput {
-  role: MembershipRole
-  status: MembershipStatus
-  userId: ID!
-  organizationId: ID!
-}
-
 enum MembershipSortField {
   ID
   ROLE
@@ -1232,8 +1216,6 @@ type RootMutationType {
   updateOrganization(id: ID!, input: UpdateOrganizationInput): UpdateOrganizationResult!
 
   deleteOrganization(id: ID!): DeleteOrganizationResult!
-
-  addMember(input: AddMemberInput!): AddMemberResult!
 
   inviteMember(input: InviteMemberInput!): Boolean!
 

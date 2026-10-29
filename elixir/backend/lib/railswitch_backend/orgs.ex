@@ -19,7 +19,6 @@ defmodule RailswitchBackend.Orgs do
       update Organization, :update_organization, :update
       destroy Organization, :delete_organization, :destroy
 
-      create Membership, :add_member, :create
       action Membership, :invite_member, :invite
       update Membership, :change_member_role, :change_role
       update Membership, :accept_invitation, :accept
