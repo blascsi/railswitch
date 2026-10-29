@@ -29,7 +29,7 @@ const OrganizationListPageQuery = graphql(
           ...organizationsTable_organizations
         }
       }
-      listMyInvitations {
+      listMyInvitations(filter: { status: { eq: PENDING } }) {
         count
         results {
           ...organizationInvitesTable_invites
