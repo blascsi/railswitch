@@ -2,9 +2,11 @@ import { EmptyState } from "@astryxdesign/core/EmptyState";
 import { Heading } from "@astryxdesign/core/Heading";
 import { VStack } from "@astryxdesign/core/VStack";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Provider } from "urql";
 
 import { AppIcon } from "../../../components/AppIcon";
 import { CenteredContent } from "../../../components/layout/CenteredContent";
+import { OrganizationMemberInviteInput } from "../../../components/memberships/OrganizationMemberInviteInput";
 import {
   OrganizationMembersTable,
   organizationMembersTable_members,
@@ -13,6 +15,7 @@ import {
   UpdateOrganizationForm,
   updateOrganizationForm_organization,
 } from "../../../components/organizations/UpdateOrganizationForm";
+import { organizationClient } from "../../../graphql/client";
 import { graphql } from "../../../graphql/graphql";
 import { loaderQuery } from "../../../graphql/loaderQuery";
 import { pageTitle } from "../../../utils/pageTitle";
@@ -70,17 +73,21 @@ function OrganizationNotFound() {
 function OrganizationEditPage() {
   const loaderData = Route.useLoaderData();
   const { organization } = loaderData;
+  const { organizationId } = Route.useParams();
 
   return (
-    <VStack gap={4}>
-      <Heading level={1}>Organization details</Heading>
-      <VStack gap={3}>
-        <UpdateOrganizationForm organization={organization} />
-        <Heading level={2}>Members</Heading>
-        <OrganizationMembersTable
-          members={organization.acceptedMemberships ?? []}
-        />
+    <Provider value={organizationClient(organizationId)}>
+      <VStack gap={4}>
+        <Heading level={1}>Organization details</Heading>
+        <VStack gap={3}>
+          <UpdateOrganizationForm organization={organization} />
+          <Heading level={2}>Members</Heading>
+          <OrganizationMemberInviteInput />
+          <OrganizationMembersTable
+            members={organization.acceptedMemberships ?? []}
+          />
+        </VStack>
       </VStack>
-    </VStack>
+    </Provider>
   );
 }
