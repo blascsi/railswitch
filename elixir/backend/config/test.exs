@@ -43,6 +43,10 @@ config :railswitch_backend, RailswitchBackendWeb.Endpoint,
   secret_key_base: "NSdjry96tzYyCSD6fQM9y7kbB6xOoyajeR89UbqCMcXq9ZDa+InbJLlxxS2upcCl",
   server: false
 
+config :railswitch_backend,
+       :instance_settings_source,
+       RailswitchBackend.Instance.Settings.TestSource
+
 config :railswitch_backend, token_signing_secret: "Tnu+ESsqnCGW98aX7n4xXqEqe3w9O7oH"
 
 # Disable swoosh api client as it is only required for production adapters

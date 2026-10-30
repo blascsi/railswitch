@@ -5,6 +5,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
   use RailswitchBackend.DataCase, async: true
 
   import Ash.Generator
+  import RailswitchBackend.Instance.Settings.TestSource, only: [put_instance_setting: 2]
 
   alias Ash.Error.Forbidden
   alias AshAuthentication.Info
@@ -56,6 +57,18 @@ defmodule RailswitchBackend.Accounts.UserTest do
       assert {:error, error} = Accounts.register_user(dupe_email, @password, @password)
 
       assert Exception.message(error) =~ "An account with this email address already exists"
+    end
+
+    test "is refused when signups are disabled, and creates no user" do
+      put_instance_setting(:signups_enabled, false)
+      email = "refused@example.com"
+
+      assert {:error, error} = Accounts.register_user(email, @password, @password)
+
+      assert Exception.message(error) =~ "Signups are disabled"
+
+      assert {:ok, nil} =
+               Accounts.get_user_by_email(email, authorize?: false, not_found_error?: false)
     end
 
     test "issues a remember-me token when requested" do

@@ -3,7 +3,12 @@ defmodule RailswitchBackendWeb.GraphqlSchema do
   use Absinthe.Schema
 
   use AshGraphql,
-    domains: [RailswitchBackend.Accounts, RailswitchBackend.Orgs, RailswitchBackend.Flags],
+    domains: [
+      RailswitchBackend.Accounts,
+      RailswitchBackend.Orgs,
+      RailswitchBackend.Flags,
+      RailswitchBackend.Instance
+    ],
     generate_sdl_file: "generated/schema.graphql",
     auto_generate_sdl_file?: true
 

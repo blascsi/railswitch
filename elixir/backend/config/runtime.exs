@@ -20,6 +20,10 @@ if System.get_env("PHX_SERVER") do
   config :railswitch_backend, RailswitchBackendWeb.Endpoint, server: true
 end
 
+# Instance settings from the environment
+config :railswitch_backend, RailswitchBackend.Instance.Settings.EnvironmentSource,
+  signups_enabled: System.get_env("SIGNUPS_ENABLED", "true") in ~w(true 1)
+
 config :railswitch_backend, RailswitchBackendWeb.Endpoint, http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
 config :sentry,

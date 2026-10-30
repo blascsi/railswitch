@@ -11,6 +11,7 @@ defmodule RailswitchBackend.Accounts.User do
   alias AshAuthentication.Strategy.Password.HashPasswordChange
   alias AshAuthentication.Strategy.Password.PasswordConfirmationValidation
   alias AshAuthentication.Strategy.RememberMe.MaybeGenerateTokenPreparation
+  alias RailswitchBackend.Accounts.User.Validations.SignupsEnabled
   alias RailswitchBackend.Orgs.Membership
 
   graphql do
@@ -173,6 +174,8 @@ defmodule RailswitchBackend.Accounts.User do
         description "Whether to generate a remember me token."
         allow_nil? true
       end
+
+      validate SignupsEnabled
 
       # Sets the email from the argument
       change set_attribute(:email, arg(:email))

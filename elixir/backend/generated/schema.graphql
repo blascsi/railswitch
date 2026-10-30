@@ -1002,7 +1002,13 @@ type Project {
   ): [Flag!]!
 }
 
+type InstanceSettings {
+  signupsEnabled: Boolean!
+}
+
 type RootQueryType {
+  instanceSettings: InstanceSettings!
+
   getProject(
     "The id of the record"
     id: ID!

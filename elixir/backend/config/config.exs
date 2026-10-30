@@ -62,9 +62,14 @@ config :railswitch_backend, RailswitchBackendWeb.Endpoint,
   live_view: [signing_salt: "mjTxN23e"]
 
 config :railswitch_backend,
+       :instance_settings_source,
+       RailswitchBackend.Instance.Settings.EnvironmentSource
+
+config :railswitch_backend,
   ecto_repos: [RailswitchBackend.Repo],
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [
+    RailswitchBackend.Instance,
     RailswitchBackend.Flags,
     RailswitchBackend.Orgs,
     RailswitchBackend.Accounts
