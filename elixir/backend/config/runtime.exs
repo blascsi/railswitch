@@ -54,7 +54,56 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host =
+    System.get_env("PHX_HOST") ||
+      raise "Missing environment variable `PHX_HOST`!"
+
+  cors_origins =
+    "CORS_ORIGINS"
+    |> System.get_env("")
+    |> String.split(",")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
+    |> case do
+      [] -> raise "Missing environment variable `CORS_ORIGINS`!"
+      origins -> origins
+    end
+
+  smtp_host =
+    System.get_env("SMTP_HOST") ||
+      raise "Missing environment variable `SMTP_HOST`!"
+
+  smtp_port =
+    case System.get_env("SMTP_PORT", "") do
+      "" -> 587
+      port -> String.to_integer(port)
+    end
+
+  smtp_implicit_tls? = smtp_port == 465
+  smtp_username = System.get_env("SMTP_USERNAME", "")
+
+  smtp_tls_options = [
+    verify: :verify_peer,
+    cacerts: :public_key.cacerts_get(),
+    server_name_indication: String.to_charlist(smtp_host),
+    customize_hostname_check: [match_fun: :public_key.pkix_verify_hostname_match_fun(:https)],
+    depth: 99
+  ]
+
+  config :railswitch_backend, RailswitchBackend.Mailer,
+    adapter: Swoosh.Adapters.SMTP,
+    from_address:
+      System.get_env("MAIL_FROM") ||
+        raise("Missing environment variable `MAIL_FROM`!"),
+    relay: smtp_host,
+    port: smtp_port,
+    username: smtp_username,
+    password: System.get_env("SMTP_PASSWORD"),
+    auth: if(smtp_username == "", do: :never, else: :always),
+    ssl: smtp_implicit_tls?,
+    tls: if(smtp_implicit_tls?, do: :never, else: :always),
+    tls_options: smtp_tls_options,
+    sockopts: if(smtp_implicit_tls?, do: smtp_tls_options, else: [])
 
   config :railswitch_backend, RailswitchBackend.Repo,
     # ssl: true,
@@ -66,6 +115,7 @@ if config_env() == :prod do
 
   config :railswitch_backend, RailswitchBackendWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
+    check_origin: cors_origins,
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
@@ -82,7 +132,7 @@ if config_env() == :prod do
       System.get_env("TOKEN_SIGNING_SECRET") ||
         raise("Missing environment variable `TOKEN_SIGNING_SECRET`!"),
     secure_cookies: true,
-    cors_origins: String.split(System.get_env("CORS_ORIGINS", ""), ",", trim: true)
+    cors_origins: cors_origins
 
   # ## SSL Support
   #
@@ -115,22 +165,4 @@ if config_env() == :prod do
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
-
-  # ## Configuring the mailer
-  #
-  # In production you need to configure the mailer to use a different adapter.
-  # Here is an example configuration for Mailgun:
-  #
-  #     config :railswitch_backend, RailswitchBackend.Mailer,
-  #       adapter: Swoosh.Adapters.Mailgun,
-  #       api_key: System.get_env("MAILGUN_API_KEY"),
-  #       domain: System.get_env("MAILGUN_DOMAIN")
-  #
-  # Most non-SMTP adapters require an API client. Swoosh supports Req, Hackney,
-  # and Finch out-of-the-box. This configuration is typically done at
-  # compile-time in your config/prod.exs:
-  #
-  #     config :swoosh, :api_client, Swoosh.ApiClient.Req
-  #
-  # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end

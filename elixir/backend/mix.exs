@@ -59,6 +59,7 @@ defmodule RailswitchBackend.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:styler, "~> 1.11", only: [:dev, :test], runtime: false},
       {:swoosh, "~> 1.16"},
+      {:gen_smtp, "~> 1.0"},
       {:req, "~> 0.5"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
