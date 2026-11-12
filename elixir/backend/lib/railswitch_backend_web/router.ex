@@ -14,6 +14,10 @@ defmodule RailswitchBackendWeb.Router do
     plug AshGraphql.Plug
   end
 
+  scope "/", RailswitchBackendWeb do
+    get "/health", HealthController, :show
+  end
+
   scope "/gql" do
     pipe_through [:graphql]
 
