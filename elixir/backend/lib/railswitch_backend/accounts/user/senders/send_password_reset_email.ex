@@ -13,7 +13,7 @@ defmodule RailswitchBackend.Accounts.User.Senders.SendPasswordResetEmail do
   @impl true
   def send(user, token, _) do
     new()
-    |> from({"noreply", "noreply.com"})
+    |> from(Mailer.sender())
     |> to(to_string(user.email))
     |> subject("Reset your password")
     |> html_body(body(token: token))

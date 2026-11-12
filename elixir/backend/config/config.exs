@@ -48,7 +48,9 @@ config :railswitch_backend, Oban,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :railswitch_backend, RailswitchBackend.Mailer, adapter: Swoosh.Adapters.Local
+config :railswitch_backend, RailswitchBackend.Mailer,
+  adapter: Swoosh.Adapters.Local,
+  from_address: "noreply@localhost"
 
 # Configure the endpoint
 config :railswitch_backend, RailswitchBackendWeb.Endpoint,

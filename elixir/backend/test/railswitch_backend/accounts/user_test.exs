@@ -163,6 +163,26 @@ defmodule RailswitchBackend.Accounts.UserTest do
     end
   end
 
+  describe "email sender address" do
+    test "the confirmation email is sent from the configured address" do
+      Accounts.register_user!(unique_email(), @password, @password)
+
+      assert_receive {:email, %Swoosh.Email{subject: "Confirm your email address", from: from}}
+      assert from == {"Railswitch", "noreply@localhost"}
+    end
+
+    test "the password reset email is sent from the configured address" do
+      email_address = unique_email()
+      Accounts.register_user!(email_address, @password, @password)
+
+      strategy = Info.strategy!(User, :password)
+      assert :ok = Strategy.action(strategy, :reset_request, %{"email" => email_address})
+
+      assert_receive {:email, %Swoosh.Email{subject: "Reset your password", from: from}}
+      assert from == {"Railswitch", "noreply@localhost"}
+    end
+  end
+
   describe "log_out_everywhere" do
     test "changing the password revokes existing tokens" do
       new_password = "newpassword12"
