@@ -4,12 +4,15 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+import { serveFrontendEnv } from "./vite/serveFrontendEnvPlugin.ts";
+
 // https://vite.dev/config/
 export default defineConfig({
   server: {
     port: 3000,
   },
   plugins: [
+    serveFrontendEnv(),
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,

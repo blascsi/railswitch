@@ -11,6 +11,7 @@ import { pipe, tap } from "wonka";
 
 import { currentUserAtom } from "../atoms/currentUser";
 import { clearSession } from "../auth/clearSession";
+import { AppEnvironment } from "../environment";
 import { store } from "../store";
 import { introspection } from "./introspection";
 
@@ -50,7 +51,7 @@ function makeClient(organizationId: string | null) {
   const generation = sessionGeneration;
 
   return new Client({
-    url: import.meta.env.VITE_API_URL ?? "http://localhost:4000/gql",
+    url: AppEnvironment.FRONTEND_API_URL,
     // Overrides the "within-url-limit" default: GET would leak queries and
     // variables into access logs, and nothing here is CDN-cacheable anyway.
     preferGetMethod: false,

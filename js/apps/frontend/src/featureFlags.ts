@@ -1,9 +1,13 @@
 import { setupSdk } from "@railswitch/sdk";
 
-const railswitchUrl =
-  import.meta.env.VITE_RAILSWITCH_URL ?? "http://localhost:4000/sdk/socket";
-const apiKey = import.meta.env.VITE_RAILSWITCH_API_KEY ?? "";
+import { AppEnvironment } from "./environment";
 
-const { rsx, teardown } = setupSdk({ url: railswitchUrl, apiKey }, {});
+const { rsx, teardown } = setupSdk(
+  {
+    url: AppEnvironment.FRONTEND_RAILSWITCH_URL,
+    apiKey: AppEnvironment.FRONTEND_RAILSWITCH_API_KEY,
+  },
+  {},
+);
 
 export { rsx, teardown };

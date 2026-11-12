@@ -10,10 +10,10 @@
     "check:ci": "pnpm run lint:ci && pnpm run format:ci",
     "codegen": "gql-tada generate output --tsconfig ./tsconfig.app.json && node scripts/generate-introspection.ts",
     "dev": "vite",
-    "format": "prettier --write src scripts",
-    "format:ci": "prettier --check src scripts",
-    "lint": "eslint src scripts --fix",
-    "lint:ci": "eslint src scripts",
+    "format": "prettier --write src scripts vite",
+    "format:ci": "prettier --check src scripts vite",
+    "lint": "eslint src scripts vite --fix",
+    "lint:ci": "eslint src scripts vite",
     "preview": "vite preview"
   },
   "dependencies": {

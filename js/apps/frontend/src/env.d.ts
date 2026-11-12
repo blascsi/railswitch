@@ -1,11 +1,5 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly VITE_API_URL?: string;
-  readonly VITE_RAILSWITCH_URL?: string;
-  readonly VITE_RAILSWITCH_API_KEY?: string;
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+interface Window {
+  __ENV__?: Record<string, string>;
 }

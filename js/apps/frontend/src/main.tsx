@@ -5,10 +5,10 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
 import { AppEnvironment } from "./environment.ts";
 
-if (AppEnvironment.VITE_SENTRY_DSN) {
+if (AppEnvironment.FRONTEND_SENTRY_DSN) {
   Sentry.init({
-    dsn: AppEnvironment.VITE_SENTRY_DSN,
-    tracesSampleRate: AppEnvironment.VITE_SENTRY_TRACES_SAMPLE_RATE,
+    dsn: AppEnvironment.FRONTEND_SENTRY_DSN,
+    tracesSampleRate: AppEnvironment.FRONTEND_SENTRY_TRACES_SAMPLE_RATE,
   });
 }
 
