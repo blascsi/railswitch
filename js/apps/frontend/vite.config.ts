@@ -22,7 +22,6 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
   ],
   build: {
-    sourcemap: true,
     cssCodeSplit: true,
     chunkSizeWarningLimit: 600,
     rolldownOptions: {
