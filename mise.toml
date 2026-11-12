@@ -5,6 +5,9 @@ elixir = "1.19.5-otp-28"
 erlang = "28"
 nodejs = "24.18.0"
 
+[env]
+_.file = ".env.local"
+
 [monorepo]
 config_roots = [
     "elixir/*",
