@@ -1,0 +1,56 @@
+name: railswitch
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: railswitch
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d railswitch"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: code.blascsi.omg.lol/blascsi/railswitch-backend:${RAILSWITCH_VERSION:-latest}
+    command: ["/app/bin/migrate"]
+    restart: "no"
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    image: code.blascsi.omg.lol/blascsi/railswitch-backend:${RAILSWITCH_VERSION:-latest}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:${PORT:-4000}:${PORT:-4000}"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:$${PORT:-4000}/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    image: code.blascsi.omg.lol/blascsi/railswitch-frontend:${RAILSWITCH_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      FRONTEND_API_URL: ${FRONTEND_API_URL:?FRONTEND_API_URL is required}
+      FRONTEND_RAILSWITCH_URL:
+      FRONTEND_RAILSWITCH_API_KEY:
+      FRONTEND_SENTRY_DSN:
+      FRONTEND_SENTRY_TRACES_SAMPLE_RATE:
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:80"
+
+volumes:
+  postgres-data:
