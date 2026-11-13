@@ -88,7 +88,7 @@ jobs:
 
       - name: Get pnpm store path
         id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $FORGEJO_OUTPUT
 
       - name: Cache pnpm store
         uses: actions/cache@v4
@@ -118,7 +118,7 @@ jobs:
   images:
     name: Image (${{ matrix.image }})
     needs: [backend, js]
-    if: github.event_name == 'push'
+    if: forgejo.event_name == 'push'
     runs-on: ubuntu-24.04
 
     strategy:
@@ -132,7 +132,7 @@ jobs:
             file: js/apps/frontend/Dockerfile
 
     concurrency:
-      group: images-${{ matrix.image }}-${{ github.ref }}
+      group: images-${{ matrix.image }}-${{ forgejo.ref }}
       cancel-in-progress: false
 
     steps:
@@ -150,7 +150,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ${{ vars.REGISTRY_HOST }}/${{ github.repository_owner }}/railswitch-${{ matrix.image }}
+          images: ${{ vars.REGISTRY_HOST }}/${{ forgejo.repository_owner }}/railswitch-${{ matrix.image }}
           tags: |
             type=semver,pattern={{version}}
             type=sha,enable={{is_default_branch}}
