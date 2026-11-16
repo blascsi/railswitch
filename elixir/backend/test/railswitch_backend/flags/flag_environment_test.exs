@@ -21,8 +21,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
     project = generate(FlagsGenerator.project(tenant: org.id))
     environment = generate(FlagsGenerator.environment(tenant: org.id, project_id: project.id))
 
-    flag =
-      Flags.create_flag!(%{name: "checkout", project_id: project.id}, tenant: org.id, actor: user)
+    flag = generate(FlagsGenerator.flag(tenant: org.id, project_id: project.id))
 
     [flag_environment] =
       Flags.list_flag_environments!(
@@ -44,8 +43,8 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
     }
   end
 
-  describe "read" do
-    test "a member can list flag environments", ctx do
+  describe "list_flag_environments" do
+    test "returns the organization's flag environments to a member", ctx do
       assert {:ok, [found]} =
                Flags.list_flag_environments(
                  query: [filter: [id: ctx.flag_environment.id]],
@@ -56,7 +55,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
       assert found.id == ctx.flag_environment.id
     end
 
-    test "an outsider cannot list flag environments", ctx do
+    test "policy - an outsider is refused", ctx do
       assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.list_flag_environments(
                  query: [filter: [id: ctx.flag_environment.id]],
@@ -65,17 +64,39 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
                )
     end
 
-    test "a request without an actor cannot list flag environments", ctx do
+    test "policy - a request without an actor is refused", ctx do
       assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.list_flag_environments(
                  query: [filter: [id: ctx.flag_environment.id]],
                  tenant: ctx.org.id
                )
     end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.list_flag_environments(
+                   query: [filter: [id: ctx.flag_environment.id]],
+                   tenant: ctx.org.id,
+                   actor: invitee
+                 )
+      end
+    end
   end
 
-  describe "update" do
-    test "a member can update the rules", ctx do
+  describe "update_flag_environment" do
+    test "updates the rules for a member", ctx do
       assert {:ok, updated} =
                Flags.update_flag_environment(
                  ctx.flag_environment,
@@ -87,26 +108,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
       assert updated.rules == FlagsGenerator.disabled_rules()
     end
 
-    test "an outsider cannot update the rules", ctx do
-      assert {:error, %Forbidden{}} =
-               Flags.update_flag_environment(
-                 ctx.flag_environment,
-                 %{rules: FlagsGenerator.disabled_rules()},
-                 tenant: ctx.org.id,
-                 actor: ctx.outsider
-               )
-    end
-
-    test "a request without an actor cannot update the rules", ctx do
-      assert {:error, %Forbidden{}} =
-               Flags.update_flag_environment(
-                 ctx.flag_environment,
-                 %{rules: FlagsGenerator.disabled_rules()},
-                 tenant: ctx.org.id
-               )
-    end
-
-    test "rules that do not match the shared schema are rejected", ctx do
+    test "rejects rules that do not match the shared schema", ctx do
       # `gt` operator can't be used with a string `value`
       invalid = %{
         "resultType" => "string",
@@ -142,7 +144,7 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
              end)
     end
 
-    test "condition attributes are trimmed before being stored", ctx do
+    test "trims condition attributes before storing them", ctx do
       rules = %{
         "resultType" => "boolean",
         "rules" => [
@@ -170,42 +172,45 @@ defmodule RailswitchBackend.Flags.FlagEnvironmentTest do
       assert %{"rules" => [%{"conditions" => %{"conditions" => [condition]}}]} = updated.rules
       assert condition["attribute"] == "plan"
     end
-  end
 
-  describe "users without an accepted membership" do
-    setup ctx do
-      invitee = generate(AccountsGenerator.user())
+    test "policy - an outsider is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.update_flag_environment(
+                 ctx.flag_environment,
+                 %{rules: FlagsGenerator.disabled_rules()},
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
 
-      generate(
-        OrgsGenerator.membership(
-          organization_id: ctx.org.id,
-          user_id: invitee.id,
-          status: ctx.status
-        )
-      )
-
-      %{invitee: invitee}
+    test "policy - a request without an actor is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.update_flag_environment(
+                 ctx.flag_environment,
+                 %{rules: FlagsGenerator.disabled_rules()},
+                 tenant: ctx.org.id
+               )
     end
 
     for status <- [:pending, :declined] do
       @tag status: status
-      test "a user with a #{status} membership cannot list flag environments", ctx do
-        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-                 Flags.list_flag_environments(
-                   query: [filter: [id: ctx.flag_environment.id]],
-                   tenant: ctx.org.id,
-                   actor: ctx.invitee
-                 )
-      end
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
 
-      @tag status: status
-      test "a user with a #{status} membership cannot update the rules", ctx do
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
         assert {:error, %Forbidden{}} =
                  Flags.update_flag_environment(
                    ctx.flag_environment,
                    %{rules: FlagsGenerator.disabled_rules()},
                    tenant: ctx.org.id,
-                   actor: ctx.invitee
+                   actor: invitee
                  )
       end
     end

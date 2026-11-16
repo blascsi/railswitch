@@ -21,7 +21,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
 
   @password "password1234"
 
-  describe "register_with_password" do
+  describe "register_user" do
     test "registers a user and hashes the password" do
       email = "alice@example.com"
       user = Accounts.register_user!(email, @password, @password)
@@ -79,9 +79,21 @@ defmodule RailswitchBackend.Accounts.UserTest do
 
       assert is_binary(token)
     end
+
+    test "a newly registered user is unconfirmed" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      assert is_nil(user.confirmed_at)
+    end
+
+    test "the confirmation email is sent from the configured address" do
+      Accounts.register_user!(unique_email(), @password, @password)
+
+      assert_receive {:email, %Swoosh.Email{subject: "Confirm your email address", from: from}}
+      assert from == {"Railswitch", "noreply@localhost"}
+    end
   end
 
-  describe "sign_in_with_password" do
+  describe "sign_in_user" do
     test "signs in with valid credentials and returns a token" do
       email = "signin@example.com"
       Accounts.register_user!(email, @password, @password)
@@ -114,6 +126,33 @@ defmodule RailswitchBackend.Accounts.UserTest do
     end
   end
 
+  describe "get_current_user" do
+    test "returns the actor's own record" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+
+      assert {:ok, fetched} = Accounts.get_current_user(actor: user)
+      assert fetched.id == user.id
+    end
+  end
+
+  describe "get_user_by_id" do
+    test "policy - another user's record is not found" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      other = Accounts.register_user!(unique_email(), @password, @password)
+
+      # The read policy is a filter (`id == actor.id`), so another user's record
+      # is simply invisible rather than producing a hard forbidden error.
+      assert {:error, %Ash.Error.Invalid{errors: [%Ash.Error.Query.NotFound{}]}} =
+               Accounts.get_user_by_id(other.id, actor: user)
+    end
+
+    test "policy - a request without an actor is refused" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+
+      assert {:error, _} = Accounts.get_user_by_id(user.id, actor: nil)
+    end
+  end
+
   describe "change_password" do
     test "changes the password when given the correct current password" do
       email = "cp@example.com"
@@ -135,7 +174,20 @@ defmodule RailswitchBackend.Accounts.UserTest do
                Accounts.change_password(user, "wrongcurrent", new_password, new_password, actor: user)
     end
 
-    test "a user cannot change another user's password" do
+    test "revokes existing tokens" do
+      new_password = "newpassword12"
+      user = Accounts.register_user!("logout@example.com", @password, @password)
+
+      old_token = user.__metadata__.token
+      refute token_revoked?(old_token)
+
+      {:ok, _} =
+        Accounts.change_password(user, @password, new_password, new_password, actor: user)
+
+      assert token_revoked?(old_token)
+    end
+
+    test "policy - another user is refused" do
       new_password = "newpassword12"
       user = Accounts.register_user!(unique_email(), @password, @password)
       other = Accounts.register_user!(unique_email(), @password, @password)
@@ -145,12 +197,72 @@ defmodule RailswitchBackend.Accounts.UserTest do
     end
   end
 
-  describe "confirmation" do
-    test "a newly registered user is unconfirmed" do
+  describe "delete_user" do
+    test "deletes a user" do
       user = Accounts.register_user!(unique_email(), @password, @password)
-      assert is_nil(user.confirmed_at)
+
+      assert :ok = Accounts.delete_user(user, actor: user)
+
+      assert {:error, _} = Accounts.sign_in_user(to_string(user.email), @password)
     end
 
+    test "deletes a user who deletes all their organizations" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      _org = generate(OrgsGenerator.organization(actor: user))
+      [membership] = owned_memberships(user)
+
+      Orgs.delete_organization!(membership.organization, actor: user)
+
+      assert :ok = Accounts.delete_user(user, actor: user)
+
+      assert {:error, _} = Accounts.sign_in_user(to_string(user.email), @password)
+    end
+
+    test "blocks deletion while the user is the only owner of an organization" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      _org = generate(OrgsGenerator.organization(actor: user))
+
+      assert {:error, error} = Accounts.delete_user(user, actor: user)
+      assert Exception.message(error) =~ "only owner"
+    end
+
+    test "blocks deletion while no other owners have accepted their memberships yet" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      pending_user = Accounts.register_user!(unique_email(), @password, @password)
+      declined_user = Accounts.register_user!(unique_email(), @password, @password)
+      org = generate(OrgsGenerator.organization(actor: user))
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: pending_user.id,
+          role: :owner,
+          status: :pending
+        )
+      )
+
+      generate(
+        OrgsGenerator.membership(
+          organization_id: org.id,
+          user_id: declined_user.id,
+          role: :owner,
+          status: :declined
+        )
+      )
+
+      assert {:error, error} = Accounts.delete_user(user, actor: user)
+      assert Exception.message(error) =~ "only owner"
+    end
+
+    test "policy - another user is refused" do
+      user = Accounts.register_user!(unique_email(), @password, @password)
+      other = Accounts.register_user!(unique_email(), @password, @password)
+
+      assert {:error, %Forbidden{}} = Accounts.delete_user(other, actor: user)
+    end
+  end
+
+  describe "confirm" do
     test "the emailed confirmation token confirms the user" do
       Accounts.register_user!("confirm@example.com", @password, @password)
 
@@ -163,14 +275,7 @@ defmodule RailswitchBackend.Accounts.UserTest do
     end
   end
 
-  describe "email sender address" do
-    test "the confirmation email is sent from the configured address" do
-      Accounts.register_user!(unique_email(), @password, @password)
-
-      assert_receive {:email, %Swoosh.Email{subject: "Confirm your email address", from: from}}
-      assert from == {"Railswitch", "noreply@localhost"}
-    end
-
+  describe "request_password_reset_token" do
     test "the password reset email is sent from the configured address" do
       email_address = unique_email()
       Accounts.register_user!(email_address, @password, @password)
@@ -181,25 +286,17 @@ defmodule RailswitchBackend.Accounts.UserTest do
       assert_receive {:email, %Swoosh.Email{subject: "Reset your password", from: from}}
       assert from == {"Railswitch", "noreply@localhost"}
     end
-  end
 
-  describe "log_out_everywhere" do
-    test "changing the password revokes existing tokens" do
-      new_password = "newpassword12"
-      user = Accounts.register_user!("logout@example.com", @password, @password)
+    test "requesting a reset for an unknown email sends nothing" do
+      strategy = Info.strategy!(User, :password)
 
-      old_token = user.__metadata__.token
-      refute token_revoked?(old_token)
-
-      {:ok, _} =
-        Accounts.change_password(user, @password, new_password, new_password, actor: user)
-
-      assert token_revoked?(old_token)
+      assert :ok = Strategy.action(strategy, :reset_request, %{"email" => "nobody@example.com"})
+      refute_receive {:email, _}, 100
     end
   end
 
-  describe "reset_password flow" do
-    test "emails a reset token that can be used to set a new password" do
+  describe "reset_password_with_token" do
+    test "the emailed reset token can be used to set a new password" do
       email_address = "reset@example.com"
       new_password = "brandnewpw12"
       Accounts.register_user!(email_address, @password, @password)
@@ -271,16 +368,9 @@ defmodule RailswitchBackend.Accounts.UserTest do
                  "password_confirmation" => second_pass
                })
     end
-
-    test "requesting a reset for an unknown email sends nothing" do
-      strategy = Info.strategy!(User, :password)
-
-      assert :ok = Strategy.action(strategy, :reset_request, %{"email" => "nobody@example.com"})
-      refute_receive {:email, _}, 100
-    end
   end
 
-  describe "organization relationships" do
+  describe "relationships" do
     setup do
       owner = Accounts.register_user!(unique_email(), @password, @password)
       user = Accounts.register_user!(unique_email(), @password, @password)
@@ -309,100 +399,10 @@ defmodule RailswitchBackend.Accounts.UserTest do
       %{user: user, accepted_org: accepted_org}
     end
 
-    test "organizations only lists organizations with an accepted membership", ctx do
+    test "organizations - only lists organizations with an accepted membership", ctx do
       user = Ash.load!(ctx.user, :organizations, authorize?: false)
 
       assert Enum.map(user.organizations, & &1.id) == [ctx.accepted_org.id]
-    end
-  end
-
-  describe "destroy" do
-    test "deletes a user" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-
-      assert :ok = Accounts.delete_user(user, actor: user)
-
-      assert {:error, _} = Accounts.sign_in_user(to_string(user.email), @password)
-    end
-
-    test "deletes a user who deletes all their organizations" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-      _org = generate(OrgsGenerator.organization(actor: user))
-      [membership] = owned_memberships(user)
-
-      Orgs.delete_organization!(membership.organization, actor: user)
-
-      assert :ok = Accounts.delete_user(user, actor: user)
-
-      assert {:error, _} = Accounts.sign_in_user(to_string(user.email), @password)
-    end
-
-    test "blocks deletion while the user is the only owner of an organization" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-      _org = generate(OrgsGenerator.organization(actor: user))
-
-      assert {:error, error} = Accounts.delete_user(user, actor: user)
-      assert Exception.message(error) =~ "only owner"
-    end
-
-    test "blocks deletion while no other owners have accepted their memberships yet" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-      pending_user = Accounts.register_user!(unique_email(), @password, @password)
-      declined_user = Accounts.register_user!(unique_email(), @password, @password)
-      org = generate(OrgsGenerator.organization(actor: user))
-
-      generate(
-        OrgsGenerator.membership(
-          organization_id: org.id,
-          user_id: pending_user.id,
-          role: :owner,
-          status: :pending
-        )
-      )
-
-      generate(
-        OrgsGenerator.membership(
-          organization_id: org.id,
-          user_id: declined_user.id,
-          role: :owner,
-          status: :declined
-        )
-      )
-
-      assert {:error, error} = Accounts.delete_user(user, actor: user)
-      assert Exception.message(error) =~ "only owner"
-    end
-  end
-
-  describe "policies" do
-    test "a user can read their own record via current_user" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-
-      assert {:ok, fetched} = Accounts.get_current_user(actor: user)
-      assert fetched.id == user.id
-    end
-
-    test "a user cannot read another user's record" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-      other = Accounts.register_user!(unique_email(), @password, @password)
-
-      # The read policy is a filter (`id == actor.id`), so another user's record
-      # is simply invisible rather than producing a hard forbidden error.
-      assert {:error, %Ash.Error.Invalid{errors: [%Ash.Error.Query.NotFound{}]}} =
-               Accounts.get_user_by_id(other.id, actor: user)
-    end
-
-    test "an unauthenticated request cannot read a user" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-
-      assert {:error, _} = Accounts.get_user_by_id(user.id, actor: nil)
-    end
-
-    test "a user cannot delete another user's account" do
-      user = Accounts.register_user!(unique_email(), @password, @password)
-      other = Accounts.register_user!(unique_email(), @password, @password)
-
-      assert {:error, %Forbidden{}} = Accounts.delete_user(other, actor: user)
     end
   end
 

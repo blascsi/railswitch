@@ -28,63 +28,28 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
     }
   end
 
-  describe "create" do
-    test "a member can create an environment", ctx do
-      env =
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
-        )
+  describe "get_environment_by_project_id_and_name" do
+    setup :with_environment
 
-      assert to_string(env.name) == "production"
-    end
-
-    test "an outsider cannot create an environment", ctx do
-      assert {:error, %Forbidden{}} =
-               Flags.create_environment(
-                 %{name: "production", project_id: ctx.project.id},
-                 tenant: ctx.org.id,
-                 actor: ctx.outsider
-               )
-    end
-
-    test "a request without an actor cannot create an environment", ctx do
-      assert {:error, %Forbidden{}} =
-               Flags.create_environment(
-                 %{name: "production", project_id: ctx.project.id},
-                 tenant: ctx.org.id
-               )
-    end
-  end
-
-  describe "read" do
-    test "get_environment_by_project_id_and_name finds the environment by name within the project",
-         ctx do
-      env =
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
-        )
-
+    test "returns the matching environment to a member", ctx do
       assert {:ok, found} =
                Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
                  tenant: ctx.org.id,
                  actor: ctx.user
                )
 
-      assert found.id == env.id
+      assert found.id == ctx.environment.id
     end
 
-    test "get_environment_by_project_id_and_name does not find an environment belonging to another project",
-         ctx do
+    test "does not return an environment belonging to another project", ctx do
       other_project = generate(FlagsGenerator.project(tenant: ctx.org.id))
 
-      Flags.create_environment!(
-        %{name: "staging", project_id: other_project.id},
-        tenant: ctx.org.id,
-        actor: ctx.user
+      generate(
+        FlagsGenerator.environment(
+          tenant: ctx.org.id,
+          project_id: other_project.id,
+          name: "staging"
+        )
       )
 
       assert {:error, %Invalid{}} =
@@ -94,14 +59,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
                )
     end
 
-    test "with get_environment_by_project_id_and_name an outsider cannot find an environment",
-         ctx do
-      Flags.create_environment!(
-        %{name: "production", project_id: ctx.project.id},
-        tenant: ctx.org.id,
-        actor: ctx.user
-      )
-
+    test "policy - an outsider is refused", ctx do
       assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
                  tenant: ctx.org.id,
@@ -109,27 +67,37 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
                )
     end
 
-    test "a get_environment_by_project_id_and_name request without an actor cannot find an environment",
-         ctx do
-      Flags.create_environment!(
-        %{name: "production", project_id: ctx.project.id},
-        tenant: ctx.org.id,
-        actor: ctx.user
-      )
-
+    test "policy - a request without an actor is refused", ctx do
       assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_id_and_name(ctx.project.id, "production", tenant: ctx.org.id)
     end
 
-    test "get_environment_by_project_and_environment_name finds the environment by name within the project",
-         ctx do
-      env =
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
         )
 
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
+                   tenant: ctx.org.id,
+                   actor: invitee
+                 )
+      end
+    end
+  end
+
+  describe "get_environment_by_project_and_environment_name" do
+    setup :with_environment
+
+    test "returns the matching environment to a member", ctx do
       assert {:ok, found} =
                Flags.get_environment_by_project_and_environment_name(
                  %{project_name: ctx.project.name, environment_name: "production"},
@@ -137,17 +105,18 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
                  actor: ctx.user
                )
 
-      assert found.id == env.id
+      assert found.id == ctx.environment.id
     end
 
-    test "get_environment_by_project_and_environment_name does not find an environment belonging to another project",
-         ctx do
+    test "does not return an environment belonging to another project", ctx do
       other_project = generate(FlagsGenerator.project(tenant: ctx.org.id))
 
-      Flags.create_environment!(
-        %{name: "staging", project_id: other_project.id},
-        tenant: ctx.org.id,
-        actor: ctx.user
+      generate(
+        FlagsGenerator.environment(
+          tenant: ctx.org.id,
+          project_id: other_project.id,
+          name: "staging"
+        )
       )
 
       assert {:error, %Invalid{}} =
@@ -158,14 +127,7 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
                )
     end
 
-    test "with get_environment_by_project_and_environment_name an outsider cannot find an environment",
-         ctx do
-      Flags.create_environment!(
-        %{name: "production", project_id: ctx.project.id},
-        tenant: ctx.org.id,
-        actor: ctx.user
-      )
-
+    test "policy - an outsider is refused", ctx do
       assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_and_environment_name(
                  %{project_name: ctx.project.name, environment_name: "production"},
@@ -174,130 +136,135 @@ defmodule RailswitchBackend.Flags.EnvironmentTest do
                )
     end
 
-    test "a get_environment_by_project_and_environment_name request without an actor cannot find an environment",
-         ctx do
-      Flags.create_environment!(
-        %{name: "production", project_id: ctx.project.id},
-        tenant: ctx.org.id,
-        actor: ctx.user
-      )
-
+    test "policy - a request without an actor is refused", ctx do
       assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                Flags.get_environment_by_project_and_environment_name(
                  %{project_name: ctx.project.name, environment_name: "production"},
                  tenant: ctx.org.id
                )
     end
-  end
-
-  describe "destroy" do
-    test "a member can destroy an environment", ctx do
-      env =
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
-        )
-
-      assert :ok = Flags.delete_environment(env, tenant: ctx.org.id, actor: ctx.user)
-    end
-
-    test "an outsider cannot destroy an environment", ctx do
-      env =
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
-        )
-
-      assert {:error, %Forbidden{}} =
-               Flags.delete_environment(env, tenant: ctx.org.id, actor: ctx.outsider)
-    end
-
-    test "a request without an actor cannot destroy an environment", ctx do
-      env =
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
-        )
-
-      assert {:error, %Forbidden{}} =
-               Flags.delete_environment(env, tenant: ctx.org.id)
-    end
-  end
-
-  describe "users without an accepted membership" do
-    setup ctx do
-      invitee = generate(AccountsGenerator.user())
-
-      generate(
-        OrgsGenerator.membership(
-          organization_id: ctx.org.id,
-          user_id: invitee.id,
-          status: ctx.status
-        )
-      )
-
-      %{invitee: invitee}
-    end
 
     for status <- [:pending, :declined] do
       @tag status: status
-      test "a user with a #{status} membership cannot create an environment", ctx do
-        assert {:error, %Forbidden{}} =
-                 Flags.create_environment(
-                   %{name: "production", project_id: ctx.project.id},
-                   tenant: ctx.org.id,
-                   actor: ctx.invitee
-                 )
-      end
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
 
-      @tag status: status
-      test "with get_environment_by_project_id_and_name a user with a #{status} membership cannot find an environment",
-           ctx do
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
-        )
-
-        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-                 Flags.get_environment_by_project_id_and_name(ctx.project.id, "production",
-                   tenant: ctx.org.id,
-                   actor: ctx.invitee
-                 )
-      end
-
-      @tag status: status
-      test "with get_environment_by_project_and_environment_name a user with a #{status} membership cannot find an environment",
-           ctx do
-        Flags.create_environment!(
-          %{name: "production", project_id: ctx.project.id},
-          tenant: ctx.org.id,
-          actor: ctx.user
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
         )
 
         assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
                  Flags.get_environment_by_project_and_environment_name(
                    %{project_name: ctx.project.name, environment_name: "production"},
                    tenant: ctx.org.id,
-                   actor: ctx.invitee
+                   actor: invitee
                  )
       end
+    end
+  end
 
+  describe "create_environment" do
+    test "creates the environment for a member", ctx do
+      env =
+        Flags.create_environment!(
+          %{name: "production", project_id: ctx.project.id},
+          tenant: ctx.org.id,
+          actor: ctx.user
+        )
+
+      assert to_string(env.name) == "production"
+    end
+
+    test "policy - an outsider is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.create_environment(
+                 %{name: "production", project_id: ctx.project.id},
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
+
+    test "policy - a request without an actor is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.create_environment(
+                 %{name: "production", project_id: ctx.project.id},
+                 tenant: ctx.org.id
+               )
+    end
+
+    for status <- [:pending, :declined] do
       @tag status: status
-      test "a user with a #{status} membership cannot destroy an environment", ctx do
-        env =
-          Flags.create_environment!(
-            %{name: "production", project_id: ctx.project.id},
-            tenant: ctx.org.id,
-            actor: ctx.user
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
           )
+        )
 
         assert {:error, %Forbidden{}} =
-                 Flags.delete_environment(env, tenant: ctx.org.id, actor: ctx.invitee)
+                 Flags.create_environment(
+                   %{name: "production", project_id: ctx.project.id},
+                   tenant: ctx.org.id,
+                   actor: invitee
+                 )
       end
     end
+  end
+
+  describe "delete_environment" do
+    setup :with_environment
+
+    test "deletes the environment for a member", ctx do
+      assert :ok = Flags.delete_environment(ctx.environment, tenant: ctx.org.id, actor: ctx.user)
+    end
+
+    test "policy - an outsider is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.delete_environment(ctx.environment, tenant: ctx.org.id, actor: ctx.outsider)
+    end
+
+    test "policy - a request without an actor is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.delete_environment(ctx.environment, tenant: ctx.org.id)
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
+        assert {:error, %Forbidden{}} =
+                 Flags.delete_environment(ctx.environment, tenant: ctx.org.id, actor: invitee)
+      end
+    end
+  end
+
+  defp with_environment(ctx) do
+    environment =
+      generate(
+        FlagsGenerator.environment(
+          tenant: ctx.org.id,
+          project_id: ctx.project.id,
+          name: "production"
+        )
+      )
+
+    %{environment: environment}
   end
 end

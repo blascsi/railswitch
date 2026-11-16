@@ -9,6 +9,7 @@ defmodule RailswitchBackend.Flags.ProjectTest do
   alias Ash.Error.Forbidden
   alias RailswitchBackend.AccountsGenerator
   alias RailswitchBackend.Flags
+  alias RailswitchBackend.FlagsGenerator
   alias RailswitchBackend.Orgs.Errors.NotOrganizationMember
   alias RailswitchBackend.OrgsGenerator
 
@@ -24,151 +25,167 @@ defmodule RailswitchBackend.Flags.ProjectTest do
     }
   end
 
-  describe "create" do
-    test "a member of the organization can create a project", ctx do
+  describe "list_projects" do
+    setup :with_project
+
+    test "returns the organization's projects to a member", ctx do
+      assert {:ok, projects} = Flags.list_projects(tenant: ctx.org.id, actor: ctx.user)
+      assert Enum.any?(projects, &(&1.id == ctx.project.id))
+    end
+
+    test "policy - an outsider is refused", ctx do
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.list_projects(tenant: ctx.org.id, actor: ctx.outsider)
+    end
+
+    test "policy - a request without an actor is refused", ctx do
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.list_projects(tenant: ctx.org.id)
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.list_projects(tenant: ctx.org.id, actor: invitee)
+      end
+    end
+  end
+
+  describe "get_project_by_org_id_and_name" do
+    setup :with_project
+
+    test "returns the matching project to a member", ctx do
+      assert {:ok, found_project} =
+               Flags.get_project_by_org_id_and_name(ctx.project.name,
+                 tenant: ctx.org.id,
+                 actor: ctx.user
+               )
+
+      assert found_project.id == ctx.project.id
+    end
+
+    test "policy - an outsider is refused", ctx do
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.get_project_by_org_id_and_name(ctx.project.name,
+                 tenant: ctx.org.id,
+                 actor: ctx.outsider
+               )
+    end
+
+    test "policy - a request without an actor is refused", ctx do
+      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+               Flags.get_project_by_org_id_and_name(ctx.project.name,
+                 tenant: ctx.org.id
+               )
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
+        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
+                 Flags.get_project_by_org_id_and_name(ctx.project.name,
+                   tenant: ctx.org.id,
+                   actor: invitee
+                 )
+      end
+    end
+  end
+
+  describe "create_project" do
+    test "creates the project in the tenant organization for a member", ctx do
       project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
 
       assert to_string(project.name) == "checkout"
       assert project.organization_id == ctx.org.id
     end
 
-    test "an outsider cannot create a project", ctx do
+    test "policy - an outsider is refused", ctx do
       assert {:error, %Forbidden{}} =
                Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.outsider)
     end
 
-    test "a request without an actor cannot create a project", ctx do
+    test "policy - a request without an actor is refused", ctx do
       assert {:error, %Forbidden{}} =
                Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id)
-    end
-  end
-
-  describe "read" do
-    test "a member of the organization can read projects", ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:ok, projects} = Flags.list_projects(tenant: ctx.org.id, actor: ctx.user)
-      assert Enum.any?(projects, &(&1.id == project.id))
-    end
-
-    test "an outsider cannot read projects", ctx do
-      Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-               Flags.list_projects(tenant: ctx.org.id, actor: ctx.outsider)
-    end
-
-    test "a request without an actor cannot read projects", ctx do
-      Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-               Flags.list_projects(tenant: ctx.org.id)
-    end
-
-    test "get_project_by_org_id_and_name returns the correct project", ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:ok, found_project} =
-               Flags.get_project_by_org_id_and_name(project.name,
-                 tenant: ctx.org.id,
-                 actor: ctx.user
-               )
-
-      assert found_project.id == project.id
-    end
-
-    test "get_project_by_org_id_and_name does not return the project to an outsider", ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-               Flags.get_project_by_org_id_and_name(project.name,
-                 tenant: ctx.org.id,
-                 actor: ctx.outsider
-               )
-    end
-
-    test "get_project_by_org_id_and_name does not return the project to a query without an actor",
-         ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-               Flags.get_project_by_org_id_and_name(project.name,
-                 tenant: ctx.org.id
-               )
-    end
-  end
-
-  describe "destroy" do
-    test "a member of the organization can destroy a project", ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert :ok = Flags.delete_project(project, tenant: ctx.org.id, actor: ctx.user)
-    end
-
-    test "an outsider cannot destroy a project", ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{}} =
-               Flags.delete_project(project, tenant: ctx.org.id, actor: ctx.outsider)
-    end
-
-    test "a request without an actor cannot destroy a project", ctx do
-      project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-      assert {:error, %Forbidden{}} =
-               Flags.delete_project(project, tenant: ctx.org.id)
-    end
-  end
-
-  describe "users without an accepted membership" do
-    setup ctx do
-      invitee = generate(AccountsGenerator.user())
-
-      generate(
-        OrgsGenerator.membership(
-          organization_id: ctx.org.id,
-          user_id: invitee.id,
-          status: ctx.status
-        )
-      )
-
-      %{invitee: invitee}
     end
 
     for status <- [:pending, :declined] do
       @tag status: status
-      test "a user with a #{status} membership cannot create a project", ctx do
-        assert {:error, %Forbidden{}} =
-                 Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.invitee)
-      end
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
 
-      @tag status: status
-      test "a user with a #{status} membership cannot read projects", ctx do
-        Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-                 Flags.list_projects(tenant: ctx.org.id, actor: ctx.invitee)
-      end
-
-      @tag status: status
-      test "get_project_by_org_id_and_name does not return the project to a user with a #{status} membership",
-           ctx do
-        project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
-
-        assert {:error, %Forbidden{errors: [%NotOrganizationMember{}]}} =
-                 Flags.get_project_by_org_id_and_name(project.name,
-                   tenant: ctx.org.id,
-                   actor: ctx.invitee
-                 )
-      end
-
-      @tag status: status
-      test "a user with a #{status} membership cannot destroy a project", ctx do
-        project = Flags.create_project!(%{name: "checkout"}, tenant: ctx.org.id, actor: ctx.user)
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
 
         assert {:error, %Forbidden{}} =
-                 Flags.delete_project(project, tenant: ctx.org.id, actor: ctx.invitee)
+                 Flags.create_project(%{name: "checkout"}, tenant: ctx.org.id, actor: invitee)
       end
     end
+  end
+
+  describe "delete_project" do
+    setup :with_project
+
+    test "deletes the project for a member", ctx do
+      assert :ok = Flags.delete_project(ctx.project, tenant: ctx.org.id, actor: ctx.user)
+    end
+
+    test "policy - an outsider is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.delete_project(ctx.project, tenant: ctx.org.id, actor: ctx.outsider)
+    end
+
+    test "policy - a request without an actor is refused", ctx do
+      assert {:error, %Forbidden{}} =
+               Flags.delete_project(ctx.project, tenant: ctx.org.id)
+    end
+
+    for status <- [:pending, :declined] do
+      @tag status: status
+      test "policy - a user with a #{status} membership is refused", ctx do
+        invitee = generate(AccountsGenerator.user())
+
+        generate(
+          OrgsGenerator.membership(
+            organization_id: ctx.org.id,
+            user_id: invitee.id,
+            status: ctx.status
+          )
+        )
+
+        assert {:error, %Forbidden{}} =
+                 Flags.delete_project(ctx.project, tenant: ctx.org.id, actor: invitee)
+      end
+    end
+  end
+
+  defp with_project(ctx) do
+    %{project: generate(FlagsGenerator.project(tenant: ctx.org.id))}
   end
 end
